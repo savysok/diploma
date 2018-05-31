@@ -18,13 +18,9 @@ The project is currently under contstruction.
 
 - **dynamic loading of models**: import your models blend file in the "models" subfolder and it will appear in the program next time you start it
 
-[https://gfycat.com/ClearcutExcitableBlobfish](https://gfycat.com/ClearcutExcitableBlobfish)
+[Small demonstration video](https://gfycat.com/ClearcutExcitableBlobfish)
 
-![Small demonstration video](https://thumbs.gfycat.com/ClearcutExcitableBlobfish-max-14mb.gif)
-
-[https://gfycat.com/SeparateMellowBison](https://gfycat.com/SeparateMellowBison)
-
-![Small demonstration video 2](https://thumbs.gfycat.com/SeparateMellowBison-max-14mb.gif)
+[Small demonstration video 2](https://gfycat.com/SeparateMellowBison)
 
 ### Folder structure:
 
