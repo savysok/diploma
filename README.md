@@ -22,6 +22,11 @@ The project is currently under contstruction.
 
 [Small demonstration video 2](https://gfycat.com/SeparateMellowBison)
 
+#### Images
+![Main Screen screenshot](https://imgur.com/BlVF7NE.jpg "Main screen")
+![Grids screenshot](https://imgur.com/2UvzsvS.jpg "Grids")
+![Parts screenshot](https://imgur.com/2DSZDdQ.jpg "Parts")
+
 ### Folder structure:
 
 - **custom**: a folder where all the custom models will be saved to be loaded
