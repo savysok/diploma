@@ -1,10 +1,10 @@
 # diploma
 20180529
 
-## Thesis project for N.T.U.A. 
+## Thesis project for N.T.U.A.
 ###### by Spyros K.
 
-This project is my thesis project for the N.T.U.A. 
+This project is my thesis project for the N.T.U.A.
 
 The main idea is the creation of an architectural design program targeted at people not familiar with CAD (Computer Assisted Design/Drawing) type programs and allow them to create buildings using parts of famous buildings. The logic behind the building system is that of Lego/Froebel blocks/Minecraft: creating through the use of pre-determined building parts.
 
@@ -12,11 +12,16 @@ The project is currently under contstruction.
 
 ### Features:
 
-- **modular building system**: create buildings from pre-modeled pieces 
+- **modular building system**: create buildings from pre-modeled pieces
 
 - **"_point and click_"**: placement of the modular pieces with the click of a button
 
 - **dynamic loading of models**: import your models blend file in the "models" subfolder and it will appear in the program next time you start it
+
+[https://gfycat.com/ClearcutExcitableBlobfish](https://gfycat.com/ClearcutExcitableBlobfish)
+[Small demonstration video](https://thumbs.gfycat.com/ClearcutExcitableBlobfish-max-14mb.gif)
+[https://gfycat.com/SeparateMellowBison](https://gfycat.com/SeparateMellowBison)
+[Small demonstration video 2](https://thumbs.gfycat.com/SeparateMellowBison-max-14mb.gif)
 
 ### Folder structure:
 
@@ -44,12 +49,12 @@ cube.001,1.0,1.0,1.0
 
 csv & DictReader / os / textwrap / time / subprocess / webbrowser / math / mathutils / socket / select / sys / threading & Thread
 
-Blender-specific: bge & logic / bpy & context 
+Blender-specific: bge & logic / bpy & context
 
 
 ### TODO
 
-- **camera**(_optional_): 
+- **camera**(_optional_):
   - [ ] camera movement (_improved_)
   - [ ] axonometric camera
 
