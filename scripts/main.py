@@ -85,7 +85,7 @@ def load_external_models(name):
 
     ### Finds all the 'blend' files in the 'models' subdirectory
     files = [f for f in os.listdir(models_directory + '/' + name) if 'blend' in f]
-    debug_print("The files inside the folder",name,"are:",files)
+    debug_print("The files inside the folder {} are: ".format(name, files))
 
     ### Load each found file
     for f in files:
