@@ -25,25 +25,25 @@ print(":::PHASE 1:::\n")
 ### PATHS - Get the absolute directories of the folders
 print("::DIRECTORIES::")
 print("Getting the directories...")
-data_directory = os.path.abspath(__file__+'/../../data')+'/'
-debug_print("DATA:\n",data_directory)
-models_directory = os.path.abspath(__file__+'/../../models')+'/'
-debug_print("MODELS:\n",models_directory)
-info_directory = os.path.abspath(__file__+'/../../info')+'/'
-debug_print("MODELS:\n",info_directory)
-custom_directory = os.path.abspath(__file__+'/../../custom')+'/'
-debug_print("CUSTOM:\n",custom_directory)
-textures_directory = os.path.abspath(__file__+'/../../textures')+'/' ### Not needed for now
-debug_print("TEXTURES:\n",textures_directory)
-screenshot_directory = os.path.abspath(__file__+'/../../screenshots')+'/'
-debug_print("TEXTURES:\n",textures_directory)
+data_directory = os.path.abspath(__file__ + '/../../data') + '/'
+debug_print("DATA:\n", data_directory)
+models_directory = os.path.abspath(__file__ + '/../../models') + '/'
+debug_print("MODELS:\n", models_directory)
+info_directory = os.path.abspath(__file__ + '/../../info') + '/'
+debug_print("MODELS:\n", info_directory)
+custom_directory = os.path.abspath(__file__ + '/../../custom') + '/'
+debug_print("CUSTOM:\n", custom_directory)
+textures_directory = os.path.abspath(__file__+'/../../textures') + '/' ### Not needed for now
+debug_print("TEXTURES:\n", textures_directory)
+screenshot_directory = os.path.abspath(__file__+'/../../screenshots') + '/'
+debug_print("TEXTURES:\n", textures_directory)
 print("Done.\n")
 
 ### GROUP - The group at which the object(s) belong. The grouping is sorted by the folders in the "models" subfolder.
 print("::GROUPS::")
 groups = [g for g in os.listdir(models_directory)]      ### Get a list of all the subfolders in the "models" folder
 max_GROUP_ID = len(groups)                              ### Get the maximum number of subfolders
-print("There are",max_GROUP_ID,"groups of models.")
+print("There are", max_GROUP_ID, "groups of models.")
 GROUP_ID=0                                              ### An "id" variable to select the different groups
 print("The groups are:")
 for g in groups:
