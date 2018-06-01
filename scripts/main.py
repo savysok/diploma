@@ -1,14 +1,14 @@
 ### IMPORT - Importing the necessary modules ###
 ###### START ######
 import bge                      ### bge - The Blender Game Engine
-from bge import logic           ### logic - Needed to load external files
 import csv                      ### csv - The CSV Library for parsing the csv file
-from csv import DictReader      ### DictReader - DictReader is needed to read the csv file's columns
 import os                       ### os - To find the path names (WIP)
+import subprocess               ### subprocess - Executes system functions. Used mainly for the screenshots with Imagemagick.
 import textwrap                 ### textwrap - Text wrapper (for the info section)
 import time                     ### time - Needed for the date/time format at the screenshots.
-import subprocess               ### subprocess - Executes system functions. Used mainly for the screenshots with Imagemagick.
 import webbrowser               ### webbrowser - Opens a web browser (will be used to open wikipedia pages)
+from bge import logic           ### logic - Needed to load external files
+from csv import DictReader      ### DictReader - DictReader is needed to read the csv file's columns
 ### Custom scripts ###          ### Custom scripts go here
 
 ###### END ######
@@ -991,7 +991,7 @@ def main():
         ### DELETE - Delete object
         if right_click.positive:
             rayObj.endObject()
-            
+
 
 ### NOTES ### NOTES ### NOTES ### NOTES ### NOTES ###
 
