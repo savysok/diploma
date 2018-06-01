@@ -13,6 +13,9 @@ from csv import DictReader      ### DictReader - DictReader is needed to read th
 
 ###### END ######
 
+DEBUG=False
+
+
 ### PHASE 1: INITIALIZATION ###
 
 print("\n\n\n::INITIALIZATION::")
@@ -23,17 +26,17 @@ print(":::PHASE 1:::\n")
 print("::DIRECTORIES::")
 print("Getting the directories...")
 data_directory = os.path.abspath(__file__+'/../../data')+'/'
-#print("DATA:\n",data_directory)
+debug_print("DATA:\n",data_directory)
 models_directory = os.path.abspath(__file__+'/../../models')+'/'
-#print("MODELS:\n",models_directory)
+debug_print("MODELS:\n",models_directory)
 info_directory = os.path.abspath(__file__+'/../../info')+'/'
-#print("MODELS:\n",info_directory)
+debug_print("MODELS:\n",info_directory)
 custom_directory = os.path.abspath(__file__+'/../../custom')+'/'
-#print("CUSTOM:\n",custom_directory)
+debug_print("CUSTOM:\n",custom_directory)
 textures_directory = os.path.abspath(__file__+'/../../textures')+'/' ### Not needed for now
-#print("TEXTURES:\n",textures_directory)
+debug_print("TEXTURES:\n",textures_directory)
 screenshot_directory = os.path.abspath(__file__+'/../../screenshots')+'/'
-#print("TEXTURES:\n",textures_directory)
+debug_print("TEXTURES:\n",textures_directory)
 print("Done.\n")
 
 ### GROUP - The group at which the object(s) belong. The grouping is sorted by the folders in the "models" subfolder.
@@ -62,17 +65,17 @@ def change_group():
     max = max_GROUP_ID - 2
 
     if right_arrow.positive and GROUP_ID <= max:
-        #print("Right arrow has been pressed.")
+        debug_print("Right arrow has been pressed.")
         GROUP_ID = GROUP_ID + 1
         create_item_properties(groups[GROUP_ID])
         create_buttons()
-        #print(GROUP_ID)
+        debug_print(GROUP_ID)
     if left_arrow.positive and GROUP_ID >= 1:
-        #print("Left arrow has been pressed.")
+        debug_print("Left arrow has been pressed.")
         GROUP_ID = GROUP_ID - 1
         create_item_properties(groups[GROUP_ID])
         create_buttons()
-        #print(GROUP_ID)
+        debug_print(GROUP_ID)
 
 ### LOAD - Load the external models from the 'models' subfolder inside the program
 print("::LOAD::")
@@ -82,7 +85,7 @@ def load_external_models(name):
 
     ### Finds all the 'blend' files in the 'models' subdirectory
     files = [f for f in os.listdir(models_directory + '/' + name) if 'blend' in f]
-    #print("The files inside the folder",name,"are:",files)
+    debug_print("The files inside the folder",name,"are:",files)
 
     ### Load each found file
     for f in files:
@@ -117,13 +120,13 @@ MODE = 1
 
 ### SCENE
 scene = bge.logic.getCurrentScene()     ### The current scene
-#print("The scene is:",scene)
+debug_print("The scene is:",scene)
 
 ghost = scene.objects["ghost"]          ### The placeholder object. This will be the object that will move around the scene and hold the preview of the item. It is just an empty.
-#print("The placeholder object is:",ghost)
+debug_print("The placeholder object is:",ghost)
 
 preview = scene.objects["preview"]      ### The preview object (Suzanne the monkey). Will be replaced by the selected item's wireframe
-#print("The preview object is:",preview)
+debug_print("The preview object is:",preview)
 
 ### DATA - The object data (name, width, length, height) are imported from a CSV file. Creates the necessary lists for the item properties (name, dimensions etc).
 print("::DATA::")
@@ -131,7 +134,7 @@ print("::DATA::")
 def create_item_properties(file):
 
     ListFile = data_directory+file+'.csv' ### The csv file to create the data from.
-    #print("The file used to create the lists is:",ListFile)
+    debug_print("The file used to create the lists is:",ListFile)
 
     ### Declare the variables as global to be used by other modules in the program
     global items
@@ -154,26 +157,26 @@ def create_item_properties(file):
         i_length = [row["LENGTH"] for row in DictReader(L)] ### i_length is item length
     with open(ListFile) as H:
         i_height = [row["HEIGHT"] for row in DictReader(H)] ### i_height is item height
-    #print("Item property lists created.\n")
+    debug_print("Item property lists created.\n")
 
 print("Creating the lists for the item properties...")
 create_item_properties(groups[GROUP_ID]) ### This creates the item properties for the object group that is selected
 print("Done.\n")
 
 item = items[ID]                        ### Selected item from the CSV list.
-#print("Item is",item)
+debug_print("Item is",item)
 
 wireframe = str(items[ID]+'w')          ### The wireframe version of the item (The name of the item + w at then)
-#print("Wireframe is",wireframe)
+debug_print("Wireframe is",wireframe)
 
 
 ### PREVIEW_MESH - Function to change the preview mesh to the currently selected. Runs constantly. Need to make it to change only once and stay like that (WIP)
 def preview_mesh():
 
     controller = bge.logic.getCurrentController()
-    #print("The controller is:",controller)
+    debug_print("The controller is:",controller)
     own = controller.owner
-    #print("Owner is:",own)
+    debug_print("Owner is:",own)
 
     ### Replace the default mesh (Suzanne, the monkey) with the item's wireframe
     own.replaceMesh(wireframe)
@@ -181,36 +184,36 @@ def preview_mesh():
 
 ### DIMENSIONS - The wireframe item's dimensions (needs to be a floating number to work). This will be used to place items according to the object that the mouse is hovering over.
 width = float(i_width[ID])
-#print("Width is",width)
+debug_print("Width is",width)
 length = float(i_length[ID])
-#print("Length is",length)
+debug_print("Length is",length)
 height = float(i_height[ID])
-#print("Height is",height)
+debug_print("Height is",height)
 
 ### MOUSE_OVER_BUTTON - The cursor status. If it's 1, the cursor is not over a button (and can place items on the grid). If it's 0, it cannot place new items until it goes back to 1.
 mouse_is_over_button = 1
 
 def mouse_over_button(): ### Function to disable the creation of new blocks when the mouse is over a button
 
-    #print("Function to set the 'mouse_is_over_button' variable to 0 or 1")
+    debug_print("Function to set the 'mouse_is_over_button' variable to 0 or 1")
 
     global mouse_is_over_button
 
     controller = bge.logic.getCurrentController()
-    #print("The controller is:",controller)
+    debug_print("The controller is:",controller)
     own = controller.owner
-    #print("Owner is:",own)
+    debug_print("Owner is:",own)
 
     mouse_over_button = controller.sensors["mouse_over_button"]
-    #print("Sensor is:",mouse_over_button)
+    debug_print("Sensor is:",mouse_over_button)
 
     if mouse_over_button.positive:
         mouse_is_over_button = 0
-        #print("Mouse is over",own,"\n")
-        #print("Mouse is over a button. mouse_is_over_button is",mouse_is_over_button,". Owner is",own)
+        debug_print("Mouse is over",own,"\n")
+        debug_print("Mouse is over a button. mouse_is_over_button is",mouse_is_over_button,". Owner is",own)
     if not mouse_over_button.positive:
         mouse_is_over_button = 1
-        #print("Mouse is over a button. mouse_is_over_button is",mouse_is_over_button,". Owner is",own)
+        debug_print("Mouse is over a button. mouse_is_over_button is",mouse_is_over_button,". Owner is",own)
 
 ### Function to hide the bounding box object
 def hide_bounding_box():
@@ -247,24 +250,24 @@ def get_ID():
 
     ### First, set the variables as global
     global ID
-    #print("Global ID is:",ID)
+    debug_print("Global ID is:",ID)
     global new_ID
-    #print("Global new_ID is:",new_ID)
+    debug_print("Global new_ID is:",new_ID)
     global item
-    #print("Global item is:",item)
+    debug_print("Global item is:",item)
     global wireframe
-    #print("Global wireframe is:",wireframe)
+    debug_print("Global wireframe is:",wireframe)
     global width
-    #print("Global width is:",width)
+    debug_print("Global width is:",width)
     global length
-    #print("Global length is:",length)
+    debug_print("Global length is:",length)
     global height
-    #print("Global height is:",height)
+    debug_print("Global height is:",height)
 
     controller = bge.logic.getCurrentController()
-    #print("The controller is:",controller)
+    debug_print("The controller is:",controller)
     own = controller.owner
-    #print("The owner is:",own)
+    debug_print("The owner is:",own)
     scene = bge.logic.getCurrentScene()
 
     left_click_button = controller.sensors["left_click_button"]
@@ -275,19 +278,19 @@ def get_ID():
         ### Get the item's ID, which will be the new ID for everything
         global new_ID
         new_ID = own["ID"]
-        #print("The new ID is:",new_ID)
+        debug_print("The new ID is:",new_ID)
 
         ### Then, set the new id to all the items
         item = items[new_ID]
-        #print(item)
+        debug_print(item)
         wireframe = wireframes[new_ID]
-        #print(wireframe)
+        debug_print(wireframe)
         width = i_width[new_ID]
-        #print("New width is:",width)
+        debug_print("New width is:",width)
         length = i_length[new_ID]
-        #print("New length is:",length)
+        debug_print("New length is:",length)
         height = i_height[new_ID]
-        #print("New height is:",height)
+        debug_print("New height is:",height)
 
 ### GRIDS ###
 
@@ -341,7 +344,7 @@ def clear_grid():
     grid_objects = ['grid.000', 'grid.111', 'grid.211', 'grid.121', 'grid.221', 'grid.331'] ### Here I put all the grid blocks names
     for obj in object_list:
         if obj.name in grid_objects:
-            #print("Grid object",obj,"is being removed")
+            debug_print("Grid object",obj,"is being removed")
             obj.endObject()
 
 ### CREATE_GRID - Function to create the grid
@@ -366,13 +369,13 @@ def generate_grid_pattern(rows,row_distance,columns,column_distance,pattern):
         m = -c                                            ### This will start the grid symmetrically to the X Axis to the negative value.
         while m < c:
             for i in pattern:
-                #print(i)
+                debug_print(i)
                 name = i[0]
                 x = i[1] + rd * n                           ### This will place the grid object at the local position (pattern's X position) plus the distance it will repeat at, times n. ### TODO more explanation
                 y = i[2] + cd * m                           ### This will place the grid object at the local position (pattern's Y position) plus the distance it will repeat at, times m. ### TODO more explanation
                 z = i[3]                                ### This will place the grid object at the local position (pattern's Z position). Currently the system I created doesn't allow me to create grid patterns in the 3d space. Only 2d.
                 ghost.worldPosition = [x, y, z]         ### This moves the ghost item to the new position, where it will replicate the grid object
-                #print(ghost.worldPosition)
+                debug_print(ghost.worldPosition)
                 obj = scene.addObject(name, ghost, 0)   ### This adds a grid object at the ghost's position
             m += 1
         n += 1
@@ -384,9 +387,9 @@ def generate_grid_pattern(rows,row_distance,columns,column_distance,pattern):
 def send_message():
 
     controller = bge.logic.getCurrentController()
-    #print("Controller is:",controller)
+    debug_print("Controller is:",controller)
     own = controller.owner
-    #print("Owner is:",own)
+    debug_print("Owner is:",own)
 
     left_click_button = controller.sensors["left_click_button"]
     mouse_over_button = controller.sensors["mouse_over_button"]
@@ -402,22 +405,22 @@ def send_message():
         ### GRIDS. 101-199
         if own["ID"] == 101:
             own.sendMessage("action", "generate_grid_1x1")
-            #print("Message to create the grid is sent!")
+            debug_print("Message to create the grid is sent!")
         if own["ID"] == 102:
             own.sendMessage("action", "generate_grid_2x1")
-            #print("Message to create the grid is sent!")
+            debug_print("Message to create the grid is sent!")
         if own["ID"] == 103:
             own.sendMessage("action", "generate_grid_1x2")
-            #print("Message to create the grid is sent!")
+            debug_print("Message to create the grid is sent!")
         if own["ID"] == 104:
             own.sendMessage("action", "generate_grid_1x2x2")
-            #print("Message to create the grid is sent!")
+            debug_print("Message to create the grid is sent!")
         if own["ID"] == 105:
             own.sendMessage("action", "generate_grid_3x3")
-            #print("Message to create the grid is sent!")
+            debug_print("Message to create the grid is sent!")
         if own["ID"] == 106:
             own.sendMessage("action", "generate_grid_3d.001")
-            #print("Message to create the grid is sent!")
+            debug_print("Message to create the grid is sent!")
 
 
 def message_received():
@@ -426,52 +429,52 @@ def message_received():
     message and acts accordingly.
     """
     controller = bge.logic.getCurrentController()
-    #print("Controller is:",controller)
+    debug_print("Controller is:",controller)
     own = controller.owner
-    #print("Owner is:",own)
+    debug_print("Owner is:",own)
 
     message_sensor = controller.sensors["message_sensor"]
-    #print(message_sensor)
+    debug_print(message_sensor)
 
     if message_sensor.positive:
-        #print("Message_received")
+        debug_print("Message_received")
         action = message_sensor.bodies[0] ### Reads the body of the message sent and acts accordingly
 
         ### SAVE AND LOAD
         if action == "save_data":
-            #print("Saving the data")
+            debug_print("Saving the data")
             save_data()
         if action == "load_data":
-            #print("Loading the data")
+            debug_print("Loading the data")
             load_data()
 
         ### GRIDS
         if action == "generate_grid_1x1":
-            #print("Generating 1x1 grid pattern")
+            debug_print("Generating 1x1 grid pattern")
             generate_grid_pattern(6,2,12,1,grid_pattern_001)
         if action == "generate_grid_2x1":
-            #print("Generating 2x1 grid pattern")
+            debug_print("Generating 2x1 grid pattern")
             generate_grid_pattern(4,3,12,1,grid_pattern_002)
         if action == "generate_grid_1x2":
-            #print("Generating 1x2 grid pattern")
+            debug_print("Generating 1x2 grid pattern")
             generate_grid_pattern(12,1,4,3,grid_pattern_003)
         if action == "generate_grid_1x2x2":
-            #print("Generating 1x2x2 grid pattern")
+            debug_print("Generating 1x2x2 grid pattern")
             generate_grid_pattern(4,3,4,3,grid_pattern_004)
         if action == "generate_grid_3x3":
-            #print("Generating 3x3 grid pattern")
+            debug_print("Generating 3x3 grid pattern")
             generate_grid_pattern(3,6,3,6,grid_pattern_005)
         if action == "generate_grid_3d.001":
-            #print("Generating 3x3 grid pattern")
+            debug_print("Generating 3x3 grid pattern")
             generate_grid_pattern(4,3,6,2,grid_pattern_006)
 
 
 def create_building(CSVfile):
     """Function to create a building with instructions from a CSV file."""
     controller = bge.logic.getCurrentController()
-    #print("Controller is:",controller)
+    debug_print("Controller is:",controller)
     own = controller.owner
-    #print("Owner is:",own)
+    debug_print("Owner is:",own)
 
     ### First, delete all the grid objects.
     clear_grid()
@@ -482,48 +485,48 @@ def create_building(CSVfile):
         CSVreader = csv.reader(D,delimiter = ",")
         data = list(CSVreader)
         row_count = (len(data)-1)
-        #print("There are ",row_count,"rows of data")
+        debug_print("There are ",row_count,"rows of data")
 
     ### Retrieve the data from the csv file and seperate them to item name, x location, y location, z location and rotation
     with open(DataFile) as D:
         items = [row["ITEM"] for row in DictReader(D)]
-        #print(items)
+        debug_print(items)
     with open(DataFile) as X:
         locationX = [row["X"] for row in DictReader(X)]
-        #print(locationX)
+        debug_print(locationX)
     with open(DataFile) as Y:
         locationY = [row["Y"] for row in DictReader(Y)]
-        #print(locationY)
+        debug_print(locationY)
     with open(DataFile) as Z:
         locationZ = [row["Z"] for row in DictReader(Z)]
-        #print(locationZ)
+        debug_print(locationZ)
     with open(DataFile) as R:
         rotationR = [row["ROTATION"] for row in DictReader(R)]
-        #print(rotationR)
+        debug_print(rotationR)
 
     i=0 ### Start from the first row
     while i < row_count:
-        #print("i is:",i)
-        #print("Item is:",items[i]) ### This is used later
-        #print("X position is:",locationX[i])
+        debug_print("i is:",i)
+        debug_print("Item is:",items[i]) ### This is used later
+        debug_print("X position is:",locationX[i])
         x = float(locationX[i])
-        #print("Y position is:",locationY[i])
+        debug_print("Y position is:",locationY[i])
         y = float(locationY[i])
-        #print("Z position is:",locationZ[i])
+        debug_print("Z position is:",locationZ[i])
         z = float(locationZ[i])
-        #print("Rotation is:",rotationR[i])
+        debug_print("Rotation is:",rotationR[i])
         r = float(rotationR[i])
-        #print(r)
+        debug_print(r)
         ghost.worldPosition = [x,y,z]
-        #print(ghost.worldOrientation.to_euler().z)
+        debug_print(ghost.worldOrientation.to_euler().z)
 
         ### This one was tricky: rotate the empty according to the radian(?) values of the CSV file
         ### First, convert the local orientation to Euler
         xyz = ghost.localOrientation.to_euler()
-        #print("Before the rotation. Z rotation is:",xyz[2])
+        debug_print("Before the rotation. Z rotation is:",xyz[2])
         ### Then, change the Z value of the rotation to the one from the CSV file
         xyz[2] = r
-        #print("After the rotation. Z rotation is:",xyz[2])
+        debug_print("After the rotation. Z rotation is:",xyz[2])
         ### Finally, change the empty's local orientation with the new Z value
         ghost.localOrientation = xyz.to_matrix()
 
@@ -538,20 +541,20 @@ def save_data():
     print("Saving the data to the external file...")
     ### Get the list of scenes
     scenes = bge.logic.getSceneList()
-    #print("List of scenes:",scenes)
+    debug_print("List of scenes:",scenes)
 
     ### The file to save the values. Needs to be opened first.
     list_file = custom_directory + '/custom001.csv'
     list_file_open = open(list_file, 'w')
-    #print("Opening list_file at",list_file)
+    debug_print("Opening list_file at",list_file)
 
     ### Iterate through the MAIN scene's objects
     for scene in scenes :
         if scene.name == "MAIN":
-            #print("scene : %s"%scene.name)
+            debug_print("scene : %s"%scene.name)
             ### List of all the objects in the game
             object_list = [obj for obj in scene.objects]
-            #print(object_list)
+            debug_print(object_list)
             ### Iterate through the objects and find it's values for name, x position, y position and z position
             excluded_objects = ['light','camera', 'preview', 'ghost', 'button']
             list_file_open.write("ITEM,X,Y,Z,ROTATION\n")
@@ -561,15 +564,15 @@ def save_data():
                 y = str(round(obj.worldPosition[1],2))
                 z = str(round(obj.worldPosition[2],2))
                 r = str(round(obj.localOrientation.to_euler().z,3))
-                #print(name,"'s rotation is:",r)
+                debug_print(name,"'s rotation is:",r)
 
                 ### Write the values to the file
-                #print("Saving",name,"at",x,y,z,"to the file.")
+                debug_print("Saving",name,"at",x,y,z,"to the file.")
                 ### Save only the objects that don't have a name that begins with the 'excluded_objects' list (leaving out the default scene items (camera, lights etc))
                 if not any(excluded_objects in name for excluded_objects in excluded_objects):
                 #if not name.startswith('grid'):
                     list_file_open.write(name+","+x+","+y+","+z+","+r+"\n")
-                    #print(name)
+                    debug_print(name)
 
     list_file_open.close()
     print("Data exported. Closing the open list file.")
@@ -596,7 +599,7 @@ def create_buttons():
         obj = scene.objects[mesh_button[i]]
         print(obj)
         button_ID = obj["ID"]
-        #print("Mesh button's ID is:",button_ID)
+        debug_print("Mesh button's ID is:",button_ID)
         obj.replaceMesh(items[button_ID])
 
     print("Done.\n")
@@ -610,12 +613,12 @@ print("Info files inside the info folder are:",info_files)
 def show_info_text():
 
     controller = bge.logic.getCurrentController()
-    #print("The controller is:",controller)
+    debug_print("The controller is:",controller)
     own = controller.owner
-    #print("The owner is:",own)
+    debug_print("The owner is:",own)
 
     scene = bge.logic.getCurrentScene()
-    #print("Current scene is:",scene)
+    debug_print("Current scene is:",scene)
 
     message_sensor = own.sensors["update_text"]
 
@@ -631,7 +634,7 @@ def show_info_text():
         print("Done.\n")
         dynamic_text = scene.objects["info_text"]
         info_text_wrapped = textwrap.wrap(info_txt_open.read(),160)
-        #print(info_text_wrapped)
+        debug_print(info_text_wrapped)
         dynamic_text.text = '\n'.join([l for l in info_text_wrapped])
         info_txt_open.close()
 
@@ -640,12 +643,12 @@ def show_info_text():
 def open_wikipedia_link():
 
     controller = bge.logic.getCurrentController()
-    #print("The controller is:",controller)
+    debug_print("The controller is:",controller)
     own = controller.owner
-    #print("The owner is:",own)
+    debug_print("The owner is:",own)
 
     scene = bge.logic.getCurrentScene()
-    #print("Current scene is:",scene)
+    debug_print("Current scene is:",scene)
 
     mouse_over_button = own.sensors["mouse_over_button"]
     left_click_button = own.sensors["left_click_button"]
@@ -669,9 +672,9 @@ def fix_text_resolution():
 
     scene = bge.logic.getCurrentScene()
 
-    #print("Text starting resolution is:",scene.objects["info_text"].resolution)
+    debug_print("Text starting resolution is:",scene.objects["info_text"].resolution)
     scene.objects["info_text"].resolution = 32.0
-    #print("Text changed resolution is:",scene.objects["info_text"].resolution)
+    debug_print("Text changed resolution is:",scene.objects["info_text"].resolution)
 
 
 ### CAMERA_POSITION - Set the camera's position
@@ -680,7 +683,7 @@ def set_camera_position():
     controller = bge.logic.getCurrentController()
     own = controller.owner
 
-    #print(own.worldOrientation)
+    debug_print(own.worldOrientation)
 
     ### Setup the sensors
     Num1 = controller.sensors["Num1"]
@@ -780,12 +783,12 @@ def set_camera_position():
 def take_screenshot():
     """Function to take a screenshot. Requires Imagemagick in Linux. Windows support is TODO"""
     controller = bge.logic.getCurrentController()
-    #print("The controller is:",controller)
+    debug_print("The controller is:",controller)
     own = controller.owner
-    #print("The owner is:",own)
+    debug_print("The owner is:",own)
 
     scene = bge.logic.getCurrentScene()
-    #print("Current scene is:",scene)
+    debug_print("Current scene is:",scene)
 
     mouse_over_button = own.sensors["mouse_over_button"]
     left_click_button = own.sensors["left_click_button"]
@@ -816,9 +819,9 @@ def take_screenshot():
 def main():
 
     controller = bge.logic.getCurrentController()
-    #print("The controller is:",controller)
+    debug_print("The controller is:",controller)
     own = controller.owner
-    #print("Owner is:",own)
+    debug_print("Owner is:",own)
 
     ### The Sensors (attached to MAIN scene's camera). Left click, Right Click and Mouse Over
     left_click = controller.sensors["left_click"]
@@ -832,17 +835,17 @@ def main():
     global MODE
 
     if mode_1.positive:
-        #print("Mode 1 is active. Snapping to center of face.")
+        debug_print("Mode 1 is active. Snapping to center of face.")
         MODE = 1
-        #print("Mode is:",MODE)
+        debug_print("Mode is:",MODE)
     if mode_2.positive:
-        #print("Mode 2 is active. Snapping to 1/10th of face's position.")
+        debug_print("Mode 2 is active. Snapping to 1/10th of face's position.")
         MODE = 2
-        #print("Mode is:",MODE)
+        debug_print("Mode is:",MODE)
     if mode_3.positive:
-        #print("Mode 3 is active. Snapping freely on the face.")
+        debug_print("Mode 3 is active. Snapping freely on the face.")
         MODE = 3
-        #print("Mode is:",MODE)
+        debug_print("Mode is:",MODE)
 
     ### The preview's position is the same as the ghost's position. Updates constantly.
     preview.position = ghost.position
@@ -852,18 +855,18 @@ def main():
     ### MOUSE_OVER - The "mouse over" function
     if mouse_over.positive and mouse_is_over_button == 1:
 
-        #print("The mouse is over a button.")
+        debug_print("The mouse is over a button.")
 
         ### Get the object that the ray hit
         rayObj = mouse_over.hitObject
-        #print("The object hit by the ray is:",rayObj)
-        #print("Ray object's world position is:",rayObj.worldPosition)
+        debug_print("The object hit by the ray is:",rayObj)
+        debug_print("Ray object's world position is:",rayObj.worldPosition)
         #rayObj_width = [i[1] for i in merged_item_property_list if str(rayObj) in i[0]]
-        #print("Item's width is:",rayObj_width)
+        debug_print("Item's width is:",rayObj_width)
         #rayObj_length = [i[2] for i in merged_item_property_list if str(rayObj) in i[0]]
-        #print("Item's length is:",rayObj_length)
+        debug_print("Item's length is:",rayObj_length)
         #rayObj_height = [i[3] for i in merged_item_property_list if str(rayObj) in i[0]]
-        #print("Item's height is:",rayObj_height)
+        debug_print("Item's height is:",rayObj_height)
 
         #for i in merged_item_property_list:
         #    if str(rayObj) in i[0]:
@@ -873,18 +876,18 @@ def main():
 
         ### Get the object's normal face
         rayNormal = mouse_over.hitNormal
-        #print("The object normal is:",rayNormal)
+        debug_print("The object normal is:",rayNormal)
         print(" rayNormal[0] is:",rayNormal[0],"\n","rayNormal[1] is:",rayNormal[1],"\n","rayNormal[2] is:",rayNormal[2],"\n",)
 
         ### Get the ray's position
         rayPos = mouse_over.hitPosition
-        #print("The ray's position is: ",rayPos)
-        #print("The ray's X position is: ",rayPos[0])
-        #print("The ray's Y position is: ",rayPos[1])
-        #print("The ray's Z position is: ",rayPos[2])
-        #print("\n")
+        debug_print("The ray's position is: ",rayPos)
+        debug_print("The ray's X position is: ",rayPos[0])
+        debug_print("The ray's Y position is: ",rayPos[1])
+        debug_print("The ray's Z position is: ",rayPos[2])
+        debug_print("\n")
 
-        #print(rayObj.worldOrientation)
+        debug_print(rayObj.worldOrientation)
 
         ### PLACE - Place the ghost object on the side of the object the mouse is over of, according to the object's dimensions.
 
@@ -947,7 +950,7 @@ def main():
         ### ADD - Add object when you left click
         if left_click.positive and mouse_is_over_button == 1:
 
-            #print("Left mouse button has been clicked.")
+            debug_print("Left mouse button has been clicked.")
 
             ### Adds an object (item) at the position of the ghost (ghost) at the frame 0 ### Maybe I can use the frames to do the UNDO function. TODO
             obj = scene.addObject(item, ghost, 0)
@@ -966,6 +969,11 @@ def main():
         if right_click.positive:
             rayObj.endObject()
 
+
+
+def debug_print(*args):
+    if DEBUG:
+        print(*args)
 
 
 ### NOTES ### NOTES ### NOTES ### NOTES ### NOTES ###
