@@ -27,6 +27,9 @@ The project is currently under contstruction.
 ![Grids screenshot](https://imgur.com/2UvzsvS.jpg "Grids")
 ![Parts screenshot](https://imgur.com/2DSZDdQ.jpg "Parts")
 
+### Keyboard layout:
+![Keyboard layout](https://i.imgur.com/gqn1njI.jpg "Parts")
+
 ### Folder structure:
 
 - **custom**: a folder where all the custom models will be saved to be loaded
