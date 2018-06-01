@@ -48,6 +48,7 @@ for g in groups:
 print("The active group is:",groups[GROUP_ID])
 print("Done.\n")
 
+
 ### Function to change the group of items
 def change_group():
 
@@ -58,17 +59,17 @@ def change_group():
     left_arrow = controller.sensors["left_arrow"]
 
     global GROUP_ID
-    max = max_GROUP_ID-2
+    max = max_GROUP_ID - 2
 
     if right_arrow.positive and GROUP_ID <= max:
         #print("Right arrow has been pressed.")
-        GROUP_ID = GROUP_ID+1
+        GROUP_ID = GROUP_ID + 1
         create_item_properties(groups[GROUP_ID])
         create_buttons()
         #print(GROUP_ID)
     if left_arrow.positive and GROUP_ID >= 1:
         #print("Left arrow has been pressed.")
-        GROUP_ID = GROUP_ID-1
+        GROUP_ID = GROUP_ID - 1
         create_item_properties(groups[GROUP_ID])
         create_buttons()
         #print(GROUP_ID)
@@ -80,17 +81,17 @@ print("::LOAD::")
 def load_external_models(name):
 
     ### Finds all the 'blend' files in the 'models' subdirectory
-    files = [f for f in os.listdir(models_directory+'/'+name) if 'blend' in f]
+    files = [f for f in os.listdir(models_directory + '/' + name) if 'blend' in f]
     #print("The files inside the folder",name,"are:",files)
 
     ### Load each found file
     for f in files:
-        model = models_directory+name+'/'+f ### The file(s) in the "models" subfolder. "Name" is the name of the the subfolder. "f" is the filename of the blend file
+        model = models_directory+name + '/' + f ### The file(s) in the "models" subfolder. "Name" is the name of the the subfolder. "f" is the filename of the blend file
         logic.LibLoad(model, 'Scene', load_actions = False, load_scripts = False, async = False) ### Load it with LibLoad (async messes up the loading)
 
 print("Loading all the external models from their folders:")
 for m in groups:
-    print(" ",m)
+    print(" ", m)
     load_external_models(m)
 print("Done.\n")
 
@@ -143,7 +144,7 @@ def create_item_properties(file):
         items = [row["NAME"] for row in DictReader(N)]
         print("Items in the list are:")
         for i in items:
-            print(" ",i)
+            print(" ", i)
 
     wireframes = items ### This needs improvement
 
@@ -158,31 +159,6 @@ def create_item_properties(file):
 print("Creating the lists for the item properties...")
 create_item_properties(groups[GROUP_ID]) ### This creates the item properties for the object group that is selected
 print("Done.\n")
-
-### Function to take the dimensional properties of an item (WIP)(NOT WORKING)
-'''
-def create_item_properties_list():
-
-    global merged_item_property_list
-    merged_item_property_list = []
-
-    files = [f for f in os.listdir(data_directory)]
-    for f in files:
-        csv_file = data_directory+f
-        #print(csv_file)
-        with open(csv_file) as N:
-            #print(csv_file,"is open")
-            reader = csv.reader(N, delimiter=',')
-            for row in reader:
-                if not "NAME" in row:
-                    #print(row)
-                    merged_item_property_list.append(row)
-
-    print(merged_item_property_list)
-    print("\n")
-
-create_item_properties_list()
-'''
 
 item = items[ID]                        ### Selected item from the CSV list.
 #print("Item is",item)
@@ -210,71 +186,6 @@ length = float(i_length[ID])
 #print("Length is",length)
 height = float(i_height[ID])
 #print("Height is",height)
-
-### ROTATION (NOT WORKING) - When the object is rotated 90 degrees, the length and width parameters get switched. Needs more work cause it doesn't work very good.
-'''
-def object_dimensions(rotation):
-
-    global width
-    global length
-
-    if rotation == 0:
-        #print("Rotation is 0 degrees")
-        width = float(i_width[new_ID])
-        #print("Width is",width)
-        length = float(i_length[new_ID])
-        #print("Length is",length,"\n")
-    if rotation == 1:
-        #print("Rotation is 90 degrees")
-        width = float(i_length[new_ID])
-        #print("Width is",width)
-        length = float(i_width[new_ID])
-        #print("Length is",length,"\n")
-
-object_dimensions(0)
-
-def preview_mesh_orentation():      ### Function that tells the program that the object is rotated so that it switches the width and length parameters. Needs more work.
-
-    controller = bge.logic.getCurrentController()
-    #print("The controller is:",controller)
-    own = controller.owner
-    #print("Owner is:",own)
-
-    print(own.worldOrientation)
-
-    R_button = controller.sensors["R"]
-    shift = controller.sensors["shift"]
-    mouse_wheel_up = controller.sensors["mouse_wheel_up"]
-    mouse_wheel_down = controller.sensors["mouse_wheel_down"]
-
-    orientation = round(own.worldOrientation[0][0],2)
-
-    if orientation >= 0.8 or orientation <= -0.8:
-        if R_button.positive or shift.positive and mouse_wheel_up.positive or shift.positive and mouse_wheel_down.positive:
-        #print(round(own.worldOrientation[0][0],2))
-            orientation = round(own.worldOrientation[0][0],2)
-            print("Orientation is:",orientation)
-            object_dimensions(0)
-    if orientation <= 0.1 and orientation >= -0.1:
-        if R_button.positive or shift.positive and mouse_wheel_up.positive or shift.positive and mouse_wheel_down.positive:
-            orientation = round(own.worldOrientation[0][0],2)
-            print("Orientation is:",orientation)
-            object_dimensions(1)
-
-
-### BBox DIMENSIONS (WIP)
-
-def bounding_box_dimensions(): ### Function that scales the bounding box with the
-
-    controller = bge.logic.getCurrentController()
-    own = controller.owner
-
-    own.worldScale = (float(width), float(length), float(height))
-    #print("Own world orientation:\n",own.worldOrientation)
-    #print("Width is:",width)
-    #print("Length is:",length)
-    #print("Height is:",height)
-'''
 
 ### MOUSE_OVER_BUTTON - The cursor status. If it's 1, the cursor is not over a button (and can place items on the grid). If it's 0, it cannot place new items until it goes back to 1.
 mouse_is_over_button = 1
@@ -326,10 +237,6 @@ def hide_bounding_box():
                 obj.visible = True
         own["visibility"] = 0
         print(own["visibility"])
-
-
-
-
 
 
 
@@ -385,16 +292,46 @@ def get_ID():
 ### GRIDS ###
 
 ### Add the first cube at 0,0,0
-grid = scene.addObject('grid.000',ghost,0)
-grid.worldPosition = [0,0,0]
+grid = scene.addObject('grid.000', ghost, 0)
+grid.worldPosition = [0, 0, 0]
 
-### GRID_PATTERNS - Different grid patterns that repeat. Format: grid_pattern = ([grid_name,x,y,z], [grid_name,x,y,z])
-grid_pattern_001 = (['grid.111', 0.0, 0.0, 0.0], ['grid.111', 1.0, 0.0, 0.0])
-grid_pattern_002 = (['grid.111', 0.0, 0.0, 0.0], ['grid.211', 1.5, 0.0, 0.0])
-grid_pattern_003 = (['grid.111', 0.0, 0.0, 0.0], ['grid.121', 0.0, 1.5, 0.0])
-grid_pattern_004 = (['grid.111', 0.0, 0.0, 0.0], ['grid.211', 1.5, 0.0, 0.0], ['grid.121', 0.0, 1.5, 0.0], ['grid.111', 1.0, 1.0, 0.0], ['grid.111', 2.0, 1.0, 0.0], ['grid.111', 2.0, 2.0, 0.0], ['grid.111', 1.0, 2.0, 0.0])
-grid_pattern_005 = (['grid.331', 0.0, 0.0, 0.0], ['grid.331', 3.0, 0.0, 0.0], ['grid.331', 0.0, 3.0, 0.0], ['grid.331', 3.0, 3.0, 0.0])
-grid_pattern_006 = (['grid.111', 0.0, 0.0, 0.0], ['grid.111', 1.0, 0.0, 0.1], ['grid.111', 1.0, 1.0, 0.2], ['grid.111', 0.0, 1.0, 0.3], ['grid.111', -1.0, 1.0, 0.2], ['grid.111', -1.0, 0.0, 0.1])
+### GRID_PATTERNS - Different grid patterns that repeat.
+# Format: grid_pattern = ([grid_name,x,y,z], [grid_name,x,y,z])
+grid_pattern_001 = (
+    ['grid.111', 0.0, 0.0, 0.0],
+    ['grid.111', 1.0, 0.0, 0.0]
+)
+grid_pattern_002 = (
+    ['grid.111', 0.0, 0.0, 0.0],
+    ['grid.211', 1.5, 0.0, 0.0]
+)
+grid_pattern_003 = (
+    ['grid.111', 0.0, 0.0, 0.0],
+    ['grid.121', 0.0, 1.5, 0.0]
+)
+grid_pattern_004 = (
+    ['grid.111', 0.0, 0.0, 0.0],
+    ['grid.211', 1.5, 0.0, 0.0],
+    ['grid.121', 0.0, 1.5, 0.0],
+    ['grid.111', 1.0, 1.0, 0.0],
+    ['grid.111', 2.0, 1.0, 0.0],
+    ['grid.111', 2.0, 2.0, 0.0],
+    ['grid.111', 1.0, 2.0, 0.0]
+)
+grid_pattern_005 = (
+    ['grid.331', 0.0, 0.0, 0.0],
+    ['grid.331', 3.0, 0.0, 0.0],
+    ['grid.331', 0.0, 3.0, 0.0],
+    ['grid.331', 3.0, 3.0, 0.0]
+)
+grid_pattern_006 = (
+    ['grid.111', 0.0, 0.0, 0.0],
+    ['grid.111', 1.0, 0.0, 0.1],
+    ['grid.111', 1.0, 1.0, 0.2],
+    ['grid.111', 0.0, 1.0, 0.3],
+    ['grid.111', -1.0, 1.0, 0.2],
+    ['grid.111', -1.0, 0.0, 0.1]
+)
 
 ### CLEAR_GRID - Function to clear the current grid
 def clear_grid():
@@ -424,21 +361,21 @@ def generate_grid_pattern(rows,row_distance,columns,column_distance,pattern):
 
     print("Creating the pattern...")
 
-    n=-r                                                ### This will start the grid symmetrically to the Y Axis to the negative value.
+    n = -r                                                ### This will start the grid symmetrically to the Y Axis to the negative value.
     while n<r:
-        m=-c                                            ### This will start the grid symmetrically to the X Axis to the negative value.
-        while m<c:
+        m = -c                                            ### This will start the grid symmetrically to the X Axis to the negative value.
+        while m < c:
             for i in pattern:
                 #print(i)
                 name = i[0]
-                x = i[1]+rd*n                           ### This will place the grid object at the local position (pattern's X position) plus the distance it will repeat at, times n. ### TODO more explanation
-                y = i[2]+cd*m                           ### This will place the grid object at the local position (pattern's Y position) plus the distance it will repeat at, times m. ### TODO more explanation
+                x = i[1] + rd * n                           ### This will place the grid object at the local position (pattern's X position) plus the distance it will repeat at, times n. ### TODO more explanation
+                y = i[2] + cd * m                           ### This will place the grid object at the local position (pattern's Y position) plus the distance it will repeat at, times m. ### TODO more explanation
                 z = i[3]                                ### This will place the grid object at the local position (pattern's Z position). Currently the system I created doesn't allow me to create grid patterns in the 3d space. Only 2d.
                 ghost.worldPosition = [x, y, z]         ### This moves the ghost item to the new position, where it will replicate the grid object
                 #print(ghost.worldPosition)
                 obj = scene.addObject(name, ghost, 0)   ### This adds a grid object at the ghost's position
-            m = m+1
-        n = n+1
+            m += 1
+        n += 1
 
     print("Done.")
 
@@ -482,9 +419,12 @@ def send_message():
             own.sendMessage("action", "generate_grid_3d.001")
             #print("Message to create the grid is sent!")
 
-### RECEIVE MESSAGE - Function for receiving a message. When a message is received (by the message sensor of the camera at the main scene), it reads the body of the message and acts accordingly
-def message_received():
 
+def message_received():
+    """Function for receiving a message. When a message is received (by the
+    message sensor of the camera at the main scene), it reads the body of the
+    message and acts accordingly.
+    """
     controller = bge.logic.getCurrentController()
     #print("Controller is:",controller)
     own = controller.owner
@@ -525,9 +465,9 @@ def message_received():
             #print("Generating 3x3 grid pattern")
             generate_grid_pattern(4,3,6,2,grid_pattern_006)
 
-### CREATE_BUILDING - Function to create a building with instructions from a CSV file
-def create_building(CSVfile):
 
+def create_building(CSVfile):
+    """Function to create a building with instructions from a CSV file."""
     controller = bge.logic.getCurrentController()
     #print("Controller is:",controller)
     own = controller.owner
@@ -562,7 +502,7 @@ def create_building(CSVfile):
         #print(rotationR)
 
     i=0 ### Start from the first row
-    while i<row_count:
+    while i < row_count:
         #print("i is:",i)
         #print("Item is:",items[i]) ### This is used later
         #print("X position is:",locationX[i])
@@ -593,16 +533,15 @@ def create_building(CSVfile):
 
 ### SAVE / LOAD ###
 
-### Export the model's data (name,location) to a txt file
 def save_data():
-
+    """Export the model's data (name,location) to a txt file."""
     print("Saving the data to the external file...")
     ### Get the list of scenes
     scenes = bge.logic.getSceneList()
     #print("List of scenes:",scenes)
 
     ### The file to save the values. Needs to be opened first.
-    list_file = custom_directory+'/custom001.csv'
+    list_file = custom_directory + '/custom001.csv'
     list_file_open = open(list_file, 'w')
     #print("Opening list_file at",list_file)
 
@@ -636,15 +575,15 @@ def save_data():
     print("Data exported. Closing the open list file.")
     print("Done.\n")
 
+
 def load_data():
     print("Loading the data from the external file...")
     create_building(custom_directory+'/custom001.csv')
     print("Done.\n")
 
 
-### CREATE_BUTTONS - Function to create the buttons. Replaces the cube mesh with the mesh from the loaded object
 def create_buttons():
-
+    """Function to create the buttons. Replaces the cube mesh with the mesh from the loaded object."""
     print("Creating the buttons...")
 
     number_of_items = len(items)
@@ -759,52 +698,87 @@ def set_camera_position():
     if Num1.positive:
         print("Seting the camera to the SOUTHWEST position.")
         own.worldPosition = [-32.0, -32.0, 44.0]
-        own.worldOrientation = [[ 0.7071, 0.5000, -0.5000], [-0.7071, 0.5000, -0.5000], [-0.0000, 0.7071,  0.7071]]
+        own.worldOrientation = [
+            [0.7071, 0.5000, -0.5000],
+            [-0.7071, 0.5000, -0.5000],
+            [-0.0000, 0.7071,  0.7071]
+        ]
     # S (south)
     if Num2.positive:
         print("Seting the camera to the SOUTH position.")
         own.worldPosition = [0.0, -44.0, 44.0]
-        own.worldOrientation = [[1.0000, 0.0000,  0.0000], [0.0000, 0.7071, -0.7071], [-0.0000, 0.7071,  0.7071]]
+        own.worldOrientation = [
+            [1.0000, 0.0000,  0.0000],
+            [0.0000, 0.7071, -0.7071],
+            [-0.0000, 0.7071,  0.7071]
+        ]
     # S (south)
     if Num3.positive:
         print("Seting the camera to the SOUTHEAST position.")
         own.worldPosition = [32.0, -32.0, 44.0]
-        own.worldOrientation = [[0.7071, -0.5000,  0.5000], [0.7071,  0.5000, -0.5000], [-0.0000,  0.7071,  0.7071]]
+        own.worldOrientation = [
+            [0.7071, -0.5000,  0.5000],
+            [0.7071,  0.5000, -0.5000],
+            [-0.0000,  0.7071,  0.7071]
+        ]
     # W (west)
     if Num4.positive:
         print("Seting the camera to the WEST position.")
         own.worldPosition = [-44.0, -0.0, 44.0]
-        own.worldOrientation = [[-0.0000,  0.7071, -0.7071], [-1.0000, -0.0000,  0.0000], [-0.0000,  0.7071,  0.7071]]
+        own.worldOrientation = [
+            [-0.0000,  0.7071, -0.7071],
+            [-1.0000, -0.0000,  0.0000],
+            [-0.0000,  0.7071,  0.7071]
+        ]
     # O (Original position)
     if Num5.positive:
         print("Reseting the camera to its original position.")
         own.worldPosition = [32.0, -32.0, 44.0]
-        own.worldOrientation = [[0.7071, -0.5000,  0.5000], [0.7071,  0.5000, -0.5000], [-0.0000,  0.7071,  0.7071]]
+        own.worldOrientation = [
+            [0.7071, -0.5000,  0.5000],
+            [0.7071,  0.5000, -0.5000],
+            [-0.0000,  0.7071,  0.7071]
+        ]
     # E (east)
     if Num6.positive:
         print("Seting the camera to the EAST position.")
         own.worldPosition = [44.0, 0.0, 44.0]
-        own.worldOrientation = [[0.0000, -0.7071,  0.7071], [1.0000,  0.0000, -0.0000], [-0.0000,  0.7071,  0.7071]]
+        own.worldOrientation = [
+            [0.0000, -0.7071,  0.7071],
+            [1.0000,  0.0000, -0.0000],
+            [-0.0000,  0.7071,  0.7071]
+        ]
     # NW (northwest)
     if Num7.positive:
         print("Seting the camera to the NORTHWEST position.")
         own.worldPosition = [-32.0, 32.0, 44.0]
-        own.worldOrientation = [[-0.7071,  0.5000, -0.5000], [-0.7071, -0.5000,  0.5000], [-0.0000,  0.7071,  0.7071]]
+        own.worldOrientation = [
+            [-0.7071,  0.5000, -0.5000],
+            [-0.7071, -0.5000,  0.5000],
+            [-0.0000,  0.7071,  0.7071]
+        ]
     # N (north)
     if Num8.positive:
         print("Seting the camera to the NORTH position.")
         own.worldPosition = [0.0, 44.0, 44.0]
-        own.worldOrientation = [[-1.0000, -0.0000, 0.0000], [0.0000, -0.7071, 0.7071], [-0.0000,  0.7071, 0.7071]]
+        own.worldOrientation = [
+            [-1.0000, -0.0000, 0.0000],
+            [0.0000, -0.7071, 0.7071],
+            [-0.0000,  0.7071, 0.7071]
+        ]
     # NE (northeast)
     if Num9.positive:
         print("Seting the camera to the NORTHEAST position.")
         own.worldPosition = [32.0, 32.0, 44.0]
-        own.worldOrientation = [[-0.7071, -0.5000, 0.5000], [0.7071, -0.5000, 0.5000], [-0.0000,  0.7071, 0.7071]]
+        own.worldOrientation = [
+            [-0.7071, -0.5000, 0.5000],
+            [0.7071, -0.5000, 0.5000],
+            [-0.0000,  0.7071, 0.7071]
+        ]
 
 
-### SCREENSHOT - Function to take a screenshot. Requires Imagemagick in Linux. Windows support is TODO
 def take_screenshot():
-
+    """Function to take a screenshot. Requires Imagemagick in Linux. Windows support is TODO"""
     controller = bge.logic.getCurrentController()
     #print("The controller is:",controller)
     own = controller.owner
@@ -993,6 +967,7 @@ def main():
             rayObj.endObject()
 
 
+
 ### NOTES ### NOTES ### NOTES ### NOTES ### NOTES ###
 
 # EULER                             #
@@ -1003,4 +978,7 @@ def main():
 #   270 degrees   =  -1.57          #
 #               (these are radians) #
 
-### message_sensor.positive is used because the logic brick sends two pulses instead of one (one for positive and one for negative) and so it executes the functiions twice. I need to tell the program to execute the function only when the positive pulse is sent.
+### message_sensor.positive is used because the logic brick sends two pulses
+### instead of one (one for positive and one for negative) and so it executes
+### the functiions twice. I need to tell the program to execute the function
+### only when the positive pulse is sent.
