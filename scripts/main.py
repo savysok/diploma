@@ -81,6 +81,8 @@ def change_group():
 print("::LOAD::")
 
 ### Function that loads the models from the subfolders inside the program
+
+
 def load_external_models(name):
 
     ### Finds all the 'blend' files in the 'models' subdirectory
@@ -99,6 +101,8 @@ for m in groups:
 print("Done.\n")
 
 ### This function is for debugging purposes
+
+
 def show_loaded_models():
     logicList = bge.logic.LibList()
     print("The loaded models are:")
@@ -130,6 +134,7 @@ debug_print("The preview object is:", preview)
 
 ### DATA - The object data (name, width, length, height) are imported from a CSV file. Creates the necessary lists for the item properties (name, dimensions etc).
 print("::DATA::")
+
 
 def create_item_properties(file):
 
@@ -193,6 +198,7 @@ debug_print("Height is", height)
 ### MOUSE_OVER_BUTTON - The cursor status. If it's 1, the cursor is not over a button (and can place items on the grid). If it's 0, it cannot place new items until it goes back to 1.
 mouse_is_over_button = 1
 
+
 def mouse_over_button(): ### Function to disable the creation of new blocks when the mouse is over a button
 
     debug_print("Function to set the 'mouse_is_over_button' variable to 0 or 1")
@@ -216,6 +222,8 @@ def mouse_over_button(): ### Function to disable the creation of new blocks when
         debug_print("Mouse is over a button. mouse_is_over_button is", mouse_is_over_button, ". Owner is", own)
 
 ### Function to hide the bounding box object
+
+
 def hide_bounding_box():
 
     controller = bge.logic.getCurrentController()
@@ -337,6 +345,8 @@ grid_pattern_006 = (
 )
 
 ### CLEAR_GRID - Function to clear the current grid
+
+
 def clear_grid():
 
     ### First, delete all the grid objects. ### Needs work
@@ -348,6 +358,8 @@ def clear_grid():
             obj.endObject()
 
 ### CREATE_GRID - Function to create the grid
+
+
 def generate_grid_pattern(rows, row_distance, columns, column_distance, pattern):
 
     print("Function is creating the grid pattern...")
@@ -609,6 +621,7 @@ def create_buttons():
 
 info_files = [f for f in os.listdir(info_directory) if 'txt' in f]
 print("Info files inside the info folder are:", info_files)
+
 
 def show_info_text():
 
