@@ -85,3 +85,19 @@ def bounding_box_dimensions(): ### Function that scales the bounding box with th
     #print("Width is:",width)
     #print("Length is:",length)
     #print("Height is:",height)
+
+
+
+### main function - NOT WORKING code
+        rayObj_width = [i[1] for i in merged_item_property_list if str(rayObj) in i[0]]
+        debug_print("Item's width is:", rayObj_width)
+        rayObj_length = [i[2] for i in merged_item_property_list if str(rayObj) in i[0]]
+        debug_print("Item's length is:", rayObj_length)
+        rayObj_height = [i[3] for i in merged_item_property_list if str(rayObj) in i[0]]
+        debug_print("Item's height is:", rayObj_height)
+
+        for i in merged_item_property_list:
+            if str(rayObj) in i[0]:
+                item_width = i[1]
+                item_length = i[2]
+                item_height = i[3]

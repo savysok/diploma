@@ -1,59 +1,67 @@
-### IMPORT - Importing the necessary modules ###
-###### START ######
-import bge                      ### bge - The Blender Game Engine
-import csv                      ### csv - The CSV Library for parsing the csv file
-import os                       ### os - To find the path names (WIP)
-import subprocess               ### subprocess - Executes system functions. Used mainly for the screenshots with Imagemagick.
-import textwrap                 ### textwrap - Text wrapper (for the info section)
-import time                     ### time - Needed for the date/time format at the screenshots.
-import webbrowser               ### webbrowser - Opens a web browser (will be used to open wikipedia pages)
-from bge import logic           ### logic - Needed to load external files
-from csv import DictReader      ### DictReader - DictReader is needed to read the csv file's columns
-### Custom scripts ###          ### Custom scripts go here
+# PHASE 0: IMPORT - Importing the necessary modules
+import bge  # bge - The Blender Game Engine Python library
+import csv  # csv - The CSV Library for parsing the csv files
+import math
+import mathutils
+import os  # os - Used to find the path names
+import subprocess  # subprocess - Executes system functions. Used mainly for the screenshots with Imagemagick.
+import textwrap  # textwrap - Text wrapper (for the info section)
+import time  # time - Needed for the date/time format at the screenshots.
+import webbrowser  # webbrowser - Opens a web browser (will be used to open wikipedia pages)
+from bge import logic  # logic - Needed to load external the files
+from csv import DictReader  # DictReader - DictReader is needed to read the csv file's columns
 
-###### END ######
 
+# PHASE 1: INITIALIZATION
+print("\n\n\n:::INITIALIZATION:::\nInitializing the main script...\n\n:::PHASE 1:::")
+
+
+# DEBUGGING
 DEBUG=False
+print("(Debugging is set to", DEBUG, ")\n")
+def debug_print(*args):
+    """Function that set the debugging mode On (True) or Off (False)"""
+    if DEBUG:
+        print(*args)
 
 
-### PHASE 1: INITIALIZATION ###
-
-print("\n\n\n::INITIALIZATION::")
-print("Initializing the main script...\n")
-print(":::PHASE 1:::\n")
-
-### PATHS - Get the absolute directories of the folders
-print("::DIRECTORIES::")
-print("Getting the directories...")
+# PATHS
+# Set the absolute directories of the folders as variables
+print("::DIRECTORIES::\nSetting the directories...")
 data_directory = os.path.abspath(__file__ + '/../../data') + '/'
 debug_print("DATA:\n", data_directory)
-models_directory = os.path.abspath(__file__ + '/../../models') + '/'
-debug_print("MODELS:\n", models_directory)
 info_directory = os.path.abspath(__file__ + '/../../info') + '/'
 debug_print("MODELS:\n", info_directory)
+models_directory = os.path.abspath(__file__ + '/../../models') + '/'
+debug_print("MODELS:\n", models_directory)
 custom_directory = os.path.abspath(__file__ + '/../../custom') + '/'
 debug_print("CUSTOM:\n", custom_directory)
 textures_directory = os.path.abspath(__file__+'/../../textures') + '/' ### Not needed for now
 debug_print("TEXTURES:\n", textures_directory)
 screenshot_directory = os.path.abspath(__file__+'/../../screenshots') + '/'
-debug_print("TEXTURES:\n", textures_directory)
+debug_print("TEXTURES:\n", screenshot_directory)
 print("Done.\n")
 
-### GROUP - The group at which the object(s) belong. The grouping is sorted by the folders in the "models" subfolder.
+
+# GROUP
+# The group at which the object(s) belong. The grouping is sorted
+# by the folders in the "models" subfolder.
 print("::GROUPS::")
-groups = [g for g in os.listdir(models_directory)]      ### Get a list of all the subfolders in the "models" folder
-max_GROUP_ID = len(groups)                              ### Get the maximum number of subfolders
-print("There are", max_GROUP_ID, "groups of models.")
-GROUP_ID=0                                              ### An "id" variable to select the different groups
-print("The groups are:")
+groups = [g for g in os.listdir(models_directory)]  # Get a list of all the subfolders in the "models" folder
+max_GROUP_ID = len(groups)  # Get the maximum number of subfolders
+debug_print("There are", max_GROUP_ID, "groups of models.")
+GROUP_ID=0  # An "id" variable to select the different groups
+debug_print("The groups are:")
 for g in groups:
-    print(" ", g)
-print("The active group is:", groups[GROUP_ID])
+    debug_print(" ", g)
+debug_print("The active group is:", groups[GROUP_ID])
 print("Done.\n")
 
 
-### Function to change the group of items
 def change_group():
+    """Function to change the group of items.
+    Used for switching between the sets of parts.
+    """
 
     controller = bge.logic.getCurrentController()
     own = controller.owner
@@ -70,6 +78,7 @@ def change_group():
         create_item_properties(groups[GROUP_ID])
         create_buttons()
         debug_print(GROUP_ID)
+
     if left_arrow.positive and GROUP_ID >= 1:
         debug_print("Left arrow has been pressed.")
         GROUP_ID = GROUP_ID - 1
@@ -77,71 +86,108 @@ def change_group():
         create_buttons()
         debug_print(GROUP_ID)
 
-### LOAD - Load the external models from the 'models' subfolder inside the program
+# LOAD
+# Load the external models from the 'models' subfolder inside the program.
 print("::LOAD::")
-
-### Function that loads the models from the subfolders inside the program
 
 
 def load_external_models(name):
+    """Function that loads the models from the subfolders
+    inside the program. It finds all the 'blend' files in the
+    'models' subdirectory and loads them in the program
+    """
 
-    ### Finds all the 'blend' files in the 'models' subdirectory
     files = [f for f in os.listdir(models_directory + '/' + name) if 'blend' in f]
     debug_print("The files inside the folder {} are: ".format(name, files))
 
-    ### Load each found file
     for f in files:
-        model = models_directory+name + '/' + f ### The file(s) in the "models" subfolder. "Name" is the name of the the subfolder. "f" is the filename of the blend file
-        logic.LibLoad(model, 'Scene', load_actions = False, load_scripts = False, async = False) ### Load it with LibLoad (async messes up the loading)
+        """The file(s) in the "models" directory.
+        'Name' is the subfolder in the directory.
+        'f' is the filename of the blend file.
+        """
+        model = models_directory+name + '/' + f
+        """Load it with LibLoad.
+        'async' messes up the loading, so
+        leave it to False
+        """
+        logic.LibLoad(model, 'Scene', load_actions = False, load_scripts = False, async = False)
+
 
 print("Loading all the external models from their folders:")
 for m in groups:
-    print(" ", m)
+    debug_print(" ", m)
     load_external_models(m)
 print("Done.\n")
 
-### This function is for debugging purposes
-
 
 def show_loaded_models():
+    """This function is for debugging purposes only."""
     logicList = bge.logic.LibList()
     print("The loaded models are:")
     for l in logicList:
         print(l)
     print("\n")
-#show_loaded_models() ### This is commented out. IT's for debugging purposes only
+
+if DEBUG:
+    show_loaded_models()
 
 
-### VARIABLES - Declaring the variables
+# VARIABLES - ID and NEW_ID
+# Declaring the variables.
+#
+# ID is the starting item's ID (game property).
+# The program will set the active item as the one with the corresponding ID,
+# selected from the CSV file. 0 is the first item in the array list.
+#
+# NEW_ID is used when a different item is selected.
+ID = 0
+new_ID=0
 
-### ID
-ID = 0          ### Starting item (selects an item from the CSV array based on the item ID. 0 is the first item in the array list)
-new_ID=0        ### Variable for the list index when a selection is made
 
-### MODE - The snapping mode: 0 for free snap, 1 for center of object, 2 for 1/10ths of the object's face
+# VARIABLES - MODE
+# This is the snapping mode (how the objects snap to eachother).
+#
+# MODE 1 is for center of object.
+# MODE 2 for 1/10ths of the object's face.
+# MODE 3 is for free snap.
+#
+# Declaring the variable as global because it will be used later
+# by the function that changes snapping modes.
 global MODE
 MODE = 1
 
-### SCENE
-scene = bge.logic.getCurrentScene()     ### The current scene
-debug_print("The scene is:", scene)
 
-ghost = scene.objects["ghost"]          ### The placeholder object. This will be the object that will move around the scene and hold the preview of the item. It is just an empty.
-debug_print("The placeholder object is:", ghost)
+# VARIABLES - scene, ghost, preview
+#
+# 'scene' is the current scene
+#
+# 'ghost' is the placeholder object. This will be the object
+# that will move around the scene and hold
+# the preview of the item. It is just an empty.
+#
+# 'preview' is the preview object (Suzanne the monkey at first). This
+# will be replaced by the selected item's wireframe.
+scene = bge.logic.getCurrentScene()
+ghost = scene.objects["ghost"]
+preview = scene.objects["preview"]
 
-preview = scene.objects["preview"]      ### The preview object (Suzanne the monkey). Will be replaced by the selected item's wireframe
-debug_print("The preview object is:", preview)
 
-### DATA - The object data (name, width, length, height) are imported from a CSV file. Creates the necessary lists for the item properties (name, dimensions etc).
+# "DATA
+# The object data (name, width, length, height) are imported
+# from a CSV file. Creates the necessary lists for the item
+# properties (name, dimensions etc).
 print("::DATA::")
 
-
 def create_item_properties(file):
-
-    ListFile = data_directory+file+'.csv' ### The csv file to create the data from.
+    """Function to create the lists with the items'
+    properties (name, width, length, height).
+    """
+    ListFile = data_directory+file+'.csv'  # The csv file to create the data from.
     debug_print("The file used to create the lists is:", ListFile)
 
-    ### Declare the variables as global to be used by other modules in the program
+    """Declare the variables as global so that they
+    can be used by other modules in the program.
+    """
     global items
     global wireframes
     global i_width
@@ -150,82 +196,149 @@ def create_item_properties(file):
 
     with open(ListFile) as N:
         items = [row["NAME"] for row in DictReader(N)]
-        print("Items in the list are:")
+        debug_print("Items in the list are:")
         for i in items:
-            print(" ", i)
+            debug_print(" ", i)
 
-    wireframes = items ### This needs improvement
+    wireframes = items  # This needs improvement
 
     with open(ListFile) as W:
-        i_width = [row["WIDTH"] for row in DictReader(W)] ### i_width is item width
+        i_width = [row["WIDTH"] for row in DictReader(W)]
     with open(ListFile) as L:
-        i_length = [row["LENGTH"] for row in DictReader(L)] ### i_length is item length
+        i_length = [row["LENGTH"] for row in DictReader(L)]
     with open(ListFile) as H:
-        i_height = [row["HEIGHT"] for row in DictReader(H)] ### i_height is item height
+        i_height = [row["HEIGHT"] for row in DictReader(H)]
     debug_print("Item property lists created.\n")
 
+
+# This creates the item properties for the selected group of objects.
+# First time this runs it has GROUP_ID = 0
 print("Creating the lists for the item properties...")
-create_item_properties(groups[GROUP_ID]) ### This creates the item properties for the object group that is selected
+create_item_properties(groups[GROUP_ID])
 print("Done.\n")
 
-item = items[ID]                        ### Selected item from the CSV list.
-debug_print("Item is", item)
 
-wireframe = str(items[ID]+'w')          ### The wireframe version of the item (The name of the item + w at then)
-debug_print("Wireframe is", wireframe)
+# VARIABLES - item, wireframe
+#
+# 'item' is the one with the selected ID
+# from the 'items' list created from the CSV
+#
+# 'wireframe' is the same as the item name,
+# but with a 'w' at the end (this is currently not
+# implemented. it's for an older version)
+item = items[ID]
+wireframe = str(items[ID]+'w')  # Not implemented currently
+debug_print("Item is", item, ". Wireframe is", wireframe)
 
 
-### PREVIEW_MESH - Function to change the preview mesh to the currently selected. Runs constantly. Need to make it to change only once and stay like that (WIP)
+# PREVIEW_MESH
 def preview_mesh():
+    """Function to change the preview mesh to the currently selected."""
 
     controller = bge.logic.getCurrentController()
-    debug_print("The controller is:", controller)
     own = controller.owner
-    debug_print("Owner is:", own)
 
-    ### Replace the default mesh (Suzanne, the monkey) with the item's wireframe
     own.replaceMesh(wireframe)
 
 
-### DIMENSIONS - The wireframe item's dimensions (needs to be a floating number to work). This will be used to place items according to the object that the mouse is hovering over.
+# DIMENSIONS
+# The wireframe item's dimensions. The new items
+# will be placed wherever the preview object is.
+# Needs to be a floating number to work.
 width = float(i_width[ID])
-debug_print("Width is", width)
 length = float(i_length[ID])
-debug_print("Length is", length)
 height = float(i_height[ID])
-debug_print("Height is", height)
+debug_print("Width is", width, ". \nLength is", length, ". \nHeight is", height)
 
-### MOUSE_OVER_BUTTON - The cursor status. If it's 1, the cursor is not over a button (and can place items on the grid). If it's 0, it cannot place new items until it goes back to 1.
+
+# MOUSE_OVER_BUTTON
+# The cursor status.
+#
+# If it's 1, the cursor is not over a button
+# (and the user can place items on the grid).
+#
+# If it's 0, it cannot place new items,
+# until it goes back to 1.
 mouse_is_over_button = 1
 
 
-def mouse_over_button(): ### Function to disable the creation of new blocks when the mouse is over a button
-
+def mouse_over_button():
+    """Function to disable the creation of new blocks when the mouse
+    is over a button.
+    """
     debug_print("Function to set the 'mouse_is_over_button' variable to 0 or 1")
 
-    global mouse_is_over_button
+    global mouse_is_over_button  # This is global because it is used by objects in a different scene
 
     controller = bge.logic.getCurrentController()
-    debug_print("The controller is:", controller)
     own = controller.owner
-    debug_print("Owner is:", own)
 
     mouse_over_button = controller.sensors["mouse_over_button"]
-    debug_print("Sensor is:", mouse_over_button)
 
     if mouse_over_button.positive:
         mouse_is_over_button = 0
-        debug_print("Mouse is over", own, "\n")
         debug_print("Mouse is over a button. mouse_is_over_button is", mouse_is_over_button, ". Owner is", own)
+
     if not mouse_over_button.positive:
         mouse_is_over_button = 1
         debug_print("Mouse is over a button. mouse_is_over_button is", mouse_is_over_button, ". Owner is", own)
 
-### Function to hide the bounding box object
+# CAMERA_CONTROL
+def camera_control(camera_placeholder):
+    """Function that controls the movement of the empties that
+    are parents to the parts, grids and buildings objects.
+    """
+    controller = bge.logic.getCurrentController()
+    own = controller.owner
+
+    scenes = bge.logic.getSceneList()
+
+    left_click_button = controller.sensors["left_click_button"]
+    mouse_over_button = controller.sensors["mouse_over_button"]
+
+    status = own["STATUS"]  # STATUS = 0: closed, 1: opened
+    debug_print ("Status is:",status)
+
+    rotate_left = mathutils.Euler((0, 0, math.radians(90)), "XYZ")
+    debug_print ("Left rotation is:",rotate_left)
+    rotate_right = mathutils.Euler((0, 0, -math.radians(90)), "XYZ")
+    debug_print ("Right rotation is:",rotate_right)
+
+    if mouse_over_button.positive and left_click_button.positive:
+
+        debug_print ("The mouse is over the button and clicked.\n")
+
+        for scene in scenes:
+            if scene.name == "MAIN":
+                camera = scene.objects["camera.MAIN"]
+                placeholder = scene.objects[camera_placeholder]
+                debug_print ("Placeholder is:",placeholder)
+                rotation = placeholder.worldOrientation.to_euler()
+                debug_print ("Rotation is:",rotation.z)
+                if status == 0:
+                    placeholder.worldOrientation = camera.worldOrientation
+                    own["STATUS"] = 1
+                    debug_print (scene.name,"'s status is",status,". Buttons are visible\n")
+                if status == 1:
+                    placeholder.localOrientation = rotate_left.to_matrix()
+                    own["STATUS"] = 0
+                    debug_print (scene.name,"'s status is",status,". Buttons are hidden\n")
+
+
+def camera_control_buldings():
+    camera_control("parent.buttons.buildings.001")
+
+
+def camera_control_parts():
+    camera_control("parent.buttons.parts.001")
+
+
+def camera_control_grids():
+    camera_control("parent.buttons.grids.001")
 
 
 def hide_bounding_box():
-
+    """Function to hide or show the bounding box object."""
     controller = bge.logic.getCurrentController()
     own = controller.owner
 
@@ -240,74 +353,84 @@ def hide_bounding_box():
             if obj.name == "bounding_box":
                 obj.visible = False
         own["visibility"] = 1
-        print(own["visibility"])
+        debug_print(own["visibility"])
 
     if H.positive and visibility == 1:
         for obj in scene.objects:
             if obj.name == "bounding_box":
                 obj.visible = True
         own["visibility"] = 0
-        print(own["visibility"])
+        debug_print(own["visibility"])
 
 
+#GET ID
 
-## GET ID - Function to get the menu item's ID number (GUI scene). This will be used to change the item, the wireframe and the dimensions of the item.
 def get_ID():
+    """Function to get the menu item's ID number (GUI scene).
+    This is used to change the item, the wireframe and the dimensions
+    of the item.
 
-    ### VARIABLES - Define global variables to be used between scenes. The get_ID() function is used by the buttons on the different scenes
-
-    ### First, set the variables as global
+    VARIABLES
+    Define global variables to be used between scenes.
+    The get_ID() function is used by the buttons on the different scenes.
+    """
     global ID
-    debug_print("Global ID is:", ID)
     global new_ID
-    debug_print("Global new_ID is:", new_ID)
     global item
-    debug_print("Global item is:", item)
     global wireframe
-    debug_print("Global wireframe is:", wireframe)
     global width
-    debug_print("Global width is:", width)
     global length
-    debug_print("Global length is:", length)
     global height
-    debug_print("Global height is:", height)
+
+    debug_print("ID is:", ID,
+          "\nnew_ID is:", new_ID,
+          "\nitem is:", item,
+          "\nwireframe is:", wireframe,
+          "\nwidth is:", width,
+          "\nlength is:", length,
+          "\nheight is:", height,
+          "\n")
 
     controller = bge.logic.getCurrentController()
-    debug_print("The controller is:", controller)
     own = controller.owner
-    debug_print("The owner is:", own)
-    scene = bge.logic.getCurrentScene()
 
     left_click_button = controller.sensors["left_click_button"]
     mouse_over_button = controller.sensors["mouse_over_button"]
 
-
     if mouse_over_button.positive and left_click_button.positive:
-        ### Get the item's ID, which will be the new ID for everything
-        global new_ID
+        """Set the new ID as the placeholder object's ID.
+        Then, update all the values from the new object's properties.
+        """
         new_ID = own["ID"]
-        debug_print("The new ID is:", new_ID)
 
-        ### Then, set the new id to all the items
         item = items[new_ID]
-        debug_print(item)
         wireframe = wireframes[new_ID]
-        debug_print(wireframe)
         width = i_width[new_ID]
-        debug_print("New width is:", width)
         length = i_length[new_ID]
-        debug_print("New length is:", length)
         height = i_height[new_ID]
-        debug_print("New height is:", height)
 
-### GRIDS ###
+        debug_print("ID is:", ID,
+              "\nnew_ID is:", new_ID,
+              "\nSelected item is:", item,
+              "\nSelected wireframe is:", wireframe,
+              "\nSelected item's width is:", width,
+              "\nSelected item's length is:", length,
+              "\nSelected item's height is:", height,
+              "\n")
 
-### Add the first cube at 0,0,0
+
+# GRIDS
+# Creates the grids when the buttons are pressed.
+# First, add the first grid cube at x,y,z 0,0,0
 grid = scene.addObject('grid.000', ghost, 0)
 grid.worldPosition = [0, 0, 0]
 
-### GRID_PATTERNS - Different grid patterns that repeat.
-# Format: grid_pattern = ([grid_name,x,y,z], [grid_name,x,y,z])
+
+# GRID_PATTERNS
+# Different grid patterns that repeat themselves.
+# The format is:
+# grid_pattern = ([grid_name,x,y,z], [grid_name,x,y,z])
+# TODO: create and save grid patterns (hard)
 grid_pattern_001 = (
     ['grid.111', 0.0, 0.0, 0.0],
     ['grid.111', 1.0, 0.0, 0.0]
@@ -344,12 +467,18 @@ grid_pattern_006 = (
     ['grid.111', -1.0, 0.0, 0.1]
 )
 
-### CLEAR_GRID - Function to clear the current grid
 
-
+# CLEAR_GRID
 def clear_grid():
+    """Function to clear the current grid.
+    Used before creating the new grid.
 
-    ### First, delete all the grid objects. ### Needs work
+    First, delete all the grid objects.
+
+    (The code needs a rewrite so as to include
+    all the objects that have 'grid' in their name.
+    Maybe write it with 'if any'? TODO)
+    """
     object_list = [obj for obj in scene.objects]
     grid_objects = ['grid.000', 'grid.111', 'grid.211', 'grid.121', 'grid.221', 'grid.331'] ### Here I put all the grid blocks names
     for obj in object_list:
@@ -357,64 +486,64 @@ def clear_grid():
             debug_print("Grid object", obj, "is being removed")
             obj.endObject()
 
-### CREATE_GRID - Function to create the grid
-
-
+# CREATE_GRID
 def generate_grid_pattern(rows, row_distance, columns, column_distance, pattern):
+    """Function to create the grid.
+    First clears the previous grids, then creates the new grid.
+    """
+    debug_print("Function is creating the grid pattern...")
 
-    print("Function is creating the grid pattern...")
-
-    ### First clear the previous grids
-    print("Clearing previous grid...")
+    debug_print("Clearing previous grid...")
     clear_grid()
-    print("Done.")
+    debug_print("Done.")
 
     r = rows
     rd = row_distance
     c = columns
     cd = column_distance
 
-    print("Creating the pattern...")
+    debug_print("Creating the pattern...")
 
-    n = -r                                                ### This will start the grid symmetrically to the Y Axis to the negative value.
+    n = -r  # This will start the grid symmetrically to the Y Axis to the negative value.
     while n<r:
-        m = -c                                            ### This will start the grid symmetrically to the X Axis to the negative value.
+        m = -c  # This will start the grid symmetrically to the X Axis to the negative value.
         while m < c:
             for i in pattern:
                 debug_print(i)
                 name = i[0]
-                x = i[1] + rd * n                           ### This will place the grid object at the local position (pattern's X position) plus the distance it will repeat at, times n. ### TODO more explanation
-                y = i[2] + cd * m                           ### This will place the grid object at the local position (pattern's Y position) plus the distance it will repeat at, times m. ### TODO more explanation
-                z = i[3]                                ### This will place the grid object at the local position (pattern's Z position). Currently the system I created doesn't allow me to create grid patterns in the 3d space. Only 2d.
-                ghost.worldPosition = [x, y, z]         ### This moves the ghost item to the new position, where it will replicate the grid object
+                x = i[1] + rd * n  # This will place the grid object at the local position (pattern's X position) plus the distance it will repeat at, times n. ### TODO more explanation
+                y = i[2] + cd * m  # This will place the grid object at the local position (pattern's Y position) plus the distance it will repeat at, times m. ### TODO more explanation
+                z = i[3]  # This will place the grid object at the local position (pattern's Z position). Currently the system I created doesn't allow me to create grid patterns in the 3d space. Only 2d.
+                ghost.worldPosition = [x, y, z]  # This moves the ghost item to the new position, where it will replicate the grid object
                 debug_print(ghost.worldPosition)
-                obj = scene.addObject(name, ghost, 0)   ### This adds a grid object at the ghost's position
+                obj = scene.addObject(name, ghost, 0)  # This adds a grid object at the ghost's position
             m += 1
         n += 1
 
-    print("Done.")
+    debug_print("Done.")
 
 
-### SEND MESSAGE - Send a message to the main scene's camera.
+# SEND MESSAGE
 def send_message():
+    """Function to send a message to the main scene's camera.
 
+    (TODO: create a listener for the messages other than the camera.)
+    """
     controller = bge.logic.getCurrentController()
-    debug_print("Controller is:", controller)
     own = controller.owner
-    debug_print("Owner is:", own)
 
     left_click_button = controller.sensors["left_click_button"]
     mouse_over_button = controller.sensors["mouse_over_button"]
 
     if mouse_over_button.positive and left_click_button.positive:
 
-        ### SAVE/LOAD. 1-9
+        # SAVE/LOAD. IDs: 1-9
         if own["ID"] == 1:
             own.sendMessage("action", "save_data")
         if own["ID"] == 2:
             own.sendMessage("action", "load_data")
 
-        ### GRIDS. 101-199
+        # GRIDS. IDs: 101-199
         if own["ID"] == 101:
             own.sendMessage("action", "generate_grid_1x1")
             debug_print("Message to create the grid is sent!")
@@ -435,24 +564,25 @@ def send_message():
             debug_print("Message to create the grid is sent!")
 
 
+# RECEIVE MESSAGE
 def message_received():
     """Function for receiving a message. When a message is received (by the
     message sensor of the camera at the main scene), it reads the body of the
     message and acts accordingly.
+
+    (TODO: create a listener for the messages
+    other than the camera.)
     """
     controller = bge.logic.getCurrentController()
-    debug_print("Controller is:", controller)
     own = controller.owner
-    debug_print("Owner is:", own)
 
     message_sensor = controller.sensors["message_sensor"]
-    debug_print(message_sensor)
 
     if message_sensor.positive:
         debug_print("Message_received")
-        action = message_sensor.bodies[0] ### Reads the body of the message sent and acts accordingly
+        action = message_sensor.bodies[0]  # Reads the body of the message sent and acts accordingly
 
-        ### SAVE AND LOAD
+        # SAVE AND LOAD
         if action == "save_data":
             debug_print("Saving the data")
             save_data()
@@ -460,7 +590,7 @@ def message_received():
             debug_print("Loading the data")
             load_data()
 
-        ### GRIDS
+        # GRIDS
         if action == "generate_grid_1x1":
             debug_print("Generating 1x1 grid pattern")
             generate_grid_pattern(6, 2, 12, 1, grid_pattern_001)
@@ -481,93 +611,91 @@ def message_received():
             generate_grid_pattern(4, 3, 6, 2, grid_pattern_006)
 
 
-def create_building(CSVfile):
-    """Function to create a building with instructions from a CSV file."""
-    controller = bge.logic.getCurrentController()
-    debug_print("Controller is:", controller)
-    own = controller.owner
-    debug_print("Owner is:", own)
+# CREATE_BUILDING
 
-    ### First, delete all the grid objects.
+def create_building(CSVfile):
+    """Function to create a building from CSV file.
+    First, deletes all the grid objects.
+    """
+    controller = bge.logic.getCurrentController()
+    own = controller.owner
+
     clear_grid()
 
-    DataFile = CSVfile ### The CSVfile is the file that holds the instructions
-    ### Count the rows
+    DataFile = CSVfile  # The CSVfile that holds the instructions
+
     with open(DataFile, "r") as D:
         CSVreader = csv.reader(D, delimiter = ",")
         data = list(CSVreader)
-        row_count = (len(data)-1)
+        row_count = (len(data)-1) # Count the rows
         debug_print("There are ", row_count, "rows of data")
 
-    ### Retrieve the data from the csv file and seperate them to item name, x location, y location, z location and rotation
+    # Retrieve the data from the csv file and seperate them
+    # to item name, x location, y location, z location and rotation.
     with open(DataFile) as D:
         items = [row["ITEM"] for row in DictReader(D)]
-        debug_print(items)
     with open(DataFile) as X:
         locationX = [row["X"] for row in DictReader(X)]
-        debug_print(locationX)
     with open(DataFile) as Y:
         locationY = [row["Y"] for row in DictReader(Y)]
-        debug_print(locationY)
     with open(DataFile) as Z:
         locationZ = [row["Z"] for row in DictReader(Z)]
-        debug_print(locationZ)
     with open(DataFile) as R:
         rotationR = [row["ROTATION"] for row in DictReader(R)]
-        debug_print(rotationR)
 
-    i=0 ### Start from the first row
+    i=0  # Start from the first row
     while i < row_count:
-        debug_print("i is:", i)
-        debug_print("Item is:", items[i]) ### This is used later
-        debug_print("X position is:", locationX[i])
         x = float(locationX[i])
-        debug_print("Y position is:", locationY[i])
         y = float(locationY[i])
-        debug_print("Z position is:", locationZ[i])
         z = float(locationZ[i])
-        debug_print("Rotation is:", rotationR[i])
         r = float(rotationR[i])
-        debug_print(r)
+        debug_print ("Item", i, "is:", items[i],
+               "\nItem", i, "'s X position is:", locationX[i],
+               "\nItem", i, "'s Y position is:", locationY[i],
+               "\nItem", i, "'s Z position is:", locationZ[i],
+               "\nItem", i, "'s Rotation is:", rotationR[i],
+               "\n")
         ghost.worldPosition = [x, y, z]
         debug_print(ghost.worldOrientation.to_euler().z)
 
-        ### This one was tricky: rotate the empty according to the radian(?) values of the CSV file
-        ### First, convert the local orientation to Euler
+        # This one was tricky: rotate the empty according to the
+        # radian(?) values of the CSV file.
+        # First, convert the local orientation to Euler.
         xyz = ghost.localOrientation.to_euler()
         debug_print("Before the rotation. Z rotation is:", xyz[2])
-        ### Then, change the Z value of the rotation to the one from the CSV file
+        # Then, change the Z value of the rotation
+        # to the one from the CSV file.
         xyz[2] = r
         debug_print("After the rotation. Z rotation is:", xyz[2])
-        ### Finally, change the empty's local orientation with the new Z value
+        # Finally, change the empty's local orientation
+        # with the new Z value.
         ghost.localOrientation = xyz.to_matrix()
 
         obj = scene.addObject(items[i], "ghost", 0)
         i = i+1
 
-
-### SAVE / LOAD ###
-
+# SAVE DATA
 def save_data():
-    """Export the model's data (name,location) to a txt file."""
-    print("Saving the data to the external file...")
-    ### Get the list of scenes
+    """Export the model's objects (name,location) to a csv file."""
+    debug_print("Saving the data to the external file...")
+    # Get the list of scenes
     scenes = bge.logic.getSceneList()
     debug_print("List of scenes:", scenes)
 
-    ### The file to save the values. Needs to be opened first.
+    # The file to save the values. Needs to be opened first.
     list_file = custom_directory + '/custom001.csv'
     list_file_open = open(list_file, 'w')
     debug_print("Opening list_file at", list_file)
 
-    ### Iterate through the MAIN scene's objects
+    # Iterate through the MAIN scene's objects
     for scene in scenes :
         if scene.name == "MAIN":
             debug_print("scene : %s"%scene.name)
-            ### List of all the objects in the game
+            # List of all the objects in the game
             object_list = [obj for obj in scene.objects]
             debug_print(object_list)
-            ### Iterate through the objects and find it's values for name, x position, y position and z position
+            # Iterate through the objects and find it's values for
+            # name, x position, y position and z position
             excluded_objects = ['light', 'camera', 'preview', 'ghost', 'button']
             list_file_open.write("ITEM,X,Y,Z,ROTATION\n")
             for obj in object_list:
@@ -578,73 +706,71 @@ def save_data():
                 r = str(round(obj.localOrientation.to_euler().z, 3))
                 debug_print(name, "'s rotation is:", r)
 
-                ### Write the values to the file
+                # Write the values to the file
                 debug_print("Saving", name, "at", x, y, z, "to the file.")
-                ### Save only the objects that don't have a name that begins with the 'excluded_objects' list (leaving out the default scene items (camera, lights etc))
+                # Save only the objects that don't have a name that
+                # begins with the 'excluded_objects' list
+                # (the default scene items like the camera, the lights etc)
                 if not any(excluded_objects in name for excluded_objects in excluded_objects):
-                #if not name.startswith('grid'):
                     list_file_open.write(name+","+x+","+y+","+z+","+r+"\n")
                     debug_print(name)
 
     list_file_open.close()
-    print("Data exported. Closing the open list file.")
-    print("Done.\n")
+    debug_print("Data exported. Closing the open list file.")
+    debug_print("Done.\n")
 
-
+# LOAD DATA
 def load_data():
-    print("Loading the data from the external file...")
+    """Function to load the data from the external file."""
+    debug_print("Loading the data from the external file...")
     create_building(custom_directory+'/custom001.csv')
-    print("Done.\n")
+    debug_print("Done.\n")
 
 
 def create_buttons():
     """Function to create the buttons. Replaces the cube mesh with the mesh from the loaded object."""
-    print("Creating the buttons...")
+    debug_print("Creating the buttons...")
 
     number_of_items = len(items)
-    print("There are", number_of_items, "items in this list.")
+    debug_print("There are", number_of_items, "items in this list.")
 
     mesh_button = ["button.placeholder."+str("{0:0=3d}".format(o)) for o in range(0, number_of_items)] ### "{0:0=3d}".format(o) <== This means to format the numbers to 3 decimal one. For example, write 3 as 003
 
-    print("Mesh buttons to be replaced are:")
+    debug_print("Mesh buttons to be replaced are:")
     for i in range(0, number_of_items):
         obj = scene.objects[mesh_button[i]]
-        print(obj)
+        debug_print(obj)
         button_ID = obj["ID"]
         debug_print("Mesh button's ID is:", button_ID)
         obj.replaceMesh(items[button_ID])
 
-    print("Done.\n")
+    debug_print("Done.\n")
 
 
-### INFO_TEXT - Dynamically loaded info text (from txt file)
-
+# INFO_TEXT
+# Dynamically loaded info text (from txt file)
 info_files = [f for f in os.listdir(info_directory) if 'txt' in f]
-print("Info files inside the info folder are:", info_files)
+debug_print("Info files inside the info folder are:", info_files)
 
 
 def show_info_text():
-
+    """Function that shows the text in the txt files."""
     controller = bge.logic.getCurrentController()
-    debug_print("The controller is:", controller)
     own = controller.owner
-    debug_print("The owner is:", own)
 
     scene = bge.logic.getCurrentScene()
-    debug_print("Current scene is:", scene)
 
     message_sensor = own.sensors["update_text"]
 
     if message_sensor.positive:
-        print("Message received. Updating text.")
-
+        debug_print("Message received. Updating text.")
         info_file = info_files[GROUP_ID]
-        print("Selected file is:", info_file, "\n")
+        debug_print("Selected file is:", info_file, "\n")
         info_txt = info_directory+info_file
-        print("Info file path is:", info_txt)
-        print("Opening info file for reading..")
+        debug_print("Info file path is:", info_txt)
+        debug_print("Opening info file for reading..")
         info_txt_open = open(info_txt, 'r')
-        print("Done.\n")
+        debug_print("Done.\n")
         dynamic_text = scene.objects["info_text"]
         info_text_wrapped = textwrap.wrap(info_txt_open.read(), 160)
         debug_print(info_text_wrapped)
@@ -652,53 +778,54 @@ def show_info_text():
         info_txt_open.close()
 
 
-### WIKIPEDIA - Function to open wikipedia link in the web browser
+# WIKIPEDIA
 def open_wikipedia_link():
-
+    """Function to open wikipedia link in the web browser."""
     controller = bge.logic.getCurrentController()
-    debug_print("The controller is:", controller)
     own = controller.owner
-    debug_print("The owner is:", own)
 
     scene = bge.logic.getCurrentScene()
-    debug_print("Current scene is:", scene)
 
     mouse_over_button = own.sensors["mouse_over_button"]
     left_click_button = own.sensors["left_click_button"]
 
     if mouse_over_button.positive and left_click_button.positive:
-        print("Wikipedia button has been pressed. Opening the website.")
+        debug_print("Wikipedia button has been pressed. Opening the website.")
         info_file = info_files[GROUP_ID]
-        print("Selected file is:", info_file, "\n")
+        debug_print("Selected file is:", info_file, "\n")
         info_txt = info_directory+info_file
-        print("Info file path is:", info_txt)
-        print("Opening info file for reading..")
+        debug_print("Info file path is:", info_txt)
+        debug_print("Opening info file for reading..")
         info_txt_open = open(info_txt, 'r')
-        print("Done.\n")
+        debug_print("Done.\n")
         url = info_txt_open.readline()
 
         webbrowser.open(url)
 
 
-### Fix text resolution. Default resolution is 1.0 (72dpi).
+# FIX TEXT RESOLUTION
 def fix_text_resolution():
-
+    """Function to fix text resolution.
+    Default resolution is 1.0 (72dpi).
+    """
     scene = bge.logic.getCurrentScene()
 
-    debug_print("Text starting resolution is:", scene.objects["info_text"].resolution)
-    scene.objects["info_text"].resolution = 32.0
-    debug_print("Text changed resolution is:", scene.objects["info_text"].resolution)
+    debug_print("Text resolution is:", scene.objects["info_text"].resolution)
+    if scene.objects["info_text"].resolution != 32.0:
+        scene.objects["info_text"].resolution = 32.0
+        debug_print("Text changed resolution is:", scene.objects["info_text"].resolution)
 
 
-### CAMERA_POSITION - Set the camera's position
+# CAMERA_POSITION
+
 def set_camera_position():
-
+    """Set the camera's position."""
     controller = bge.logic.getCurrentController()
     own = controller.owner
 
     debug_print(own.worldOrientation)
 
-    ### Setup the sensors
+    # Setup the sensors.
     Num1 = controller.sensors["Num1"]
     Num2 = controller.sensors["Num2"]
     Num3 = controller.sensors["Num3"]
@@ -709,10 +836,10 @@ def set_camera_position():
     Num8 = controller.sensors["Num8"]
     Num9 = controller.sensors["Num9"]
 
-    ### Setup the conditions for the camera position and orientation
+    # Setup the conditions for the camera position and orientation
     # SW (southwest)
     if Num1.positive:
-        print("Seting the camera to the SOUTHWEST position.")
+        debug_print("Seting the camera to the SOUTHWEST position.")
         own.worldPosition = [-32.0, -32.0, 44.0]
         own.worldOrientation = [
             [0.7071, 0.5000, -0.5000],
@@ -721,7 +848,7 @@ def set_camera_position():
         ]
     # S (south)
     if Num2.positive:
-        print("Seting the camera to the SOUTH position.")
+        debug_print("Seting the camera to the SOUTH position.")
         own.worldPosition = [0.0, -44.0, 44.0]
         own.worldOrientation = [
             [1.0000, 0.0000,  0.0000],
@@ -730,7 +857,7 @@ def set_camera_position():
         ]
     # S (south)
     if Num3.positive:
-        print("Seting the camera to the SOUTHEAST position.")
+        debug_print("Seting the camera to the SOUTHEAST position.")
         own.worldPosition = [32.0, -32.0, 44.0]
         own.worldOrientation = [
             [0.7071, -0.5000,  0.5000],
@@ -739,7 +866,7 @@ def set_camera_position():
         ]
     # W (west)
     if Num4.positive:
-        print("Seting the camera to the WEST position.")
+        debug_print("Seting the camera to the WEST position.")
         own.worldPosition = [-44.0, -0.0, 44.0]
         own.worldOrientation = [
             [-0.0000,  0.7071, -0.7071],
@@ -748,7 +875,7 @@ def set_camera_position():
         ]
     # O (Original position)
     if Num5.positive:
-        print("Reseting the camera to its original position.")
+        debug_print("Reseting the camera to its original position.")
         own.worldPosition = [32.0, -32.0, 44.0]
         own.worldOrientation = [
             [0.7071, -0.5000,  0.5000],
@@ -757,7 +884,7 @@ def set_camera_position():
         ]
     # E (east)
     if Num6.positive:
-        print("Seting the camera to the EAST position.")
+        debug_print("Seting the camera to the EAST position.")
         own.worldPosition = [44.0, 0.0, 44.0]
         own.worldOrientation = [
             [0.0000, -0.7071,  0.7071],
@@ -766,7 +893,7 @@ def set_camera_position():
         ]
     # NW (northwest)
     if Num7.positive:
-        print("Seting the camera to the NORTHWEST position.")
+        debug_print("Seting the camera to the NORTHWEST position.")
         own.worldPosition = [-32.0, 32.0, 44.0]
         own.worldOrientation = [
             [-0.7071,  0.5000, -0.5000],
@@ -775,7 +902,7 @@ def set_camera_position():
         ]
     # N (north)
     if Num8.positive:
-        print("Seting the camera to the NORTH position.")
+        debug_print("Seting the camera to the NORTH position.")
         own.worldPosition = [0.0, 44.0, 44.0]
         own.worldOrientation = [
             [-1.0000, -0.0000, 0.0000],
@@ -784,7 +911,7 @@ def set_camera_position():
         ]
     # NE (northeast)
     if Num9.positive:
-        print("Seting the camera to the NORTHEAST position.")
+        debug_print("Seting the camera to the NORTHEAST position.")
         own.worldPosition = [32.0, 32.0, 44.0]
         own.worldOrientation = [
             [-0.7071, -0.5000, 0.5000],
@@ -793,8 +920,12 @@ def set_camera_position():
         ]
 
 
+# SCREENSHOT
 def take_screenshot():
-    """Function to take a screenshot. Requires Imagemagick in Linux. Windows support is TODO"""
+    """Function to take a screenshot.
+    Requires Imagemagick in Linux.
+    Windows support is in the TODO list.
+    """
     controller = bge.logic.getCurrentController()
     debug_print("The controller is:", controller)
     own = controller.owner
@@ -806,7 +937,6 @@ def take_screenshot():
     mouse_over_button = own.sensors["mouse_over_button"]
     left_click_button = own.sensors["left_click_button"]
 
-    #date = datetime.date.today()
     date = time.strftime("%Y%m%d_%H%M%S_")
     screenshot = screenshot_directory+date+'scrnsht.jpg'
 
@@ -822,25 +952,27 @@ def take_screenshot():
         ]
 
     if mouse_over_button.positive and left_click_button.positive:
-        print("Taking screenshot...")
+        debug_print("Taking screenshot...")
         subprocess.run(screenshot_args)
 
 
-### PHASE 2: MAIN ###
+# PHASE 2: MAIN
 
-### MAIN - The main function (MAIN scene) that controls everything.
+
 def main():
-
+    """The main function (MAIN scene) that controls everything."""
     controller = bge.logic.getCurrentController()
-    debug_print("The controller is:", controller)
     own = controller.owner
-    debug_print("Owner is:", own)
 
-    ### The Sensors (attached to MAIN scene's camera). Left click, Right Click and Mouse Over
+    #The Sensors (attached to MAIN scene's camera).
+    #Left click, Right Click and Mouse Over
     left_click = controller.sensors["left_click"]
     right_click = controller.sensors["right_click"]
     mouse_over = controller.sensors["mouse_over"]
-    ### Snapping mode sensors: 1 for center of face, 2 for 1/10th of face's potision, 3 for free snap
+    # Snapping mode sensors:
+    # 1 for center of face.
+    # 2 for 1/10th of face's potision.
+    # 3 for free snap.
     mode_1 = controller.sensors["mode_1"]
     mode_2 = controller.sensors["mode_2"]
     mode_3 = controller.sensors["mode_3"]
@@ -860,39 +992,26 @@ def main():
         MODE = 3
         debug_print("Mode is:", MODE)
 
-    ### The preview's position is the same as the ghost's position. Updates constantly.
-    preview.position = ghost.position
-    ### Same for the orientation (rotation)
-    preview.worldOrientation = ghost.worldOrientation
 
-    ### MOUSE_OVER - The "mouse over" function
+    preview.position = ghost.position  # The preview's position is the same as the ghost's position. Updates constantly.
+    preview.worldOrientation = ghost.worldOrientation  # Same for the orientation (rotation)
+
+    # MOUSE_OVER - The "mouse over" function
     if mouse_over.positive and mouse_is_over_button == 1:
 
         debug_print("The mouse is over a button.")
 
-        ### Get the object that the ray hit
+        # Get the object that the ray hit
         rayObj = mouse_over.hitObject
         debug_print("The object hit by the ray is:", rayObj)
         debug_print("Ray object's world position is:", rayObj.worldPosition)
-        #rayObj_width = [i[1] for i in merged_item_property_list if str(rayObj) in i[0]]
-        debug_print("Item's width is:", rayObj_width)
-        #rayObj_length = [i[2] for i in merged_item_property_list if str(rayObj) in i[0]]
-        debug_print("Item's length is:", rayObj_length)
-        #rayObj_height = [i[3] for i in merged_item_property_list if str(rayObj) in i[0]]
-        debug_print("Item's height is:", rayObj_height)
 
-        #for i in merged_item_property_list:
-        #    if str(rayObj) in i[0]:
-        #        item_width = i[1]
-        #        item_length = i[2]
-        #        item_height = i[3]
-
-        ### Get the object's normal face
+        # Get the object's normal face
         rayNormal = mouse_over.hitNormal
         debug_print("The object normal is:", rayNormal)
-        print(" rayNormal[0] is:", rayNormal[0], "\n", "rayNormal[1] is:", rayNormal[1], "\n", "rayNormal[2] is:", rayNormal[2], "\n",)
+        debug_print(" rayNormal[0] is:", rayNormal[0], "\n", "rayNormal[1] is:", rayNormal[1], "\n", "rayNormal[2] is:", rayNormal[2], "\n",)
 
-        ### Get the ray's position
+        # Get the ray's position
         rayPos = mouse_over.hitPosition
         debug_print("The ray's position is: ", rayPos)
         debug_print("The ray's X position is: ", rayPos[0])
@@ -902,10 +1021,9 @@ def main():
 
         debug_print(rayObj.worldOrientation)
 
-        ### PLACE - Place the ghost object on the side of the object the mouse is over of, according to the object's dimensions.
-
-        ### x axis
-        ### positive
+        # PLACE - Place the ghost object on the side of the object the mouse is over of,
+        # according to the object's dimensions.
+        # X axis - positive
         if round(rayNormal[0], 2) == 1:
             if MODE == 1:
                 ghost.worldPosition = [rayPos[0] + float(length)/2, rayObj.worldPosition.y, rayObj.worldPosition.z]
@@ -913,7 +1031,7 @@ def main():
                 ghost.worldPosition = [rayPos[0] + float(length)/2, round(rayPos[1], 1), round(rayPos[2], 1)]
             if MODE == 3:
                 ghost.worldPosition = [rayPos[0] + float(length)/2, rayPos[1], rayPos[2]]
-        ### negative
+        # X axis - negative
         if rayNormal[0] == -1:
             if MODE == 1:
                 ghost.worldPosition = [rayPos[0] - float(length)/2, rayObj.worldPosition.y, rayObj.worldPosition.z]
@@ -922,8 +1040,7 @@ def main():
             if MODE == 3:
                 ghost.worldPosition = [rayPos[0] - float(length)/2, rayPos[1], rayPos[2]]
 
-        ### y axis
-        ### positive
+        # Y axis - positive
         if rayNormal[1] == 1:
             if MODE == 1:
                 ghost.worldPosition = [rayObj.worldPosition.x, rayPos[1] + float(width)/2, rayObj.worldPosition.z]
@@ -931,7 +1048,7 @@ def main():
                 ghost.worldPosition = [round(rayPos[0], 1), rayPos[1] + float(width)/2, round(rayPos[2], 1)]
             if MODE == 3:
                 ghost.worldPosition = [rayPos[0], rayPos[1] + float(width)/2, rayPos[2]]
-        ### negative
+        # Y axis - negative
         if rayNormal[1] == -1:
             if MODE == 1:
                 ghost.worldPosition = [rayObj.worldPosition.x, rayPos[1] - float(width)/2, rayObj.worldPosition.z]
@@ -940,8 +1057,7 @@ def main():
             if MODE == 3:
                 ghost.worldPosition = [rayPos[0], rayPos[1] - float(width)/2, rayPos[2]]
 
-        ### z axis
-        ### positive
+        # Z axis - positive
         if rayNormal[2] == 1:
             if MODE == 1:
                 ghost.worldPosition = [rayObj.worldPosition.x, rayObj.worldPosition.y, rayPos[2] + float(height)/2]
@@ -949,7 +1065,7 @@ def main():
                 ghost.worldPosition = [round(rayPos[0], 1), round(rayPos[1], 1), rayPos[2] + float(height)/2]
             if MODE == 3:
                 ghost.worldPosition = [rayPos[0], rayPos[1], rayPos[2] + float(height)/2]
-        ### negative
+        # Z axis - negative
         if rayNormal[2] == -1:
             if MODE == 1:
                 ghost.worldPosition = [rayObj.worldPosition.x, rayObj.worldPosition.y, rayPos[2] - float(height)/2]
@@ -958,48 +1074,28 @@ def main():
             if MODE == 3:
                 ghost.worldPosition = [rayPos[0], rayPos[1], rayPos[2] - float(height)/2]
 
-        ### ADD and DELETE ###
-
-        ### ADD - Add object when you left click
+        # ADD/DELETE
+        # ADD - Add object when you left click
         if left_click.positive and mouse_is_over_button == 1:
 
             debug_print("Left mouse button has been clicked.")
 
-            ### Adds an object (item) at the position of the ghost (ghost) at the frame 0 ### Maybe I can use the frames to do the UNDO function. TODO
+            # Adds an object (item) at the position of the ghost (ghost) at the frame 0 ### Maybe I can use the frames to do the UNDO function. TODO
             obj = scene.addObject(item, ghost, 0)
             bbox = scene.addObject("bounding_box", ghost, 0)
 
             #bbox.worldScale = (float(length), float(width), float(height))
 
-            ### LOCATION - Location of the newly added object (same as the ghost's position)
+            # LOCATION
+            # Location of the newly added objects (same as the ghost's position).
             obj.worldPosition = ghost.worldPosition
             bbox.worldPosition = ghost.worldPosition
-            ### ROTATION - Orientation of the new object (same as the ghost's rotation)
+            # ROTATION
+            # Orientation of the new objects (same as the ghost's rotation).
             obj.worldOrientation = ghost.worldOrientation
             bbox.worldOrientation = ghost.worldOrientation
 
-        ### DELETE - Delete object
+        # DELETE
+        # Delete object
         if right_click.positive:
             rayObj.endObject()
-
-
-
-def debug_print(*args):
-    if DEBUG:
-        print(*args)
-
-
-### NOTES ### NOTES ### NOTES ### NOTES ### NOTES ###
-
-# EULER                             #
-# Euler's rotation is as follows:   #
-#     0 degrees   =   0.0           #
-#    90 degrees   =   1.57          #
-#   180 degrees   =  -3.14          #
-#   270 degrees   =  -1.57          #
-#               (these are radians) #
-
-### message_sensor.positive is used because the logic brick sends two pulses
-### instead of one (one for positive and one for negative) and so it executes
-### the functiions twice. I need to tell the program to execute the function
-### only when the positive pulse is sent.
