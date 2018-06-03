@@ -1,4 +1,5 @@
 import bge
+from main import debug_print
 
 def set_camera_position():
     """Set the camera's position."""
