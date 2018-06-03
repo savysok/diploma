@@ -1,8 +1,8 @@
 # PHASE 0: IMPORT - Importing the necessary modules
 import bge  # bge - The Blender Game Engine Python library
 import csv  # csv - The CSV Library for parsing the csv files
-import math
-import mathutils
+import math  # math
+import mathutils  # mathutils
 import os  # os - Used to find the path names
 import subprocess  # subprocess - Executes system functions. Used mainly for the screenshots with Imagemagick.
 import textwrap  # textwrap - Text wrapper (for the info section)
@@ -10,7 +10,7 @@ import time  # time - Needed for the date/time format at the screenshots.
 import webbrowser  # webbrowser - Opens a web browser (will be used to open wikipedia pages)
 from bge import logic  # logic - Needed to load external the files
 from csv import DictReader  # DictReader - DictReader is needed to read the csv file's columns
-
+from config import *
 
 # PHASE 1: INITIALIZATION
 print("\n\n\n:::INITIALIZATION:::\nInitializing the main script...\n\n:::PHASE 1:::")
@@ -25,29 +25,11 @@ def debug_print(*args):
         print(*args)
 
 
-# PATHS
-# Set the absolute directories of the folders as variables
-print("::DIRECTORIES::\nSetting the directories...")
-data_directory = os.path.abspath(__file__ + '/../../data') + '/'
-debug_print("DATA:\n", data_directory)
-info_directory = os.path.abspath(__file__ + '/../../info') + '/'
-debug_print("MODELS:\n", info_directory)
-models_directory = os.path.abspath(__file__ + '/../../models') + '/'
-debug_print("MODELS:\n", models_directory)
-custom_directory = os.path.abspath(__file__ + '/../../custom') + '/'
-debug_print("CUSTOM:\n", custom_directory)
-textures_directory = os.path.abspath(__file__+'/../../textures') + '/' ### Not needed for now
-debug_print("TEXTURES:\n", textures_directory)
-screenshot_directory = os.path.abspath(__file__+'/../../screenshots') + '/'
-debug_print("TEXTURES:\n", screenshot_directory)
-print("Done.\n")
-
-
 # GROUP
 # The group at which the object(s) belong. The grouping is sorted
 # by the folders in the "models" subfolder.
-print("::GROUPS::")
-groups = [g for g in os.listdir(models_directory)]  # Get a list of all the subfolders in the "models" folder
+print("::GROUPS::\nCreating the object groups...")
+groups = [g for g in os.listdir(models_dir)]  # Get a list of all the subfolders in the "models" folder
 max_GROUP_ID = len(groups)  # Get the maximum number of subfolders
 debug_print("There are", max_GROUP_ID, "groups of models.")
 GROUP_ID=0  # An "id" variable to select the different groups
@@ -61,6 +43,9 @@ print("Done.\n")
 def change_group():
     """Function to change the group of items.
     Used for switching between the sets of parts.
+    Each group is made from the blend files inside the
+    models folder.
+    Use Left and Right keyboard arrows to change set.
     """
 
     controller = bge.logic.getCurrentController()
@@ -69,7 +54,7 @@ def change_group():
     right_arrow = controller.sensors["right_arrow"]
     left_arrow = controller.sensors["left_arrow"]
 
-    global GROUP_ID
+    global GROUP_ID  # Make this global so it can be used by other modules
     max = max_GROUP_ID - 2
 
     if right_arrow.positive and GROUP_ID <= max:
@@ -86,6 +71,7 @@ def change_group():
         create_buttons()
         debug_print(GROUP_ID)
 
+
 # LOAD
 # Load the external models from the 'models' subfolder inside the program.
 print("::LOAD::")
@@ -97,7 +83,7 @@ def load_external_models(name):
     'models' subdirectory and loads them in the program
     """
 
-    files = [f for f in os.listdir(models_directory + '/' + name) if 'blend' in f]
+    files = [f for f in os.listdir(models_dir + '/' + name) if 'blend' in f]
     debug_print("The files inside the folder {} are: ".format(name, files))
 
     for f in files:
@@ -105,10 +91,9 @@ def load_external_models(name):
         'Name' is the subfolder in the directory.
         'f' is the filename of the blend file.
         """
-        model = models_directory+name + '/' + f
-        """Load it with LibLoad.
-        'async' messes up the loading, so
-        leave it to False
+        model = models_dir+name + '/' + f
+        """Load it with LibLoad. 'async' messes up the loading,
+        so leave it to False.
         """
         logic.LibLoad(model, 'Scene', load_actions = False, load_scripts = False, async = False)
 
@@ -182,7 +167,7 @@ def create_item_properties(file):
     """Function to create the lists with the items'
     properties (name, width, length, height).
     """
-    ListFile = data_directory+file+'.csv'  # The csv file to create the data from.
+    ListFile = data_dir+file+'.csv'  # The csv file to create the data from.
     debug_print("The file used to create the lists is:", ListFile)
 
     """Declare the variables as global so that they
@@ -283,88 +268,8 @@ def mouse_over_button():
         mouse_is_over_button = 1
         debug_print("Mouse is over a button. mouse_is_over_button is", mouse_is_over_button, ". Owner is", own)
 
-# CAMERA_CONTROL
-def camera_control(camera_placeholder):
-    """Function that controls the movement of the empties that
-    are parents to the parts, grids and buildings objects.
-    """
-    controller = bge.logic.getCurrentController()
-    own = controller.owner
-
-    scenes = bge.logic.getSceneList()
-
-    left_click_button = controller.sensors["left_click_button"]
-    mouse_over_button = controller.sensors["mouse_over_button"]
-
-    status = own["STATUS"]  # STATUS = 0: closed, 1: opened
-    debug_print ("Status is:",status)
-
-    rotate_left = mathutils.Euler((0, 0, math.radians(90)), "XYZ")
-    debug_print ("Left rotation is:",rotate_left)
-    rotate_right = mathutils.Euler((0, 0, -math.radians(90)), "XYZ")
-    debug_print ("Right rotation is:",rotate_right)
-
-    if mouse_over_button.positive and left_click_button.positive:
-
-        debug_print ("The mouse is over the button and clicked.\n")
-
-        for scene in scenes:
-            if scene.name == "MAIN":
-                camera = scene.objects["camera.MAIN"]
-                placeholder = scene.objects[camera_placeholder]
-                debug_print ("Placeholder is:",placeholder)
-                rotation = placeholder.worldOrientation.to_euler()
-                debug_print ("Rotation is:",rotation.z)
-                if status == 0:
-                    placeholder.worldOrientation = camera.worldOrientation
-                    own["STATUS"] = 1
-                    debug_print (scene.name,"'s status is",status,". Buttons are visible\n")
-                if status == 1:
-                    placeholder.localOrientation = rotate_left.to_matrix()
-                    own["STATUS"] = 0
-                    debug_print (scene.name,"'s status is",status,". Buttons are hidden\n")
-
-
-def camera_control_buldings():
-    camera_control("parent.buttons.buildings.001")
-
-
-def camera_control_parts():
-    camera_control("parent.buttons.parts.001")
-
-
-def camera_control_grids():
-    camera_control("parent.buttons.grids.001")
-
-
-def hide_bounding_box():
-    """Function to hide or show the bounding box object."""
-    controller = bge.logic.getCurrentController()
-    own = controller.owner
-
-    H = controller.sensors["H"]
-
-    scene = bge.logic.getCurrentScene()
-
-    visibility = own["visibility"]
-
-    if H.positive and visibility == 0:
-        for obj in scene.objects:
-            if obj.name == "bounding_box":
-                obj.visible = False
-        own["visibility"] = 1
-        debug_print(own["visibility"])
-
-    if H.positive and visibility == 1:
-        for obj in scene.objects:
-            if obj.name == "bounding_box":
-                obj.visible = True
-        own["visibility"] = 0
-        debug_print(own["visibility"])
-
 
 #GET ID
-
 def get_ID():
     """Function to get the menu item's ID number (GUI scene).
     This is used to change the item, the wireframe and the dimensions
@@ -525,10 +430,7 @@ def generate_grid_pattern(rows, row_distance, columns, column_distance, pattern)
 
 # SEND MESSAGE
 def send_message():
-    """Function to send a message to the main scene's camera.
-
-    (TODO: create a listener for the messages other than the camera.)
-    """
+    """Function to send a message to the message_listener empty."""
     controller = bge.logic.getCurrentController()
     own = controller.owner
 
@@ -567,11 +469,7 @@ def send_message():
 # RECEIVE MESSAGE
 def message_received():
     """Function for receiving a message. When a message is received (by the
-    message sensor of the camera at the main scene), it reads the body of the
-    message and acts accordingly.
-
-    (TODO: create a listener for the messages
-    other than the camera.)
+    message_listener empty), it reads the body of the message and acts accordingly.
     """
     controller = bge.logic.getCurrentController()
     own = controller.owner
@@ -612,7 +510,6 @@ def message_received():
 
 
 # CREATE_BUILDING
-
 def create_building(CSVfile):
     """Function to create a building from CSV file.
     First, deletes all the grid objects.
@@ -683,7 +580,7 @@ def save_data():
     debug_print("List of scenes:", scenes)
 
     # The file to save the values. Needs to be opened first.
-    list_file = custom_directory + '/custom001.csv'
+    list_file = custom_dir + '/custom001.csv'
     list_file_open = open(list_file, 'w')
     debug_print("Opening list_file at", list_file)
 
@@ -723,7 +620,7 @@ def save_data():
 def load_data():
     """Function to load the data from the external file."""
     debug_print("Loading the data from the external file...")
-    create_building(custom_directory+'/custom001.csv')
+    create_building(custom_dir+'/custom001.csv')
     debug_print("Done.\n")
 
 
@@ -749,7 +646,7 @@ def create_buttons():
 
 # INFO_TEXT
 # Dynamically loaded info text (from txt file)
-info_files = [f for f in os.listdir(info_directory) if 'txt' in f]
+info_files = [f for f in os.listdir(info_dir) if 'txt' in f]
 debug_print("Info files inside the info folder are:", info_files)
 
 
@@ -766,7 +663,7 @@ def show_info_text():
         debug_print("Message received. Updating text.")
         info_file = info_files[GROUP_ID]
         debug_print("Selected file is:", info_file, "\n")
-        info_txt = info_directory+info_file
+        info_txt = info_dir+info_file
         debug_print("Info file path is:", info_txt)
         debug_print("Opening info file for reading..")
         info_txt_open = open(info_txt, 'r')
@@ -793,7 +690,7 @@ def open_wikipedia_link():
         debug_print("Wikipedia button has been pressed. Opening the website.")
         info_file = info_files[GROUP_ID]
         debug_print("Selected file is:", info_file, "\n")
-        info_txt = info_directory+info_file
+        info_txt = info_dir+info_file
         debug_print("Info file path is:", info_txt)
         debug_print("Opening info file for reading..")
         info_txt_open = open(info_txt, 'r')
@@ -938,7 +835,7 @@ def take_screenshot():
     left_click_button = own.sensors["left_click_button"]
 
     date = time.strftime("%Y%m%d_%H%M%S_")
-    screenshot = screenshot_directory+date+'scrnsht.jpg'
+    screenshot = screenshot_dir+date+'scrnsht.jpg'
 
     screenshot_args = [
         'import',
