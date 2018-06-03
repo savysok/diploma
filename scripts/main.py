@@ -644,37 +644,6 @@ def create_buttons():
     debug_print("Done.\n")
 
 
-# INFO_TEXT
-# Dynamically loaded info text (from txt file)
-info_files = [f for f in os.listdir(info_dir) if 'txt' in f]
-debug_print("Info files inside the info folder are:", info_files)
-
-
-def show_info_text():
-    """Function that shows the text in the txt files."""
-    controller = bge.logic.getCurrentController()
-    own = controller.owner
-
-    scene = bge.logic.getCurrentScene()
-
-    message_sensor = own.sensors["update_text"]
-
-    if message_sensor.positive:
-        debug_print("Message received. Updating text.")
-        info_file = info_files[GROUP_ID]
-        debug_print("Selected file is:", info_file, "\n")
-        info_txt = info_dir+info_file
-        debug_print("Info file path is:", info_txt)
-        debug_print("Opening info file for reading..")
-        info_txt_open = open(info_txt, 'r')
-        debug_print("Done.\n")
-        dynamic_text = scene.objects["info_text"]
-        info_text_wrapped = textwrap.wrap(info_txt_open.read(), 160)
-        debug_print(info_text_wrapped)
-        dynamic_text.text = '\n'.join([l for l in info_text_wrapped])
-        info_txt_open.close()
-
-
 # PHASE 2: MAIN
 def main():
     """The main function (MAIN scene) that controls everything."""
