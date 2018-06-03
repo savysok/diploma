@@ -17,7 +17,7 @@ print("\n\n\n:::INITIALIZATION:::\nInitializing the main script...\n\n:::PHASE 1
 
 
 # DEBUGGING
-DEBUG=False
+DEBUG=True
 print("(Debugging is set to", DEBUG, ")\n")
 def debug_print(*args):
     """Function that set the debugging mode On (True) or Off (False)"""
@@ -61,6 +61,7 @@ def change_group():
         debug_print("Right arrow has been pressed.")
         GROUP_ID = GROUP_ID + 1
         create_item_properties(groups[GROUP_ID])
+        clear_buttons()
         create_buttons()
         debug_print(GROUP_ID)
 
@@ -68,9 +69,46 @@ def change_group():
         debug_print("Left arrow has been pressed.")
         GROUP_ID = GROUP_ID - 1
         create_item_properties(groups[GROUP_ID])
+        clear_buttons()
         create_buttons()
         debug_print(GROUP_ID)
 
+
+def clear_buttons():
+    """Function to clear the buttons before putting the new buttons. 
+    Replaces the placeholder buttons with the default.
+    """
+    debug_print("Clearing the buttons...")
+
+    mesh_button = ["button.placeholder."+str("{0:0=3d}".format(o)) for o in range(0,10)] ### "{0:0=3d}".format(o) <== This means to format the numbers to 3 decimal one. For example, write 3 as 003
+        
+    for i in range(0,10):
+        obj = scene.objects[mesh_button[i]]
+        obj.replaceMesh("button.placeholder.default")
+
+    debug_print("Done.\n")
+
+
+def create_buttons():
+    """Function to create the buttons. Replaces the cube mesh with the mesh from the loaded object."""
+    debug_print("Creating the buttons...")
+
+    number_of_items = len(items)
+    debug_print("There are", number_of_items, "items in this list.")
+
+    mesh_button = ["button.placeholder."+str("{0:0=3d}".format(o)) for o in range(0, number_of_items)] ### "{0:0=3d}".format(o) <== This means to format the numbers to 3 decimal one. For example, write 3 as 003
+
+    debug_print("Mesh buttons to be replaced are:")
+        
+    for i in range(0, number_of_items):
+        obj = scene.objects[mesh_button[i]]
+        debug_print(obj)
+        button_ID = obj["ID"]
+        debug_print("Mesh button's ID is:", button_ID)
+        obj.replaceMesh(items[button_ID])
+
+    debug_print("Done.\n")
+    
 
 # LOAD
 # Load the external models from the 'models' subfolder inside the program.
@@ -571,10 +609,11 @@ def create_building(CSVfile):
         obj = scene.addObject(items[i], "ghost", 0)
         i = i+1
 
+
 # SAVE DATA
 def save_data():
     """Export the model's objects (name,location) to a csv file."""
-    debug_print("Saving the data to the external file...")
+    print("Saving the data to the external file...")
     # Get the list of scenes
     scenes = bge.logic.getSceneList()
     debug_print("List of scenes:", scenes)
@@ -593,7 +632,7 @@ def save_data():
             debug_print(object_list)
             # Iterate through the objects and find it's values for
             # name, x position, y position and z position
-            excluded_objects = ['light', 'camera', 'preview', 'ghost', 'button']
+            excluded_objects = ['light', 'camera', 'preview', 'ghost', 'button', 'message', 'listener', 'bounding']
             list_file_open.write("ITEM,X,Y,Z,ROTATION\n")
             for obj in object_list:
                 name = str(obj.name) ### Strings are needed to be able to write in the txt file
@@ -615,32 +654,13 @@ def save_data():
     list_file_open.close()
     debug_print("Data exported. Closing the open list file.")
     debug_print("Done.\n")
-
+    
+    
 # LOAD DATA
 def load_data():
     """Function to load the data from the external file."""
     debug_print("Loading the data from the external file...")
     create_building(custom_dir+'/custom001.csv')
-    debug_print("Done.\n")
-
-
-def create_buttons():
-    """Function to create the buttons. Replaces the cube mesh with the mesh from the loaded object."""
-    debug_print("Creating the buttons...")
-
-    number_of_items = len(items)
-    debug_print("There are", number_of_items, "items in this list.")
-
-    mesh_button = ["button.placeholder."+str("{0:0=3d}".format(o)) for o in range(0, number_of_items)] ### "{0:0=3d}".format(o) <== This means to format the numbers to 3 decimal one. For example, write 3 as 003
-
-    debug_print("Mesh buttons to be replaced are:")
-    for i in range(0, number_of_items):
-        obj = scene.objects[mesh_button[i]]
-        debug_print(obj)
-        button_ID = obj["ID"]
-        debug_print("Mesh button's ID is:", button_ID)
-        obj.replaceMesh(items[button_ID])
-
     debug_print("Done.\n")
 
 
@@ -782,6 +802,6 @@ def main():
             bbox.worldOrientation = ghost.worldOrientation
 
         # DELETE
-        # Delete object
+        # Delete object. Click twice (one for the object and one for the placeholder)
         if right_click.positive:
             rayObj.endObject()
