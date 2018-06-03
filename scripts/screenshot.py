@@ -32,5 +32,4 @@ def take_screenshot():
         ]
 
     if mouse_over_button.positive and left_click_button.positive:
-        print("Taking screenshot...")
         subprocess.run(screenshot_args)
