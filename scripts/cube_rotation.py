@@ -10,6 +10,5 @@ def rotate_cube():
     controller = bge.logic.getCurrentController()
     own = controller.owner
 
-
-    
     own.applyRotation([x,y,z])
+    
