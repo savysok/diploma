@@ -5,7 +5,7 @@ The folder consists of the following files:
 
 - **main.py** (_The main script that controls everything in the blender file_)
 
-- **camera_control.py** (_A script for controlling the menu items movement -more info below_)
+- **camera.py** (_A script for controlling the menu items movement -more info below_)
 
 - **cube_rotation.py** (_A simple script for the rotation of the cube at the start of the program_)
 
@@ -109,13 +109,13 @@ _function_: **main** (_The main function, attached to the camera. Everything is 
 
  **NOTES**
 
-# camera_control.py
+# camera.py
 
 camera_control.py is used to move the menu items (parts, buildings, grids) out of the camera's view by rotating the parent item (an empty) 90 degrees to the left
 
 # cube_rotation.py
 
-very simple script that rotates the cube at the beginning of the program 
+very simple script that rotates the cube at the beginning of the program
 
 # export.py
 
