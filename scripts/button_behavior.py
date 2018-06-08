@@ -52,3 +52,41 @@ def placeholder_parts():
 
 def placeholder_grids():
     placeholder_position("parent.buttons.grids.001")
+    
+
+def extra_buttons(placeholder_item):
+    """Function that controls the movement of the empties that
+    are parents to the Save, Load and Export buttons.
+    """
+    controller = bge.logic.getCurrentController()
+    own = controller.owner
+    
+    scene = bge.logic.getCurrentScene()
+    
+    mouse_over_button = controller.sensors["mouse_over_button"]
+
+    status = own["STATUS"]  # STATUS:  0 = closed, 1 = opened
+    
+    placeholder = scene.objects[placeholder_item]
+    
+    save_button = scene.objects["button.save.001"]
+    
+    if mouse_over_button.positive and status == 0:
+        print("It's working. 0")
+        placeholder.worldPosition.x = 6.3
+        own["STATUS"] = 1
+        
+    if mouse_over_button.positive and status == 1:
+            print("It's working. 1")
+            placeholder.worldPosition.x = 10
+            own["STATUS"] = 0
+            
+def save_buttons():
+    extra_buttons("parent.buttons.save")
+    
+    
+    
+    
+    
+        
+    
