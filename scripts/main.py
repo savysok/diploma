@@ -17,7 +17,7 @@ print("\n\n\n:::INITIALIZATION:::\nInitializing the main script...\n\n:::PHASE 1
 
 
 # DEBUGGING
-DEBUG=True
+DEBUG=False
 print("(Debugging is set to", DEBUG, ")\n")
 def debug_print(*args):
     """Function that set the debugging mode On (True) or Off (False)"""
@@ -74,6 +74,7 @@ def change_group():
         debug_print(GROUP_ID)
 
 
+# BUTTONS
 def clear_buttons():
     """Function to clear the buttons before putting the new buttons. 
     Replaces the placeholder buttons with the default.
@@ -545,123 +546,6 @@ def message_received():
         if action == "generate_grid_3d.001":
             debug_print("Generating 3x3 grid pattern")
             generate_grid_pattern(4, 3, 6, 2, grid_pattern_006)
-
-
-# CREATE_BUILDING
-def create_building(CSVfile):
-    """Function to create a building from CSV file.
-    First, deletes all the grid objects.
-    """
-    controller = bge.logic.getCurrentController()
-    own = controller.owner
-
-    clear_grid()
-
-    DataFile = CSVfile  # The CSVfile that holds the instructions
-
-    with open(DataFile, "r") as D:
-        CSVreader = csv.reader(D, delimiter = ",")
-        data = list(CSVreader)
-        row_count = (len(data)-1) # Count the rows
-        debug_print("There are ", row_count, "rows of data")
-
-    # Retrieve the data from the csv file and seperate them
-    # to item name, x location, y location, z location and rotation.
-    with open(DataFile) as D:
-        items = [row["ITEM"] for row in DictReader(D)]
-    with open(DataFile) as X:
-        locationX = [row["X"] for row in DictReader(X)]
-    with open(DataFile) as Y:
-        locationY = [row["Y"] for row in DictReader(Y)]
-    with open(DataFile) as Z:
-        locationZ = [row["Z"] for row in DictReader(Z)]
-    with open(DataFile) as R:
-        rotationR = [row["ROTATION"] for row in DictReader(R)]
-
-    i=0  # Start from the first row
-    while i < row_count:
-        x = float(locationX[i])
-        y = float(locationY[i])
-        z = float(locationZ[i])
-        r = float(rotationR[i])
-        debug_print ("Item", i, "is:", items[i],
-               "\nItem", i, "'s X position is:", locationX[i],
-               "\nItem", i, "'s Y position is:", locationY[i],
-               "\nItem", i, "'s Z position is:", locationZ[i],
-               "\nItem", i, "'s Rotation is:", rotationR[i],
-               "\n")
-        ghost.worldPosition = [x, y, z]
-        debug_print(ghost.worldOrientation.to_euler().z)
-
-        # This one was tricky: rotate the empty according to the
-        # radian(?) values of the CSV file.
-        # First, convert the local orientation to Euler.
-        xyz = ghost.localOrientation.to_euler()
-        debug_print("Before the rotation. Z rotation is:", xyz[2])
-        # Then, change the Z value of the rotation
-        # to the one from the CSV file.
-        xyz[2] = r
-        debug_print("After the rotation. Z rotation is:", xyz[2])
-        # Finally, change the empty's local orientation
-        # with the new Z value.
-        ghost.localOrientation = xyz.to_matrix()
-
-        obj = scene.addObject(items[i], "ghost", 0)
-        i = i+1
-
-
-# SAVE DATA
-def save_data():
-    """Export the model's objects (name,location) to a csv file."""
-    print("Saving the data to the external file...")
-    # Get the list of scenes
-    scenes = bge.logic.getSceneList()
-    debug_print("List of scenes:", scenes)
-
-    # The file to save the values. Needs to be opened first.
-    list_file = custom_dir + '/custom001.csv'
-    list_file_open = open(list_file, 'w')
-    debug_print("Opening list_file at", list_file)
-
-    # Iterate through the MAIN scene's objects
-    for scene in scenes :
-        if scene.name == "MAIN":
-            debug_print("scene : %s"%scene.name)
-            # List of all the objects in the game
-            object_list = [obj for obj in scene.objects]
-            debug_print(object_list)
-            # Iterate through the objects and find it's values for
-            # name, x position, y position and z position
-            excluded_objects = ['light', 'camera', 'preview', 'ghost', 'button', 'message', 'listener', 'bounding']
-            list_file_open.write("ITEM,X,Y,Z,ROTATION\n")
-            for obj in object_list:
-                name = str(obj.name) ### Strings are needed to be able to write in the txt file
-                x = str(round(obj.worldPosition[0], 2))
-                y = str(round(obj.worldPosition[1], 2))
-                z = str(round(obj.worldPosition[2], 2))
-                r = str(round(obj.localOrientation.to_euler().z, 3))
-                debug_print(name, "'s rotation is:", r)
-
-                # Write the values to the file
-                debug_print("Saving", name, "at", x, y, z, "to the file.")
-                # Save only the objects that don't have a name that
-                # begins with the 'excluded_objects' list
-                # (the default scene items like the camera, the lights etc)
-                if not any(excluded_objects in name for excluded_objects in excluded_objects):
-                    list_file_open.write(name+","+x+","+y+","+z+","+r+"\n")
-                    debug_print(name)
-
-    list_file_open.close()
-    debug_print("Data exported. Closing the open list file.")
-    debug_print("Done.\n")
-    
-    
-# LOAD DATA
-def load_data():
-    """Function to load the data from the external file."""
-    debug_print("Loading the data from the external file...")
-    create_building(custom_dir+'/custom001.csv')
-    debug_print("Done.\n")
 
 
 # PHASE 2: MAIN
