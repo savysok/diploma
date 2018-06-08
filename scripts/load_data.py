@@ -2,20 +2,25 @@ import bge
 import csv
 from config import custom_dir
 from csv import DictReader
-from main import clear_grid
+from main import clear_grid, debug_print, scene, ghost
 
 
 # CREATE_BUILDING
 def create_building(CSVfile):
     """Function to create a building from CSV file.
-    First, deletes all the grid objects.
+    First, deletes all the previous objects.
     """
     controller = bge.logic.getCurrentController()
     own = controller.owner
-
-    clear_grid()
-
-    DataFile = custon_dir+CSVfile  # The CSVfile that holds the instructions
+    
+    object_list = [obj for obj in scene.objects]
+    excluded_objects = ['light', 'camera', 'preview', 'ghost', 'button', 'message', 'listener']
+    for obj in object_list:
+        name = obj.name
+        if not any(excluded_objects in name for excluded_objects in excluded_objects):
+            obj.endObject()
+    
+    DataFile = custom_dir+CSVfile  # The CSVfile that holds the instructions
 
     with open(DataFile, "r") as D:
         CSVreader = csv.reader(D, delimiter = ",")
@@ -82,5 +87,4 @@ def load_data():
     if left_click_button.positive and mouse_over_button.positive:
         load_file = "custom00"+str(load_slot)+".csv"
         create_building(load_file)
-    
     

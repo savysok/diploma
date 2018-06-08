@@ -24,7 +24,7 @@ def save_function(file):
             print(object_list)
             # Iterate through the objects and find it's values for
             # name, x position, y position and z position
-            excluded_objects = ['light', 'camera', 'preview', 'ghost', 'button', 'message', 'listener', 'bounding']
+            excluded_objects = ['light', 'camera', 'preview', 'ghost', 'button', 'message', 'listener']
             list_file_open.write("ITEM,X,Y,Z,ROTATION\n")
             for obj in object_list:
                 name = str(obj.name) ### Strings are needed to be able to write in the txt file
