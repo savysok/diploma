@@ -1,21 +1,35 @@
 # scripts
-20180531
+20180608
 
 The folder consists of the following files:
 
 - **main.py** (_The main script that controls everything in the blender file_)
 
-- **camera.py** (_A script for controlling the menu items movement -more info below_)
+- **bounding_box** (_Script that hides or shows the bounding box_)
+
+- **button_behaviour** (_Script that holds the functions for the hiding/showing of the menu items and buttons_)
+
+- **camera.py** (_A script for controlling the camera's position_)
 
 - **cube_rotation.py** (_A simple script for the rotation of the cube at the start of the program_)
 
-- **export.py**	(_The script that exports all the models in obj and stl format_)
+- **export.py**	(_The script that exports all the models in obj and stl format. Needs more work_)
 
-- **export_obj_scipt.py** (_The script to export all the models in obj format_)
+- **export_obj_scipt.py** (_The script to export all the models in the program in obj format_)
 
-- **export_stl_scipt.py** (_The script to export all the models in obj format_)
+- **export_stl_scipt.py** (_The script to export all the models in the program in obj format_)
 
 - **info_bubble.py** (_Test script to show an info bubble over the buttons -made for an earlier version of the program, not implemented currently. TODO_)
+
+- **info_text.py** (_Script that holds the functions for the info text_)
+
+- **load_data** (_Script that contains the load functions_)
+
+- **save_data** (_Script that contains the save functions_)
+
+- **screenshot** (_Script that holds the screenshot function_)
+
+- **work_in_progress** (_Various failed/wip script bits_)
 
 # main.py
 
@@ -25,10 +39,15 @@ main.py file's structure:
 
 - **IMPORT** (_Importing the necessary modules._)
 
-- **DIRECTORIES** (_Setting up the directory variables. All values are made local._)
+- **DEBUGGING** (_Setting up a function to print debug text._)
 
-- **GROUPS** (_Every subfolder in the "models" folder is a group of related objects. These objects will be loaded at the beginning of the file and made into selection sets for the user to use._)
+- **GROUP** (_Every subfolder in the "models" folder is a group of related objects. These objects will be loaded at the beginning of the file and made into selection sets for the user to use._)
     - _function_: **change_group**
+
+- **BUTTONS** (_Functions that control the changing of the group and the items that will appear in the button placeholders._)
+
+- **CREATE BUTTONS**
+    - _function_: **create_buttons**
 
 - **LOAD** (_Loading the models from the individual .blend files in the program's memory for later use._)
 
@@ -41,11 +60,9 @@ main.py file's structure:
 
 - **DIMENSIONS** (_Setting the dimensions of the item (taken from the csv file). Needs to be a floating number to work._)
 
-- **ROTATION** (_NOT WORKING_) The idea for this was to have the width and height dimensions switch when the object is rotated 90 degrees, but I failed horribly at it. I will try again.
+- **ROTATION** (_NOT WORKING-moved to work-in-progrss.py_) The idea for this was to have the width and height dimensions switch when the object is rotated 90 degrees, but I failed horribly at it. I will try again.
 
 - _function_: **mouse_over_button** (_Disables the creation of new blocks when the cursor is over a button or other objects that have set the "mouse over button" variable to 0 (I should probably switch the 1 and 0 values. It would make more sense._)
-
-- _function_: **hide_bounding_box** (_Function that hides or shows the bounding box of the objects when the keyboard letter H is pressed._)
 
 - _function_: **get_ID**
 
@@ -54,34 +71,10 @@ main.py file's structure:
     - _function_: **clear_grid**
     - _function_: **generate_grid_pattern**
 
-- **SEND MESSAGE**
+- **MESSAGES**
     - _function_: **send_message**
     - _function_: **receive_message**
 
-- **CREATE BUILDING**
-    - _function_: **create_building**
-
-- **SAVE/LOAD**
-    - _function_: **save_data**
-    - _function_: **load_data**
-
-- **CREATE BUTTONS**
-    - _function_: **create_buttons**
-
-- **INFO TEXT**
-    - _function_: **show_info_text**
-
-- **WIKIPEDIA**
-    - _function_: **open_wikipedia_link**
-
-- **TEXT**
-    - _function_: **fix_text_resolution**
-
-- **CAMERA**
-    - _function_: **set_camera_position**
-
-- **SCREENSHOT**
-    - _function_: **take_screenshot**
 
 ### PHASE 2: MAIN
 
