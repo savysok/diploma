@@ -1,0 +1,139 @@
+# create_block
+"""
+def create_block(CSVfile):
+    """Function to create a building from CSV file.
+    Needs a little more work.
+    """
+    
+    controller = bge.logic.getCurrentController()
+    own = controller.owner
+    print(own)
+    
+    DataFile = custom_dir+CSVfile  # The CSVfile that holds the instructions
+
+    with open(DataFile, "r") as D:
+        CSVreader = csv.reader(D, delimiter = ",")
+        data = list(CSVreader)
+        row_count = (len(data)-1) # Count the rows
+        debug_print("There are ", row_count, "rows of data")
+
+    # Retrieve the data from the csv file and seperate them
+    # to item name, x location, y location, z location and rotation.
+    with open(DataFile) as D:
+        items = [row["ITEM"] for row in DictReader(D)]
+    with open(DataFile) as X:
+        locationX = [row["X"] for row in DictReader(X)]
+    with open(DataFile) as Y:
+        locationY = [row["Y"] for row in DictReader(Y)]
+    with open(DataFile) as Z:
+        locationZ = [row["Z"] for row in DictReader(Z)]
+    with open(DataFile) as R:
+        rotationR = [row["ROTATION"] for row in DictReader(R)]
+
+    i=0  # Start from the first row
+    while i < row_count:
+        x = float(locationX[i])
+        y = float(locationY[i])
+        z = float(locationZ[i])
+        r = float(rotationR[i])
+        debug_print ("Item", i, "is:", items[i],
+               "\nItem", i, "'s X position is:", locationX[i],
+               "\nItem", i, "'s Y position is:", locationY[i],
+               "\nItem", i, "'s Z position is:", locationZ[i],
+               "\nItem", i, "'s Rotation is:", rotationR[i],
+               "\n")
+        emitter.worldPosition = [x+preview_block.worldPosition.x, y+preview_block.worldPosition.y, z+preview_block.worldPosition.z]
+        
+        #print(preview_block.worldOrientation.to_euler().z)
+
+        # This one was tricky: rotate the empty according to the
+        # radian(?) values of the CSV file.
+        # First, convert the local orientation to Euler.
+        xyz = emitter.localOrientation.to_euler()
+        debug_print("Before the rotation. Z rotation is:", xyz[2])
+        # Then, change the Z value of the rotation
+        # to the one from the CSV file.
+        xyz[2] = r
+        debug_print("After the rotation. Z rotation is:", xyz[2])
+        # Finally, change the empty's local orientation
+        # with the new Z value.
+        emitter.localOrientation = xyz.to_matrix()
+
+        obj = scene.addObject(items[i], emitter, 0)
+        i = i+1
+    
+#create_block("kitchen20180727154104.csv")
+    
+    
+#create_preview_block("bathroom20180727112525.csv")
+"""
+
+
+    #while i < len(object_list):
+    #    print(object_list[i][0])
+    #    emitter.worldPosition.x = object_list[i][1]+emitter.worldPosition.x
+    #    emitter.worldPosition.y = object_list[i][2]
+    #    emitter.worldPosition.z = object_list[i][3]
+    #    xyz = emitter.localOrientation.to_euler()
+    #    xyz[2] = object_list[i][4]
+    #    emitter.localOrientation = xyz.to_matrix()
+    #    obj = obj = scene.addObject(object_list[i][0], emitter, 0)
+    #    i = i+1
+    #emitter.worldPosition = [100.0, 0.0, 0.0]
+    #print(emitter.worldPosition)
+    
+def create_object_list(CSVFile):
+    """Function to create the list containing all the object data like
+    part's name and location.
+    """
+    
+    print("Creating the objects list")
+    
+    global object_list 
+    object_list = []
+    
+    controller = bge.logic.getCurrentController()
+    own = controller.owner
+    
+    DataFile = custom_dir+CSVFile  # The CSVfile that holds the instructions
+
+    with open(DataFile, "r") as D:
+        CSVreader = csv.reader(D, delimiter = ",")
+        data = list(CSVreader)
+        row_count = (len(data)-1) # Count the rows
+        #print("There are ", row_count, "rows of data")
+
+    # Retrieve the data from the csv file and seperate them
+    # to item name, x location, y location, z location and rotation.
+    with open(DataFile) as D:
+        items = [row["ITEM"] for row in DictReader(D)]
+    with open(DataFile) as X:
+        locationX = [row["X"] for row in DictReader(X)]
+    with open(DataFile) as Y:
+        locationY = [row["Y"] for row in DictReader(Y)]
+    with open(DataFile) as Z:
+        locationZ = [row["Z"] for row in DictReader(Z)]
+    with open(DataFile) as R:
+        rotationR = [row["ROTATION"] for row in DictReader(R)]
+    
+    i = 0  # Start from the first row
+    while i < row_count:
+        x = float(locationX[i])
+        y = float(locationY[i])
+        z = float(locationZ[i])
+        r = float(rotationR[i])
+        debug_print ("Item", i, "is:", items[i],
+               "\nItem", i, "'s X position is:", locationX[i],
+               "\nItem", i, "'s Y position is:", locationY[i],
+               "\nItem", i, "'s Z position is:", locationZ[i],
+               "\nItem", i, "'s Rotation is:", rotationR[i],
+               "\n")
+        object_data = []
+        object_data.append(items[i])
+        object_data.append(x)
+        object_data.append(y)
+        object_data.append(z)
+        object_data.append(r)
+        i = i+1
+        object_list.append(object_data)
+    print("Object list:",object_list)
