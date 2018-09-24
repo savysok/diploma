@@ -1,104 +1,136 @@
 import bge
-from main import debug_print
+import math
 
+scene = bge.logic.getCurrentScene()
 
-def set_camera_position():
-    """Set the camera's position."""
+            
+def select_camera():
+    
+    controller = bge.logic.getCurrentController()
+    
+    facade = controller.sensors["F"] # front view (orthographic)
+    top = controller.sensors["T"] # top view (orthographic)
+    corner = controller.sensors["C"] # corner view (isometric)
+    
+    if facade.positive:
+        print("Switching to the facade camera")
+        scene.active_camera = scene.objects["camera.parts.facade"]
+        
+    if top.positive:
+        print("Switching to the top camera")
+        scene.active_camera = scene.objects["camera.parts.top"]
+        
+    if corner.positive:
+        print("Switching to the isometric")
+        scene.active_camera = scene.objects["camera.parts.isometric"]
+      
+        
+def camera_move():
+    
     controller = bge.logic.getCurrentController()
     own = controller.owner
+    
+    up = controller.sensors["W"]
+    left = controller.sensors["A"]
+    down = controller.sensors["S"]
+    right = controller.sensors["D"]
+    
+    if up.positive:
+        own.worldPosition.z += 1
+    if left.positive:
+        own.worldPosition.x -= 0.5
+        own.worldPosition.y -= 0.5
+    if down.positive:
+        own.worldPosition.z -= 1
+    if right.positive:
+        own.worldPosition.x += 0.5
+        own.worldPosition.y += 0.5
+    
+    
+def camera_zoom():
+    
+    controller = bge.logic.getCurrentController()
+    
+    mouse_wheel_up = controller.sensors["mouse_wheel_up"]
+    mouse_wheel_down = controller.sensors["mouse_wheel_down"]
+    
+    #active_camera = scene.objects["camera.parts.isometric"]
+    active_camera = controller.owner
+    
+    if mouse_wheel_up.positive:
+        if active_camera.ortho_scale >= 24:
+            active_camera.ortho_scale -= 6
+            
+    if mouse_wheel_down.positive:
+        if active_camera.ortho_scale < 24:
+            active_camera.ortho_scale += 6
+            
 
-    debug_print(own.worldOrientation)
+def active_editor():
+    
+    controller = bge.logic.getCurrentController()
+    
+    block_editor = controller.sensors["Key1"]
+    building_editor = controller.sensors["Key2"]
+    
+    cam1 = scene.objects['camera.parts.top']
+    cam2 = scene.objects['camera.parts.isometric']
+    cam3 = scene.objects['camera.building.isometric']
+    cam4 = scene.objects['camera.warehouse']
+    
+    width = bge.render.getWindowWidth()
+    height = bge.render.getWindowHeight()
+    
+    if block_editor.positive:
+        #scene.active_camera = scene.objects["camera.parts.isometric"]
+        #split_screen()
+                #split_screen_2()
+        cam1.setViewport(0, 0, int(width/2), height) # camera.parts.top
+        cam2.setViewport(int(width/2), 0, width, height) # camera.parts.isometric
+        cam3.setViewport(1920, 0, width, height) # camera.building.isometric
+        cam4.setViewport(0, 0, width, height) # camera.warehouse
 
-    # Setup the sensors.
-    Num1 = controller.sensors["Num1"]
-    Num2 = controller.sensors["Num2"]
-    Num3 = controller.sensors["Num3"]
-    Num4 = controller.sensors["Num4"]
-    Num5 = controller.sensors["Num5"]
-    Num6 = controller.sensors["Num6"]
-    Num7 = controller.sensors["Num7"]
-    Num8 = controller.sensors["Num8"]
-    Num9 = controller.sensors["Num9"]
+        cam1.useViewport = True
+        cam2.useViewport = True
+        cam3.useViewport = False
+        cam4.useViewport = True
+        
+    if building_editor.positive:
+        #scene.active_camera = scene.objects["camera.building.isometric"]
+        #split_screen_2()
+        cam1.setViewport(120, 0, int(width/3), int(height/2)) # camera.parts.top
+        cam2.setViewport(120, int(height/2), int(width/3), height) # camera.parts.isometric
+        cam3.setViewport(int(width/3), 0, width, height+120) # camera.building.isometric
+        cam4.setViewport(0, 0, width, height) # camera.warehouse
+        
+        cam1.useViewport = True
+        cam2.useViewport = True
+        cam3.useViewport = True
+        cam4.useViewport = True
+        
+z = 0
 
-    # Setup the conditions for the camera position and orientation
-    # SW (southwest)
-    if Num1.positive:
-        debug_print("Seting the camera to the SOUTHWEST position.")
-        own.worldPosition = [-32.0, -32.0, 44.0]
-        own.worldOrientation = [
-            [0.7071, 0.5000, -0.5000],
-            [-0.7071, 0.5000, -0.5000],
-            [-0.0000, 0.7071,  0.7071]
-        ]
-    # S (south)
-    if Num2.positive:
-        debug_print("Seting the camera to the SOUTH position.")
-        own.worldPosition = [0.0, -44.0, 44.0]
-        own.worldOrientation = [
-            [1.0000, 0.0000,  0.0000],
-            [0.0000, 0.7071, -0.7071],
-            [-0.0000, 0.7071,  0.7071]
-        ]
-    # S (south)
-    if Num3.positive:
-        debug_print("Seting the camera to the SOUTHEAST position.")
-        own.worldPosition = [32.0, -32.0, 44.0]
-        own.worldOrientation = [
-            [0.7071, -0.5000,  0.5000],
-            [0.7071,  0.5000, -0.5000],
-            [-0.0000,  0.7071,  0.7071]
-        ]
-    # W (west)
-    if Num4.positive:
-        debug_print("Seting the camera to the WEST position.")
-        own.worldPosition = [-44.0, -0.0, 44.0]
-        own.worldOrientation = [
-            [-0.0000,  0.7071, -0.7071],
-            [-1.0000, -0.0000,  0.0000],
-            [-0.0000,  0.7071,  0.7071]
-        ]
-    # O (Original position)
-    if Num5.positive:
-        debug_print("Reseting the camera to its original position.")
-        own.worldPosition = [32.0, -32.0, 44.0]
-        own.worldOrientation = [
-            [0.7071, -0.5000,  0.5000],
-            [0.7071,  0.5000, -0.5000],
-            [-0.0000,  0.7071,  0.7071]
-        ]
-    # E (east)
-    if Num6.positive:
-        debug_print("Seting the camera to the EAST position.")
-        own.worldPosition = [44.0, 0.0, 44.0]
-        own.worldOrientation = [
-            [0.0000, -0.7071,  0.7071],
-            [1.0000,  0.0000, -0.0000],
-            [-0.0000,  0.7071,  0.7071]
-        ]
-    # NW (northwest)
-    if Num7.positive:
-        debug_print("Seting the camera to the NORTHWEST position.")
-        own.worldPosition = [-32.0, 32.0, 44.0]
-        own.worldOrientation = [
-            [-0.7071,  0.5000, -0.5000],
-            [-0.7071, -0.5000,  0.5000],
-            [-0.0000,  0.7071,  0.7071]
-        ]
-    # N (north)
-    if Num8.positive:
-        debug_print("Seting the camera to the NORTH position.")
-        own.worldPosition = [0.0, 44.0, 44.0]
-        own.worldOrientation = [
-            [-1.0000, -0.0000, 0.0000],
-            [0.0000, -0.7071, 0.7071],
-            [-0.0000,  0.7071, 0.7071]
-        ]
-    # NE (northeast)
-    if Num9.positive:
-        debug_print("Seting the camera to the NORTHEAST position.")
-        own.worldPosition = [32.0, 32.0, 44.0]
-        own.worldOrientation = [
-            [-0.7071, -0.5000, 0.5000],
-            [0.7071, -0.5000, 0.5000],
-            [-0.0000,  0.7071, 0.7071]
-        ]
+def camera_rotation():
+    
+    controller = bge.logic.getCurrentController()
+    own = controller.owner
+    
+    rot_left = controller.sensors["arrow_left"]
+    rot_right = controller.sensors["arrow_right"]
+    
+    if rot_left.positive:
+        own.applyRotation([0,0,z+math.pi/2])
+    if rot_right.positive:
+        own.applyRotation([0,0,z-math.pi/2])
+        
+
+def intro_camera():
+    controller = bge.logic.getCurrentController()
+    #any_key = controller.sensors["AllKeys"]
+    left_click = controller.sensors["left_click"]
+    status = controller.owner["status"]
+    print(status)
+    if status == 0:
+        if left_click.positive:
+            scene.active_camera = scene.objects["camera.parts.isometric"]
+            status = 1
