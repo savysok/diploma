@@ -1,4 +1,6 @@
 import bge
+import camera
+from camera import block_editor_layout_1, building_editor_layout_1
 
 scene = bge.logic.getCurrentScene()
 
@@ -15,12 +17,12 @@ def extra_buttons(show_x, hide_x, empty):
         status = own["status"]
 
         if status == "closed":
-            empty.worldPosition.x = 1.3
+            empty.worldPosition.x = 1.575
             own["status"] = "open"
         if status == "open":
             empty.worldPosition.x = 3.0
             own["status"] = "closed"
 
-def save_button_menu():
-    empty = scene.objects["empty.buttons.save"]
-    extra_buttons(1.3, 3.0, scene.objects["empty.buttons.save"])
+#def save_button_menu():
+#    empty = scene.objects["empty.buttons.save"]
+#    extra_buttons(1.3, 3.0, scene.objects["empty.buttons.save"])

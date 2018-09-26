@@ -1,9 +1,9 @@
 import bge
 from random import randint
 
-x = randint(1,5)/1000
-y = randint(1,5)/1000
-z = randint(1,5)/1000
+x = randint(-10,10)/1000
+y = randint(-10,10)/1000
+z = randint(-10,10)/1000
 
 def rotate_cube():
     

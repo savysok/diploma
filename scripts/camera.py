@@ -58,55 +58,13 @@ def camera_zoom():
     active_camera = controller.owner
     
     if mouse_wheel_up.positive:
-        if active_camera.ortho_scale >= 24:
+        if active_camera.ortho_scale >= 36:
             active_camera.ortho_scale -= 6
             
     if mouse_wheel_down.positive:
-        if active_camera.ortho_scale < 24:
+        if active_camera.ortho_scale < 36:
             active_camera.ortho_scale += 6
             
-
-def active_editor():
-    
-    controller = bge.logic.getCurrentController()
-    
-    block_editor = controller.sensors["Key1"]
-    building_editor = controller.sensors["Key2"]
-    
-    cam1 = scene.objects['camera.parts.top']
-    cam2 = scene.objects['camera.parts.isometric']
-    cam3 = scene.objects['camera.building.isometric']
-    cam4 = scene.objects['camera.warehouse']
-    
-    width = bge.render.getWindowWidth()
-    height = bge.render.getWindowHeight()
-    
-    if block_editor.positive:
-        #scene.active_camera = scene.objects["camera.parts.isometric"]
-        #split_screen()
-                #split_screen_2()
-        cam1.setViewport(0, 0, int(width/2), height) # camera.parts.top
-        cam2.setViewport(int(width/2), 0, width, height) # camera.parts.isometric
-        cam3.setViewport(1920, 0, width, height) # camera.building.isometric
-        cam4.setViewport(0, 0, width, height) # camera.warehouse
-
-        cam1.useViewport = True
-        cam2.useViewport = True
-        cam3.useViewport = False
-        cam4.useViewport = True
-        
-    if building_editor.positive:
-        #scene.active_camera = scene.objects["camera.building.isometric"]
-        #split_screen_2()
-        cam1.setViewport(120, 0, int(width/3), int(height/2)) # camera.parts.top
-        cam2.setViewport(120, int(height/2), int(width/3), height) # camera.parts.isometric
-        cam3.setViewport(int(width/3), 0, width, height+120) # camera.building.isometric
-        cam4.setViewport(0, 0, width, height) # camera.warehouse
-        
-        cam1.useViewport = True
-        cam2.useViewport = True
-        cam3.useViewport = True
-        cam4.useViewport = True
         
 z = 0
 
@@ -124,6 +82,73 @@ def camera_rotation():
         own.applyRotation([0,0,z-math.pi/2])
         
 
+cam1 = scene.objects['camera.parts.top'] # camera.parts.top
+cam2 = scene.objects['camera.parts.isometric'] # camera.parts.isometric
+cam3 = scene.objects['camera.building.isometric'] # camera.building.isometric
+cam4 = scene.objects['camera.warehouse'] # camera.warehouse
+
+width = bge.render.getWindowWidth() # screen's resolution (width)
+height = bge.render.getWindowHeight() # screen's reslution (height)
+
+
+def viewport_layout_1():
+    
+    #cam1.setViewport(0, 0, width, height) 
+    cam2.setViewport(int(width/4), 0, width, height) 
+    #cam3.setViewport(1920, 0, width, height) 
+    cam4.setViewport(0, 0, width, height) 
+
+    cam1.useViewport = False
+    cam2.useViewport = True
+    cam3.useViewport = False
+    cam4.useViewport = True
+
+def viewport_layout_2():
+    
+    cam1.setViewport(int(width/4), 0, int(width/2), height) # camera.parts.top
+    cam2.setViewport(int(width/2), 0, width, height) # camera.parts.isometric
+    #cam3.setViewport(1920, 0, width, height) # camera.building.isometric
+    cam4.setViewport(0, 0, width, height) # camera.warehouse
+
+    cam1.useViewport = True
+    cam2.useViewport = True
+    cam3.useViewport = False
+    cam4.useViewport = True
+        
+def viewport_layout_3():
+    
+    cam1.setViewport(int(width/4), int(height/2), int(width/2), height) # camera.parts.top
+    cam2.setViewport(int(width/2), int(height/2), width, height) # camera.parts.isometric
+    cam3.setViewport(int(width/4), 0, width, int(height/2)) # camera.building.isometric
+    cam4.setViewport(0, 0, width, height) # camera.warehouse
+    
+    cam1.useViewport = True
+    cam2.useViewport = True
+    cam3.useViewport = True
+    cam4.useViewport = True
+
+
+def block_editor_layout_1():
+    
+    controller = bge.logic.getCurrentController()
+    own = controller.owner
+
+    mouse_over = controller.sensors["mouse_over"]
+
+    if mouse_over.positive:
+        viewport_layout_2()
+        
+def building_editor_layout_1():
+    
+    controller = bge.logic.getCurrentController()
+    own = controller.owner
+
+    mouse_over = controller.sensors["mouse_over"]
+
+    if mouse_over.positive:
+        viewport_layout_3()
+    
+
 def intro_camera():
     controller = bge.logic.getCurrentController()
     #any_key = controller.sensors["AllKeys"]
@@ -133,4 +158,7 @@ def intro_camera():
     if status == 0:
         if left_click.positive:
             scene.active_camera = scene.objects["camera.parts.isometric"]
+            viewport_layout_1()
             status = 1
+
+

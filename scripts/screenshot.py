@@ -14,8 +14,8 @@ def take_screenshot():
 
     scene = bge.logic.getCurrentScene()
 
-    mouse_over_button = own.sensors["mouse_over_button"]
-    left_click_button = own.sensors["left_click_button"]
+    mouse_over = own.sensors["mouse_over"]
+    left_click = own.sensors["left_click"]
 
     date = time.strftime("%Y%m%d_%H%M%S_")
     screenshot = screenshot_dir+date+'scrnsht.jpg'
@@ -31,5 +31,5 @@ def take_screenshot():
         screenshot
         ]
 
-    if mouse_over_button.positive and left_click_button.positive:
+    if mouse_over.positive and left_click.positive:
         subprocess.run(screenshot_args)

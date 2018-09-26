@@ -12,8 +12,10 @@ bedroom_dimensions = (0, 0)
 kitchen_dimensions = (0, 0)
 livingroom_dimensions = (0, 0)
 
-scene = bge.logic.getCurrentScene()
-
+#scene = bge.logic.getCurrentScene()
+for scene_list in bge.logic.getSceneList():
+    if scene_list.name == "MAIN":
+        scene = scene_list
 
 def create_space():
     
@@ -42,10 +44,11 @@ def create_space():
     if own["room"] == "livingroom":
         preview_space = scene.objects["preview.block_livingroom"]
     
-    object_type = mouse_over.hitObject["type"]
-    #print(object_type)
+    if mouse_over.hitObject["type"]:
+        object_type = mouse_over.hitObject["type"]
     
     if mouse_over.positive and left_click.positive and object_type == "grid_building":
+        
         
         if first_click == 1 and second_click == 1:
             #print("Resetting the click counters")
@@ -94,8 +97,6 @@ def create_space():
                 global bathroom_dimensions
                 bathroom_dimensions = (distance_x, distance_y)
                 print("Bathroom dimensions:",bathroom_dimensions)
-                bathroom_dimension_x = distance_x
-                bathroom_dimension_y = distance_y
             if own["room"] == "bedroom":
                 global bedroom_dimensions
                 bedroom_dimensions = (distance_x, distance_y)
@@ -117,8 +118,18 @@ def create_space():
             preview_space.worldPosition = (first_click_xy[0], first_click_xy[1], mouse_over.hitObject.worldPosition.z)
             #print("First click location:", first_click_xy)
             
+            
 def create_space_bathroom():
-    print("test")
+    print("TODO")
+    
+def create_space_bedroom():
+    print("TODO")
+    
+def create_space_kitchen():
+    print("TODO")
+    
+def create_space_livingroom():
+    print("TODO")
 
 
 # Set the room space
@@ -170,7 +181,7 @@ def reset_space_livingroom():
 
         
 # Create the room grid at the block editor
-def room_grid(room):
+def room_grid(room, dimension_x, dimension_y):
     """Function that creates the grid patternt at the block editor"""
     controller = bge.logic.getCurrentController()
     mouse_over = controller.sensors["mouse_over"]
@@ -178,17 +189,17 @@ def room_grid(room):
     if mouse_over.positive and left_click.positive:
         if distance_x != 0: 
             clear_block_grid()
-            create_grid_pattern(abs(distance_x)/2, abs(distance_y)/2, 0, room)
+            create_grid_pattern(abs(dimension_x)/2, abs(dimension_y)/2, 0, room)
         
 def bathroom_grid():
-    room_grid("grid_block.bathroom")
+    room_grid("grid_block.bathroom", bathroom_dimensions[0], bathroom_dimensions[1])
             
 def bedroom_grid():
-    room_grid("grid_block.bedroom")
+    room_grid("grid_block.bedroom", bedroom_dimensions[0], bedroom_dimensions[1])
             
 def kitchen_grid():
-    room_grid("grid_block.kitchen")
+    room_grid("grid_block.kitchen", kitchen_dimensions[0], kitchen_dimensions[1])
             
 def livingroom_grid():
-    room_grid("grid_block.livingroom")
+    room_grid("grid_block.livingroom", livingroom_dimensions[0], livingroom_dimensions[1])
         
