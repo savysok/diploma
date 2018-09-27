@@ -35,21 +35,34 @@ set001 = [
     ('floor.01.000', 'floor.01.001', 'floor.01.002', 'floor.01.003', 'floor.01.004',
     'floor.02.000', 'floor.02.001', 'floor.02.002', 'floor.02.003', 'floor.02.004'), 
     
-    ('door.001', 'door.000', 'window.000', 'window.001')
+    ('door.001', 'door.000', 'window.000', 'window.001', 'door.interior.000')
     ]
-set002 = [('wall.corner.001', 'wall.001', 'wall.001', 
-    'wall.002', 'wall.000', 'wall.000', 
-    'wall.000', 'wall.001', 'wall.002', 
-    'wall.000'), 
-    ('floor.000', 'floor.001'), 
-    ()]
-set003 = [('wall.corner.002', 'wall.002', 'wall.001', 
-    'wall.002', 'wall.000', 'wall.000', 
-    'wall.000', 'wall.001', 'wall.002', 
-    'wall.000'), 
-    ('floor.000', 'floor.001'), 
-    ()]
-set_anastasia_bathroom = [('wall.subway_tile.000', 'corner_wall.subway_tile.000'), (), ()]
+
+set002 = [
+    
+    ('wall.corner.001', 'wall.000', 'wall.001',
+    'wall.003', 'column.001', 'wall.seperator.single.solid.001', 
+    'wall.seperator.single.door.001', 'wall.seperator.corner.solid.001',
+    'wall.seperator.corner.solid.002', 'wall.seperator.corner.solid.003'),
+    
+    ('floor.01.000', 'floor.01.001', 'floor.01.002', 'floor.01.003', 'floor.01.004',
+    'floor.02.000', 'floor.02.001', 'floor.02.002', 'floor.02.003', 'floor.02.004'), 
+    
+    ('door.001', 'door.000', 'window.000', 'window.001', 'door.interior.000')
+    ]
+    
+set003 = [
+    
+    ('wall.corner.002', 'wall.002', 'wall.001',
+    'wall.003', 'column.001', 'wall.seperator.single.solid.001', 
+    'wall.seperator.single.door.001', 'wall.seperator.corner.solid.001',
+    'wall.seperator.corner.solid.002', 'wall.seperator.corner.solid.003'),
+    
+    ('floor.01.000', 'floor.01.001', 'floor.01.002', 'floor.01.003', 'floor.01.004',
+    'floor.02.000', 'floor.02.001', 'floor.02.002', 'floor.02.003', 'floor.02.004'), 
+    
+    ('door.001', 'door.000', 'window.000', 'window.001', 'door.interior.000')
+    ]
 
 selected_part = set001[0][0] # The first selected part
 
@@ -159,7 +172,7 @@ def object():
         if R.positive and Lshift.positive:      # Rotate the mouse over object
             rayObj.applyRotation([0,0,-math.pi/2])
         
-        included_objects = ['grid_block', 'wall', 'floor']        
+        included_objects = ['grid_block', 'wall', 'floor', 'window', 'door']        
         if left_click.positive:                 # Place an item on the preview's spot
             if rayPos[0] < 50.0 and rayObj["type"] == "grid_block" or rayObj["type"] == "wall" or rayObj["type"] == "floor":
                 obj = scene.addObject(selected_part, preview_space, 0)
@@ -196,88 +209,45 @@ def object():
                     
             
         if right_click.positive:   # Delete object (exclude grid, previews and placeholders)
-            if rayObj["type"] == "wall" or rayObj["type"] == "floor" or rayObj["type"] == "window" or rayObj["type"] == "furniture":
+            if rayObj["type"] == "wall" or rayObj["type"] == "floor" or rayObj["type"] == "window" or rayObj["type"] == "door" or rayObj["type"] == "furniture":
                 for object in scene.objects:
                     if object.name == rayObj.name and object["ID"] == rayObj["ID"]:
                         object.endObject()
                     previous_object = scene.objects["ground.block_editor"]
                 previous_object = scene.objects["ground.block_editor"]
                 
-                
-def create_wall_buttons(set_of_items):
+
+
+
+
+
+
+def create_parts_buttons(set_of_items, category, max_items):
     """Function to create the buttons. Replaces the placeholders with the meshes from the object lists."""
     
     ID = 0 # Starting array number
     
-    number_of_walls = len(set_of_items)
+    number_of_items = len(set_of_items)
     
     # "{0:0=3d}".format(o) <== This means to format the numbers to 3 decimal one. For example, write 3 as 003
-    wall_button = ["placeholder.wall."+str("{0:0=3d}".format(o)) for o in range(0, number_of_walls)]
+    object_button = ["placeholder."+category+"."+str("{0:0=3d}".format(o)) for o in range(0, number_of_items)]
     
     def clear_previous_buttons(): # Replace all the buttons with their default placeholder
-        for i in range(0,9):
-            wall = scene.objects[wall_button[i]]
-            wall.replaceMesh("placeholder.parts.default")
-        
-    #clear_previous_buttons()
+        for i in range(0, max_items):
+            object = scene.objects[object_button[i]]
+            object.replaceMesh("placeholder.parts.default")
    
-    for i in range(0, number_of_walls):
-        wall = scene.objects[wall_button[i]]
-        wall["ID"] = i
-        wall.replaceMesh(set_of_items[i])
+    for i in range(0, number_of_items):
+        object = scene.objects[object_button[i]]
+        object["ID"] = i
+        object.replaceMesh(set_of_items[i])
         
-create_wall_buttons(set001[0])
+create_parts_buttons(set001[0], "wall", 9)
+create_parts_buttons(set001[1], "floor", 9)
+create_parts_buttons(set001[2], "window", 4)
 
-
-def create_floor_buttons(set_of_items):
-    """Function to create the buttons. Replaces the placeholders with the meshes from the object lists."""
-    
-    ID = 0 # Starting array number
-    
-    number_of_floors = len(set_of_items)
-    
-    # "{0:0=3d}".format(o) <== This means to format the numbers to 3 decimal one. For example, write 3 as 003
-    floor_button = ["placeholder.floor."+str("{0:0=3d}".format(o)) for o in range(0, number_of_floors)]
-    
-    def clear_previous_buttons(): # Replace all the buttons with their default placeholder
-        for i in range(0,9):
-            floor = scene.objects[floor_button[i]]
-            floor.replaceMesh("placeholder.parts.default")
-        
-    #clear_previous_buttons()
-   
-    for i in range(0, number_of_floors):
-        floor = scene.objects[floor_button[i]]
-        floor["ID"] = i
-        floor.replaceMesh(set_of_items[i])
-        
-create_floor_buttons(set001[1])
-
-
-def create_window_buttons(set_of_items):
-    """Function to create the buttons. Replaces the placeholders with the meshes from the object lists."""
-    
-    ID = 0 # Starting array number
-    
-    number_of_windows = len(set_of_items)
-    
-    # "{0:0=3d}".format(o) <== This means to format the numbers to 3 decimal one. For example, write 3 as 003
-    window_button = ["placeholder.window."+str("{0:0=3d}".format(o)) for o in range(0, number_of_windows)]
-    
-    def clear_previous_buttons(): # Replace all the buttons with their default placeholder
-        for i in range(0,4):
-            window = scene.objects[window_button[i]]
-            window.replaceMesh("placeholder.parts.default")
-        
-    #clear_previous_buttons()
-   
-    for i in range(0, number_of_windows):
-        window = scene.objects[window_button[i]]
-        window["ID"] = i
-        window.replaceMesh(set_of_items[i])
-        
-create_window_buttons(set001[2])
-
+global selected_set
+selected_set = set001
 
 def set_object():
     
@@ -296,25 +266,13 @@ def set_object():
         print(own.name)
         global selected_part
         if "wall" in own.name: 
-            selected_part = set001[0][ID]
+            selected_part = selected_set[0][ID]
         if "floor" in own.name: 
-            selected_part = set001[1][ID]
+            selected_part = selected_set[1][ID]
         if "window" in own.name: 
-            selected_part = set001[2][ID]
+            selected_part = selected_set[2][ID]
         selected_item.worldPosition = own.worldPosition
-        
-
-def set_object_connector():
-    
-    controller = bge.logic.getCurrentController()
-    own = controller.owner
-    
-    mouse_over = controller.sensors["mouse_over"]
-    left_click = controller.sensors["left_click"]
-    
-    if mouse_over.positive and left_click.positive:
-        global selected_part
-        selected_part = "connector_block"
+        print(selected_set)
 
 
 def preview_mesh():
@@ -326,5 +284,32 @@ def preview_mesh():
     global selected_part
     own.replaceMesh(selected_part)
     
+    
+current_set = 0
 
-#selected_block = "preview.building_editor"
+def change_set():
+    
+    controller = bge.logic.getCurrentController()
+    own = controller.owner
+    
+    mouse_over = controller.sensors["mouse_over"]
+    left_click = controller.sensors["left_click"]
+    
+    global selected_set
+    global current_set
+    
+    available_sets = (set001, set002, set003)
+    
+    if mouse_over.positive and left_click.positive:
+        print("CURRENT SET:",current_set)
+        if current_set == len(available_sets)-1:
+            current_set = -1
+            selected_set = available_sets[current_set]
+        if current_set < len(available_sets)-1:
+            current_set += 1
+            selected_set = available_sets[current_set]
+        
+        create_parts_buttons(available_sets[current_set][0], "wall", 9)
+        create_parts_buttons(available_sets[current_set][1], "floor", 9)
+        create_parts_buttons(available_sets[current_set][2], "window", 4)
+        
