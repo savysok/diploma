@@ -94,9 +94,9 @@ height = bge.render.getWindowHeight() # screen's reslution (height)
 def viewport_layout_1():
     
     #cam1.setViewport(0, 0, width, height) 
-    cam2.setViewport(int(width/4), 0, width, height) 
+    cam2.setViewport(int(width/4), int(height/24), width, height) 
     #cam3.setViewport(1920, 0, width, height) 
-    cam4.setViewport(0, 0, width, height) 
+    cam4.setViewport(0, int(height/24), width, height) 
 
     cam1.useViewport = False
     cam2.useViewport = True
@@ -105,10 +105,10 @@ def viewport_layout_1():
 
 def viewport_layout_2():
     
-    cam1.setViewport(int(width/4), 0, int(width/2), height) # camera.parts.top
-    cam2.setViewport(int(width/2), 0, width, height) # camera.parts.isometric
+    cam1.setViewport(int(width/4), int(height/24), int(width/2), height) # camera.parts.top
+    cam2.setViewport(int(width/2), int(height/24), width, height) # camera.parts.isometric
     #cam3.setViewport(1920, 0, width, height) # camera.building.isometric
-    cam4.setViewport(0, 0, width, height) # camera.warehouse
+    cam4.setViewport(0, int(height/24), width, height) # camera.warehouse
 
     cam1.useViewport = True
     cam2.useViewport = True
@@ -119,8 +119,8 @@ def viewport_layout_3():
     
     cam1.setViewport(int(width/4), int(height/2), int(width/2), height) # camera.parts.top
     cam2.setViewport(int(width/2), int(height/2), width, height) # camera.parts.isometric
-    cam3.setViewport(int(width/4), 0, width, int(height/2)) # camera.building.isometric
-    cam4.setViewport(0, 0, width, height) # camera.warehouse
+    cam3.setViewport(int(width/4), int(height/24), width, int(height/2)) # camera.building.isometric
+    cam4.setViewport(0, int(height/24), width, height) # camera.warehouse
     
     cam1.useViewport = True
     cam2.useViewport = True
@@ -132,10 +132,22 @@ def block_editor_layout_1():
     
     controller = bge.logic.getCurrentController()
     own = controller.owner
-
+    
+    left_click = controller.sensors["left_click"]
     mouse_over = controller.sensors["mouse_over"]
 
-    if mouse_over.positive:
+    if mouse_over.positive and left_click.positive:
+        viewport_layout_1()
+        
+def block_editor_layout_2():
+    
+    controller = bge.logic.getCurrentController()
+    own = controller.owner
+    
+    left_click = controller.sensors["left_click"]
+    mouse_over = controller.sensors["mouse_over"]
+
+    if mouse_over.positive and left_click.positive:
         viewport_layout_2()
         
 def building_editor_layout_1():
@@ -143,9 +155,10 @@ def building_editor_layout_1():
     controller = bge.logic.getCurrentController()
     own = controller.owner
 
+    left_click = controller.sensors["left_click"]
     mouse_over = controller.sensors["mouse_over"]
 
-    if mouse_over.positive:
+    if mouse_over.positive and left_click.positive:
         viewport_layout_3()
     
 

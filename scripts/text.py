@@ -13,8 +13,11 @@ def text_resolution():
     scene.objects["info_text"].resolution = 4
     info_text.resolution = 8
     
-def block_editor_text():
-    text_box("BLOCK EDITOR - Layout 1")
+def block_editor_text_1():
+    text_box("BLOCK EDITOR - Layout 1 (Isometric View)")
     
-def building_editor_text():
+def block_editor_text_2():
+    text_box("BLOCK EDITOR - Layout 2 (Split screen: Isometric and Top views")
+    
+def building_editor_text_1():
     text_box("BUILDING EDITOR - Layout 1")

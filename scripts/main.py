@@ -25,13 +25,18 @@ generate_grid(0) # Generate the grid(s) at level 0
 
 
 # The objects sets
-set001 = [('wall.corner.000', 'wall.000', 'wall.001',
-    'wall.002', 'column.001', 'wall.seperator.single.solid.001', 
+set001 = [
+    
+    ('wall.corner.000', 'wall.000', 'wall.001',
+    'wall.003', 'column.001', 'wall.seperator.single.solid.001', 
     'wall.seperator.single.door.001', 'wall.seperator.corner.solid.001',
     'wall.seperator.corner.solid.002', 'wall.seperator.corner.solid.003'),
+    
     ('floor.01.000', 'floor.01.001', 'floor.01.002', 'floor.01.003', 'floor.01.004',
-    'floor.02.000', 'floor.02.001', 'floor.02.002', 'floor.02.003', 'floor.02.004',), 
-    ()]
+    'floor.02.000', 'floor.02.001', 'floor.02.002', 'floor.02.003', 'floor.02.004'), 
+    
+    ('door.001', 'door.000', 'window.000', 'window.001')
+    ]
 set002 = [('wall.corner.001', 'wall.001', 'wall.001', 
     'wall.002', 'wall.000', 'wall.000', 
     'wall.000', 'wall.001', 'wall.002', 
@@ -105,7 +110,7 @@ def object():
             debug_print("Object's dimensions are:",length, width, height)
             
             #if obj_type != "placeholder" and obj_type != "grid_building" and rayPos[0] < 50.0: # For the block editor
-            included_objects = ['grid_block', 'wall', 'floor']
+            included_objects = ['grid_block', 'wall', 'floor', 'window']
             #if not any(excluded_objects in name for excluded_objects in excluded_objects):
             #if obj_type == "grid_block" or obj_type == "wall" and rayPos[0] < 50.0: # For the block editor
             if any(included_objects in obj_type for included_objects in included_objects) and rayPos[0] < 50.0:     
@@ -191,7 +196,7 @@ def object():
                     
             
         if right_click.positive:   # Delete object (exclude grid, previews and placeholders)
-            if rayObj["type"] == "wall" or rayObj["type"] == "floor" or rayObj["type"] == "furniture":
+            if rayObj["type"] == "wall" or rayObj["type"] == "floor" or rayObj["type"] == "window" or rayObj["type"] == "furniture":
                 for object in scene.objects:
                     if object.name == rayObj.name and object["ID"] == rayObj["ID"]:
                         object.endObject()
@@ -223,6 +228,7 @@ def create_wall_buttons(set_of_items):
         
 create_wall_buttons(set001[0])
 
+
 def create_floor_buttons(set_of_items):
     """Function to create the buttons. Replaces the placeholders with the meshes from the object lists."""
     
@@ -247,7 +253,32 @@ def create_floor_buttons(set_of_items):
         
 create_floor_buttons(set001[1])
 
+
+def create_window_buttons(set_of_items):
+    """Function to create the buttons. Replaces the placeholders with the meshes from the object lists."""
+    
+    ID = 0 # Starting array number
+    
+    number_of_windows = len(set_of_items)
+    
+    # "{0:0=3d}".format(o) <== This means to format the numbers to 3 decimal one. For example, write 3 as 003
+    window_button = ["placeholder.window."+str("{0:0=3d}".format(o)) for o in range(0, number_of_windows)]
+    
+    def clear_previous_buttons(): # Replace all the buttons with their default placeholder
+        for i in range(0,4):
+            window = scene.objects[window_button[i]]
+            window.replaceMesh("placeholder.parts.default")
         
+    #clear_previous_buttons()
+   
+    for i in range(0, number_of_windows):
+        window = scene.objects[window_button[i]]
+        window["ID"] = i
+        window.replaceMesh(set_of_items[i])
+        
+create_window_buttons(set001[2])
+
+
 def set_object():
     
     controller = bge.logic.getCurrentController()
@@ -268,6 +299,8 @@ def set_object():
             selected_part = set001[0][ID]
         if "floor" in own.name: 
             selected_part = set001[1][ID]
+        if "window" in own.name: 
+            selected_part = set001[2][ID]
         selected_item.worldPosition = own.worldPosition
         
 
