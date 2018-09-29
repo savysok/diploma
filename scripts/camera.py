@@ -58,11 +58,11 @@ def camera_zoom():
     active_camera = controller.owner
     
     if mouse_wheel_up.positive:
-        if active_camera.ortho_scale >= 36:
+        if active_camera.ortho_scale >= 12:
             active_camera.ortho_scale -= 6
             
     if mouse_wheel_down.positive:
-        if active_camera.ortho_scale < 36:
+        if active_camera.ortho_scale < 30:
             active_camera.ortho_scale += 6
             
         
@@ -102,6 +102,8 @@ def viewport_layout_1():
     cam2.useViewport = True
     cam3.useViewport = False
     cam4.useViewport = True
+    
+    buttons_empty.worldPosition.y = -1
 
 def viewport_layout_2():
     
@@ -114,18 +116,22 @@ def viewport_layout_2():
     cam2.useViewport = True
     cam3.useViewport = False
     cam4.useViewport = True
+    
+    buttons_empty.worldPosition.y = -1
         
 def viewport_layout_3():
     
     cam1.setViewport(int(width/4), int(height/2), int(width/2), height) # camera.parts.top
-    cam2.setViewport(int(width/2), int(height/2), width, height) # camera.parts.isometric
-    cam3.setViewport(int(width/4), int(height/24), width, int(height/2)) # camera.building.isometric
+    cam2.setViewport(int(width/4), int(height/24), int(width/2), int(height/2)) # camera.parts.isometric
+    cam3.setViewport(int(width/2), int(height/24), width, height) # camera.building.isometric
     cam4.setViewport(0, int(height/24), width, height) # camera.warehouse
     
     cam1.useViewport = True
     cam2.useViewport = True
     cam3.useViewport = True
     cam4.useViewport = True
+    
+    buttons_empty.worldPosition.y = 0
 
 
 def block_editor_layout_1():
@@ -175,3 +181,57 @@ def intro_camera():
             status = 1
 
 
+for buttons_scene in bge.logic.getSceneList():
+    if buttons_scene.name == "GUI-BUTTONS":
+        buttons_empty = buttons_scene.objects["empty.spaces_buttons.parent"]
+        
+        
+def hide_columns():
+    
+    controller = bge.logic.getCurrentController()
+    own = controller.owner
+
+    left_click = controller.sensors["left_click"]
+    mouse_over = controller.sensors["mouse_over"]
+    
+    excluded_objects = ('placeholder', 'grid', 'button')
+    
+    if mouse_over.positive and left_click.positive:
+        for object in scene.objects:
+            if not any(excluded_objects in object.name for excluded_objects in excluded_objects):
+                # bottom and top row buttons
+                if object.worldPosition.x > own.worldPosition.x:
+                    object["visibility"] = 0
+                if object.worldPosition.x <= own.worldPosition.x:
+                    object["visibility"] = 1
+                    
+def hide_rows():
+    
+    controller = bge.logic.getCurrentController()
+    own = controller.owner
+
+    left_click = controller.sensors["left_click"]
+    mouse_over = controller.sensors["mouse_over"]
+    
+    excluded_objects = ('placeholder', 'grid', 'button')
+    
+    if mouse_over.positive and left_click.positive:
+        for object in scene.objects:
+            if not any(excluded_objects in object.name for excluded_objects in excluded_objects):
+                # bottom and top row buttons
+                if object.worldPosition.y < own.worldPosition.y:
+                    object["visibility"] = 0
+                if object.worldPosition.y >= own.worldPosition.y:
+                    object["visibility"] = 1
+                
+def unhide_all_objects():
+    
+    controller = bge.logic.getCurrentController()
+    own = controller.owner
+
+    left_click = controller.sensors["left_click"]
+    mouse_over = controller.sensors["mouse_over"]
+
+    if mouse_over.positive and left_click.positive:
+        for object in scene.objects:
+            object["visibility"] = 1

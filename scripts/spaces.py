@@ -44,11 +44,7 @@ def create_space():
     if own["room"] == "livingroom":
         preview_space = scene.objects["preview.block_livingroom"]
     
-    if mouse_over.hitObject["type"]:
-        object_type = mouse_over.hitObject["type"]
-    
-    if mouse_over.positive and left_click.positive and object_type == "grid_building":
-        
+    if mouse_over.positive and left_click.positive and mouse_over.hitObject["type"] == "grid_building":
         
         if first_click == 1 and second_click == 1:
             #print("Resetting the click counters")
@@ -162,7 +158,7 @@ def reset_space(preview_space, position_x):
     mouse_over = controller.sensors["mouse_over"]
     left_click = controller.sensors["left_click"]
     if mouse_over.positive and left_click.positive:
-        scene.objects[preview_space].worldPosition = [position_x, 0, -10]
+        scene.objects[preview_space].worldPosition = [position_x, 0, -50]
         scene.objects[preview_space].worldScale = [1, 1, 1] 
         #distance_x = 0
         #distance_y = 0
@@ -178,7 +174,29 @@ def reset_space_kitchen():
 
 def reset_space_livingroom():
     reset_space("preview.block_livingroom", 106)
+    
 
+def reset_spaces():
+    controller = bge.logic.getCurrentController()
+    mouse_over = controller.sensors["mouse_over"]
+    left_click = controller.sensors["left_click"]
+    if mouse_over.positive and left_click.positive:
+        reset_space("preview.block_bathroom", 100)
+        reset_space("preview.block_bedroom", 102)
+        reset_space("preview.block_kitchen", 104)
+        reset_space("preview.block_livingroom", 106)
+        clear_previous_room()
+        clear_block_grid()
+        create_grid_pattern(6, 6, 0, "grid_block")
+
+def reset_block_grid():
+    controller = bge.logic.getCurrentController()
+    mouse_over = controller.sensors["mouse_over"]
+    left_click = controller.sensors["left_click"]
+    if mouse_over.positive and left_click.positive:
+        clear_previous_room()
+        clear_block_grid()
+        create_grid_pattern(6, 6, 0, "grid_block")
         
 # Create the room grid at the block editor
 def room_grid(room, dimension_x, dimension_y):
@@ -190,16 +208,49 @@ def room_grid(room, dimension_x, dimension_y):
         if distance_x != 0: 
             clear_block_grid()
             create_grid_pattern(abs(dimension_x)/2, abs(dimension_y)/2, 0, room)
-        
+      
+      
+def clear_previous_room():
+    
+    object_types = ('wall', 'floor', 'window', 'door', 'furniture', 'appliance')
+    
+    for object in scene.objects:
+        if any(object_types in object.name for object_types in object_types) and object.worldPosition.x < 50 and object.worldPosition.x >= -50:
+            object.endObject()
+    
+      
 def bathroom_grid():
-    room_grid("grid_block.bathroom", bathroom_dimensions[0], bathroom_dimensions[1])
+    controller = bge.logic.getCurrentController()
+    mouse_over = controller.sensors["mouse_over"]
+    left_click = controller.sensors["left_click"]
+    if mouse_over.positive and left_click.positive:
+        clear_previous_room()
+        room_grid("grid_block.bathroom", bathroom_dimensions[0], bathroom_dimensions[1])
             
 def bedroom_grid():
-    room_grid("grid_block.bedroom", bedroom_dimensions[0], bedroom_dimensions[1])
+    controller = bge.logic.getCurrentController()
+    mouse_over = controller.sensors["mouse_over"]
+    left_click = controller.sensors["left_click"]
+    if mouse_over.positive and left_click.positive:
+        clear_previous_room()
+        room_grid("grid_block.bedroom", bedroom_dimensions[0], bedroom_dimensions[1])
             
 def kitchen_grid():
-    room_grid("grid_block.kitchen", kitchen_dimensions[0], kitchen_dimensions[1])
+    controller = bge.logic.getCurrentController()
+    mouse_over = controller.sensors["mouse_over"]
+    left_click = controller.sensors["left_click"]
+    if mouse_over.positive and left_click.positive:
+        clear_previous_room()
+        room_grid("grid_block.kitchen", kitchen_dimensions[0], kitchen_dimensions[1])
             
 def livingroom_grid():
-    room_grid("grid_block.livingroom", livingroom_dimensions[0], livingroom_dimensions[1])
+    controller = bge.logic.getCurrentController()
+    mouse_over = controller.sensors["mouse_over"]
+    left_click = controller.sensors["left_click"]
+    if mouse_over.positive and left_click.positive:
+        clear_previous_room()
+        room_grid("grid_block.livingroom", livingroom_dimensions[0], livingroom_dimensions[1])
         
+        
+def recreate_room():
+    print("Recreating the rooms")

@@ -137,3 +137,135 @@ def create_object_list(CSVFile):
         i = i+1
         object_list.append(object_data)
     print("Object list:",object_list)
+    
+### TEST
+def split_screen():
+    camList = bge.logic.getCurrentScene().cameras
+    print(camList)
+
+    cont = bge.logic.getCurrentController()
+    own = cont.owner
+    cam1 = scene.objects['camera.parts.top']
+    cam2 = scene.objects['camera.parts.isometric']
+
+    width = bge.render.getWindowWidth()
+    height = bge.render.getWindowHeight()
+
+    cam1.setViewport(0, 0, int(width/2), height)
+    cam2.setViewport(int(width/2), 0, width, height)
+
+    cam1.useViewport = True
+    cam2.useViewport = True
+    
+    print("Camera configuration 1")
+    
+    
+    
+    
+    
+    
+    
+    
+"""              
+def create_wall_buttons(set_of_items):
+    """Function to create the buttons. Replaces the placeholders with the meshes from the object lists."""
+    
+    ID = 0 # Starting array number
+    
+    number_of_walls = len(set_of_items)
+    
+    # "{0:0=3d}".format(o) <== This means to format the numbers to 3 decimal one. For example, write 3 as 003
+    wall_button = ["placeholder.wall."+str("{0:0=3d}".format(o)) for o in range(0, number_of_walls)]
+    
+    def clear_previous_buttons(): # Replace all the buttons with their default placeholder
+        for i in range(0,9):
+            wall = scene.objects[wall_button[i]]
+            wall.replaceMesh("placeholder.parts.default")
+        
+    #clear_previous_buttons()
+   
+    for i in range(0, number_of_walls):
+        wall = scene.objects[wall_button[i]]
+        wall["ID"] = i
+        wall.replaceMesh(set_of_items[i])
+        
+create_wall_buttons(set001[0])
+
+
+def create_floor_buttons(set_of_items):
+    """Function to create the buttons. Replaces the placeholders with the meshes from the object lists."""
+    
+    ID = 0 # Starting array number
+    
+    number_of_floors = len(set_of_items)
+    
+    # "{0:0=3d}".format(o) <== This means to format the numbers to 3 decimal one. For example, write 3 as 003
+    floor_button = ["placeholder.floor."+str("{0:0=3d}".format(o)) for o in range(0, number_of_floors)]
+    
+    def clear_previous_buttons(): # Replace all the buttons with their default placeholder
+        for i in range(0,9):
+            floor = scene.objects[floor_button[i]]
+            floor.replaceMesh("placeholder.parts.default")
+        
+    #clear_previous_buttons()
+   
+    for i in range(0, number_of_floors):
+        floor = scene.objects[floor_button[i]]
+        floor["ID"] = i
+        floor.replaceMesh(set_of_items[i])
+        
+create_floor_buttons(set001[1])
+
+
+def create_window_buttons(set_of_items):
+    """Function to create the buttons. Replaces the placeholders with the meshes from the object lists."""
+    
+    ID = 0 # Starting array number
+    
+    number_of_windows = len(set_of_items)
+    
+    # "{0:0=3d}".format(o) <== This means to format the numbers to 3 decimal one. For example, write 3 as 003
+    window_button = ["placeholder.window."+str("{0:0=3d}".format(o)) for o in range(0, number_of_windows)]
+    
+    def clear_previous_buttons(): # Replace all the buttons with their default placeholder
+        for i in range(0,4):
+            window = scene.objects[window_button[i]]
+            window.replaceMesh("placeholder.parts.default")
+        
+    #clear_previous_buttons()
+   
+    for i in range(0, number_of_windows):
+        window = scene.objects[window_button[i]]
+        window["ID"] = i
+        window.replaceMesh(set_of_items[i])
+        
+create_window_buttons(set001[2])
+"""
+
+
+
+
+
+    # top row
+    n = -size_x  
+    m = -size_y 
+    while m < size_y-1:
+        x = n-1 
+        y = m+1 
+        z = level
+        preview_space.worldPosition = [x+x_origin, y, z] 
+        #print(preview.worldPosition)
+        obj = scene.addObject(grid_block, preview_space, 0)
+        m += 1
+    
+    # left row
+    n = -size_x
+    #while n < size_x:
+    m = -size_y 
+    while m < size_y-1:
+        x = -n+1 
+        y = m+1 
+        z = level 
+        preview_space.worldPosition = [x+x_origin, y, z]
+        obj = scene.addObject(grid_block, preview_space, 0)  # This adds a grid object at the ghost's position
+        m += 1

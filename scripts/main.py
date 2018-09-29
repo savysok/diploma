@@ -28,7 +28,7 @@ generate_grid(0) # Generate the grid(s) at level 0
 set001 = [
     
     ('wall.corner.000', 'wall.000', 'wall.001',
-    'wall.003', 'column.001', 'wall.seperator.single.solid.001', 
+    'wall.003', 'column.000', 'wall.seperator.single.solid.001', 
     'wall.seperator.single.door.001', 'wall.seperator.corner.solid.001',
     'wall.seperator.corner.solid.002', 'wall.seperator.corner.solid.003'),
     
@@ -45,8 +45,8 @@ set002 = [
     'wall.seperator.single.door.001', 'wall.seperator.corner.solid.001',
     'wall.seperator.corner.solid.002', 'wall.seperator.corner.solid.003'),
     
-    ('floor.01.000', 'floor.01.001', 'floor.01.002', 'floor.01.003', 'floor.01.004',
-    'floor.02.000', 'floor.02.001', 'floor.02.002', 'floor.02.003', 'floor.02.004'), 
+    ('floor.04.000', 'floor.04.001', 'floor.04.002', 'floor.04.003', 'floor.04.004',
+    'floor.03.000', 'floor.03.001', 'floor.03.002', 'floor.03.003', 'floor.03.004'), 
     
     ('door.001', 'door.000', 'window.000', 'window.001', 'door.interior.000')
     ]
@@ -54,12 +54,12 @@ set002 = [
 set003 = [
     
     ('wall.corner.002', 'wall.002', 'wall.001',
-    'wall.003', 'column.001', 'wall.seperator.single.solid.001', 
+    'wall.003', 'column.002', 'wall.seperator.single.solid.001', 
     'wall.seperator.single.door.001', 'wall.seperator.corner.solid.001',
     'wall.seperator.corner.solid.002', 'wall.seperator.corner.solid.003'),
     
-    ('floor.01.000', 'floor.01.001', 'floor.01.002', 'floor.01.003', 'floor.01.004',
-    'floor.02.000', 'floor.02.001', 'floor.02.002', 'floor.02.003', 'floor.02.004'), 
+    ('floor.02.000', 'floor.02.001', 'floor.02.002', 'floor.02.003', 'floor.02.004',
+    'floor.01.000', 'floor.01.001', 'floor.01.002', 'floor.01.003', 'floor.01.004'), 
     
     ('door.001', 'door.000', 'window.000', 'window.001', 'door.interior.000')
     ]
@@ -126,7 +126,7 @@ def object():
             included_objects = ['grid_block', 'wall', 'floor', 'window']
             #if not any(excluded_objects in name for excluded_objects in excluded_objects):
             #if obj_type == "grid_block" or obj_type == "wall" and rayPos[0] < 50.0: # For the block editor
-            if any(included_objects in obj_type for included_objects in included_objects) and rayPos[0] < 50.0:     
+            if any(included_objects in obj_type for included_objects in included_objects) and rayPos[0] < 50.0:
                 # X axis
                 if rayNormal[0] == 1:
                     preview_space.worldPosition = [rayObj.worldPosition.x + length, rayObj.worldPosition.y, rayObj.worldPosition.z]

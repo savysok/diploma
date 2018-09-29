@@ -192,9 +192,7 @@ def change_block(file):
     living_rooms = [f for f in os.listdir(livingroom_dir + '/') if 'livingroom' in f]
     
     global block_in_list
-    
-    
-    
+
     if change_block.positive:
         
         if block_in_list >= len(living_rooms):
