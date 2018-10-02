@@ -16,23 +16,36 @@ The project is currently a work-in-progress and under contstruction.
 
 - **"_point and click_"**: placement of the modular pieces with the click of a button
 
+### TODO:
 
-### Examples
+- **3d printing**: export the creation to .STL
+
+- **save the creation**: save and load your creation
+
+### Examples:
 
 **Block Editor**
+
 single viewport (isometric view)
 ![Block Editor screenshot](https://imgur.com/XGWlti0.gif "Block Editor")
 
 
 **Block Editor**
+
 split viewport (top and isometric views)
 ![Block Editor screenshot](https://imgur.com/4WVatBx.gif "Block Editor")
 
 
 **Building Editor - split view**
+
 split viewport (top and isometric block editor view on the left,
+
   isometric building editor view on the right)
 ![Building Editor screenshot](https://imgur.com/VnN6Gjr.gif "Building Editor")
 
+
+### Usage:
+
+![Keyboard Layout](https://imgur.com/P2h5Mdh.png "Keyboard Layout")
 
 More info coming soon..
