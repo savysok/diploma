@@ -10,11 +10,13 @@ The main idea was the creation of an architectural design program targeted at pe
 
 The project is currently a work-in-progress and under contstruction.
 
+
 ### Features:
 
-- **modular building system**: create buildings from pre-modeled pieces
+- **modular building system**: create buildings from pre-modeled building pieces (Walls, Floors, Furniture/Appliances)
 
 - **"_point and click_"**: placement of the modular pieces with the click of a button
+
 
 ### TODO:
 
@@ -22,45 +24,52 @@ The project is currently a work-in-progress and under contstruction.
 
 - **save the creation**: save and load your creation
 
+
 ### Examples:
 
-**Block Editor**
 
-single viewport (isometric view)
+**Block Editor**:
 ![Block Editor screenshot](https://imgur.com/XGWlti0.gif "Block Editor")
+single viewport (isometric view)
 
 
-**Block Editor**
-split viewport (top and isometric views)
+**Block Editor**:
 ![Block Editor screenshot](https://imgur.com/4WVatBx.gif "Block Editor")
+split viewport (top and isometric views)
 
 
-**Building Editor - split view**
+**Building Editor - split view**:
+![Building Editor screenshot](https://imgur.com/VnN6Gjr.gif "Building Editor")
 split viewport (top and isometric block editor view on the left,
 isometric building editor view on the right)
-![Building Editor screenshot](https://imgur.com/VnN6Gjr.gif "Building Editor")
 
 
 ### Usage:
 
 ![Keyboard Layout](https://imgur.com/P2h5Mdh.png "Keyboard Layout")
+
+#### MOUSE:
 - **Left click**: Select/Add Item
 - **Right click**: Remove Item
+
+#### KEYBOARD:
 - **R button**: Rotate Selected Item
 - **SHIFT+R**: Rotate Item that the pointer is showing
 - **SHIFT button** (hold): Hide the Selected Item
 
-ARROW KEYS:
+#### ARROW KEYS:
 - **Left arrow key**: Rotate All Cameras Counter-clockwise
 - **Right arrow key**: Rotate All Cameras Clockwise
 
 - **Up arrow key**: Go up one level (move grid upwards)
 - **Down arrow key**: Go down one level (move grid downwards)
 
-BUILDING EDITOR CAMERA (only):
+#### BUILDING EDITOR CAMERA (only):
 - **W button**: Move Camera up
 - **A button**: Move Camera left
 - **S button**: Move Camera down
 - **D button**: Move Camera right
+
+- **Esc**: Exit the program
 
 More info coming soon..
