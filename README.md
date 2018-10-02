@@ -31,21 +31,36 @@ single viewport (isometric view)
 
 
 **Block Editor**
-
 split viewport (top and isometric views)
 ![Block Editor screenshot](https://imgur.com/4WVatBx.gif "Block Editor")
 
 
 **Building Editor - split view**
-
 split viewport (top and isometric block editor view on the left,
-
-  isometric building editor view on the right)
+isometric building editor view on the right)
 ![Building Editor screenshot](https://imgur.com/VnN6Gjr.gif "Building Editor")
 
 
 ### Usage:
 
 ![Keyboard Layout](https://imgur.com/P2h5Mdh.png "Keyboard Layout")
+- **Left click**: Select/Add Item
+- **Right click**: Remove Item
+- **R button**: Rotate Selected Item
+- **SHIFT+R**: Rotate Item that the pointer is showing
+- **SHIFT button** (hold): Hide the Selected Item
+
+ARROW KEYS:
+- **Left arrow key**: Rotate All Cameras Counter-clockwise
+- **Right arrow key**: Rotate All Cameras Clockwise
+
+- **Up arrow key**: Go up one level (move grid upwards)
+- **Down arrow key**: Go down one level (move grid downwards)
+
+BUILDING EDITOR CAMERA (only):
+- **W button**: Move Camera up
+- **A button**: Move Camera left
+- **S button**: Move Camera down
+- **D button**: Move Camera right
 
 More info coming soon..
