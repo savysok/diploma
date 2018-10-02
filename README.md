@@ -18,12 +18,11 @@ The project is currently a work-in-progress and under contstruction.
 
 - **dynamic loading of models**: import your models blend file in the "models" subfolder and it will appear in the program next time you start it
 
+![Block Editor screenshot](https://imgur.com/XGWlti0.gif "Block Editor")
 
-![Block Editor screenshot](https://imgur.com/XGWlti0 "Block Editor")
+![Block Editor screenshot](https://imgur.com/4WVatBx.gif "Block Editor")
 
-![Block Editor screenshot](https://imgur.com/4WVatBx "Block Editor")
-
-![Building Editor screenshot](https://imgur.com/VnN6Gjr "Building Editor")
+![Building Editor screenshot](https://imgur.com/VnN6Gjr.gif "Building Editor")
 
 
 More info coming soon..
