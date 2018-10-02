@@ -27,7 +27,6 @@ The project is currently a work-in-progress and under contstruction.
 
 ### Examples:
 
-
 **Block Editor**:
 ![Block Editor screenshot](https://imgur.com/XGWlti0.gif "Block Editor")
 single viewport (isometric view)
