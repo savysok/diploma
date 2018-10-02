@@ -16,12 +16,22 @@ The project is currently a work-in-progress and under contstruction.
 
 - **"_point and click_"**: placement of the modular pieces with the click of a button
 
-- **dynamic loading of models**: import your models blend file in the "models" subfolder and it will appear in the program next time you start it
 
+### Examples
+
+**Block Editor**
+single viewport (isometric view)
 ![Block Editor screenshot](https://imgur.com/XGWlti0.gif "Block Editor")
 
+
+**Block Editor**
+split viewport (top and isometric views)
 ![Block Editor screenshot](https://imgur.com/4WVatBx.gif "Block Editor")
 
+
+**Building Editor - split view**
+split viewport (top and isometric block editor view on the left,
+  isometric building editor view on the right)
 ![Building Editor screenshot](https://imgur.com/VnN6Gjr.gif "Building Editor")
 
 
