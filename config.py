@@ -6,6 +6,7 @@ import os
 #data_dir = os.path.abspath(__file__ + '/../data') + '/'
 #info_dir = os.path.abspath(__file__ + '/../info') + '/'
 #models_dir = os.path.abspath(__file__ + '/../models') + '/'
-#custom_dir = os.path.abspath(__file__ + '/../custom') + '/'
+custom_dir = os.path.abspath(__file__ + '/../custom') + '/'
 #textures_dir = os.path.abspath(__file__+'/../textures') + '/' ### Not needed for now
+save_dir = os.path.abspath(__file__+'/../save') + '/'
 screenshot_dir = os.path.abspath(__file__+'/../screenshots') + '/'
