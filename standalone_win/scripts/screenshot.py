@@ -20,16 +20,5 @@ def take_screenshot():
     date = time.strftime("%Y%m%d_%H%M%S_")
     screenshot = screenshot_dir+date+'scrnsht.jpg'
 
-    screenshot_args = [
-        'import',
-        '-window',
-        'root',
-        '-resize',
-        '1920x1280',
-        '-delay',
-        '200',
-        screenshot
-        ]
-
     if mouse_over.positive and left_click.positive:
-        subprocess.run(screenshot_args)
+        bge.render.makeScreenshot(screenshot)
