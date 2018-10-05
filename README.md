@@ -47,7 +47,7 @@ split viewport (top and isometric block editor view on the left,
 isometric building editor view on the right)
 
 
-### Usage:
+### CONTROLS:
 
 ![Keyboard Layout](https://imgur.com/P2h5Mdh.png "Keyboard Layout")
 
@@ -85,14 +85,25 @@ isometric building editor view on the right)
 - **SAVE**: Saves your current creation in a CSV file
 - **LOAD**: Loads your previous creations, starting from the latest one first
 
-![Camera Buttons](https://imgur.com/5OboE5s "Camera Buttons")
+![Camera Buttons](https://imgur.com/5OboE5s.jpg "Camera Buttons")
 
 - **Viewport 1**: Single isometric view. This is the initial screen
 - **Viewport 2**: Split view: Top and Isometric views. Items you place in one appear at the other.
 - **Viewport 3**: Split view with the Space Organizer: Left are the Top and Isometric views, right is the Space Organizer view. More info on the Space Organizer coming soon.
 
-![Set Buttons](https://imgur.com/hTKhyVt "Set Buttons")
+![Set Buttons](https://imgur.com/hTKhyVt.jpg "Set Buttons")
 - **Light gray button**: Architectural pieces sets. Cycle through all the availabe architectural pieces, like Walls, Floors, Windows etc.
 - **Dark gray button**: Furniture and Appliances pieces sets. Cycle through the available furniture and/or house appliances pieces, like kitchens, beds, chairs etc.
 
 More info about the program and its functions are coming soon..
+
+### PROGRAMS
+
+All the programs used in the creation of the program are free and open-source.
+
+- **Blender** ![Blender](https://www.blender.org/ "Blender")
+- **Python** ![Python](https://www.python.org/ "Python")
+- **GIMP** ![GIMP](https://www.gimp.org/ "GIMP")
+- **Inkscape** ![Inkscape](https://inkscape.org/en/ "Inkscape")
+
+- The program was created in Ubuntu 16.04/18.04 ![Ubuntu](https://www.ubuntu.com/ "Ubuntu")
