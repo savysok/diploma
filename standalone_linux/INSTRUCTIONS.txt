@@ -1,0 +1,3 @@
+Open a terminal in this folder and type
+
+./block_editor

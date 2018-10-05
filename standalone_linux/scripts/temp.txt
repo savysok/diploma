@@ -1,0 +1,302 @@
+# create_block
+"""
+def create_block(CSVfile):
+    """Function to create a building from CSV file.
+    Needs a little more work.
+    """
+    
+    controller = bge.logic.getCurrentController()
+    own = controller.owner
+    print(own)
+    
+    DataFile = custom_dir+CSVfile  # The CSVfile that holds the instructions
+
+    with open(DataFile, "r") as D:
+        CSVreader = csv.reader(D, delimiter = ",")
+        data = list(CSVreader)
+        row_count = (len(data)-1) # Count the rows
+        debug_print("There are ", row_count, "rows of data")
+
+    # Retrieve the data from the csv file and seperate them
+    # to item name, x location, y location, z location and rotation.
+    with open(DataFile) as D:
+        items = [row["ITEM"] for row in DictReader(D)]
+    with open(DataFile) as X:
+        locationX = [row["X"] for row in DictReader(X)]
+    with open(DataFile) as Y:
+        locationY = [row["Y"] for row in DictReader(Y)]
+    with open(DataFile) as Z:
+        locationZ = [row["Z"] for row in DictReader(Z)]
+    with open(DataFile) as R:
+        rotationR = [row["ROTATION"] for row in DictReader(R)]
+
+    i=0  # Start from the first row
+    while i < row_count:
+        x = float(locationX[i])
+        y = float(locationY[i])
+        z = float(locationZ[i])
+        r = float(rotationR[i])
+        debug_print ("Item", i, "is:", items[i],
+               "\nItem", i, "'s X position is:", locationX[i],
+               "\nItem", i, "'s Y position is:", locationY[i],
+               "\nItem", i, "'s Z position is:", locationZ[i],
+               "\nItem", i, "'s Rotation is:", rotationR[i],
+               "\n")
+        emitter.worldPosition = [x+preview_block.worldPosition.x, y+preview_block.worldPosition.y, z+preview_block.worldPosition.z]
+        
+        #print(preview_block.worldOrientation.to_euler().z)
+
+        # This one was tricky: rotate the empty according to the
+        # radian(?) values of the CSV file.
+        # First, convert the local orientation to Euler.
+        xyz = emitter.localOrientation.to_euler()
+        debug_print("Before the rotation. Z rotation is:", xyz[2])
+        # Then, change the Z value of the rotation
+        # to the one from the CSV file.
+        xyz[2] = r
+        debug_print("After the rotation. Z rotation is:", xyz[2])
+        # Finally, change the empty's local orientation
+        # with the new Z value.
+        emitter.localOrientation = xyz.to_matrix()
+
+        obj = scene.addObject(items[i], emitter, 0)
+        i = i+1
+    
+#create_block("kitchen20180727154104.csv")
+    
+    
+#create_preview_block("bathroom20180727112525.csv")
+"""
+
+
+    #while i < len(object_list):
+    #    print(object_list[i][0])
+    #    emitter.worldPosition.x = object_list[i][1]+emitter.worldPosition.x
+    #    emitter.worldPosition.y = object_list[i][2]
+    #    emitter.worldPosition.z = object_list[i][3]
+    #    xyz = emitter.localOrientation.to_euler()
+    #    xyz[2] = object_list[i][4]
+    #    emitter.localOrientation = xyz.to_matrix()
+    #    obj = obj = scene.addObject(object_list[i][0], emitter, 0)
+    #    i = i+1
+    #emitter.worldPosition = [100.0, 0.0, 0.0]
+    #print(emitter.worldPosition)
+    
+def create_object_list(CSVFile):
+    """Function to create the list containing all the object data like
+    part's name and location.
+    """
+    
+    print("Creating the objects list")
+    
+    global object_list 
+    object_list = []
+    
+    controller = bge.logic.getCurrentController()
+    own = controller.owner
+    
+    DataFile = custom_dir+CSVFile  # The CSVfile that holds the instructions
+
+    with open(DataFile, "r") as D:
+        CSVreader = csv.reader(D, delimiter = ",")
+        data = list(CSVreader)
+        row_count = (len(data)-1) # Count the rows
+        #print("There are ", row_count, "rows of data")
+
+    # Retrieve the data from the csv file and seperate them
+    # to item name, x location, y location, z location and rotation.
+    with open(DataFile) as D:
+        items = [row["ITEM"] for row in DictReader(D)]
+    with open(DataFile) as X:
+        locationX = [row["X"] for row in DictReader(X)]
+    with open(DataFile) as Y:
+        locationY = [row["Y"] for row in DictReader(Y)]
+    with open(DataFile) as Z:
+        locationZ = [row["Z"] for row in DictReader(Z)]
+    with open(DataFile) as R:
+        rotationR = [row["ROTATION"] for row in DictReader(R)]
+    
+    i = 0  # Start from the first row
+    while i < row_count:
+        x = float(locationX[i])
+        y = float(locationY[i])
+        z = float(locationZ[i])
+        r = float(rotationR[i])
+        debug_print ("Item", i, "is:", items[i],
+               "\nItem", i, "'s X position is:", locationX[i],
+               "\nItem", i, "'s Y position is:", locationY[i],
+               "\nItem", i, "'s Z position is:", locationZ[i],
+               "\nItem", i, "'s Rotation is:", rotationR[i],
+               "\n")
+        object_data = []
+        object_data.append(items[i])
+        object_data.append(x)
+        object_data.append(y)
+        object_data.append(z)
+        object_data.append(r)
+        i = i+1
+        object_list.append(object_data)
+    print("Object list:",object_list)
+    
+### TEST
+def split_screen():
+    camList = bge.logic.getCurrentScene().cameras
+    print(camList)
+
+    cont = bge.logic.getCurrentController()
+    own = cont.owner
+    cam1 = scene.objects['camera.parts.top']
+    cam2 = scene.objects['camera.parts.isometric']
+
+    width = bge.render.getWindowWidth()
+    height = bge.render.getWindowHeight()
+
+    cam1.setViewport(0, 0, int(width/2), height)
+    cam2.setViewport(int(width/2), 0, width, height)
+
+    cam1.useViewport = True
+    cam2.useViewport = True
+    
+    print("Camera configuration 1")
+    
+    
+    
+    
+    
+    
+    
+    
+"""              
+def create_wall_buttons(set_of_items):
+    """Function to create the buttons. Replaces the placeholders with the meshes from the object lists."""
+    
+    ID = 0 # Starting array number
+    
+    number_of_walls = len(set_of_items)
+    
+    # "{0:0=3d}".format(o) <== This means to format the numbers to 3 decimal one. For example, write 3 as 003
+    wall_button = ["placeholder.wall."+str("{0:0=3d}".format(o)) for o in range(0, number_of_walls)]
+    
+    def clear_previous_buttons(): # Replace all the buttons with their default placeholder
+        for i in range(0,9):
+            wall = scene.objects[wall_button[i]]
+            wall.replaceMesh("placeholder.parts.default")
+        
+    #clear_previous_buttons()
+   
+    for i in range(0, number_of_walls):
+        wall = scene.objects[wall_button[i]]
+        wall["ID"] = i
+        wall.replaceMesh(set_of_items[i])
+        
+create_wall_buttons(set001[0])
+
+
+def create_floor_buttons(set_of_items):
+    """Function to create the buttons. Replaces the placeholders with the meshes from the object lists."""
+    
+    ID = 0 # Starting array number
+    
+    number_of_floors = len(set_of_items)
+    
+    # "{0:0=3d}".format(o) <== This means to format the numbers to 3 decimal one. For example, write 3 as 003
+    floor_button = ["placeholder.floor."+str("{0:0=3d}".format(o)) for o in range(0, number_of_floors)]
+    
+    def clear_previous_buttons(): # Replace all the buttons with their default placeholder
+        for i in range(0,9):
+            floor = scene.objects[floor_button[i]]
+            floor.replaceMesh("placeholder.parts.default")
+        
+    #clear_previous_buttons()
+   
+    for i in range(0, number_of_floors):
+        floor = scene.objects[floor_button[i]]
+        floor["ID"] = i
+        floor.replaceMesh(set_of_items[i])
+        
+create_floor_buttons(set001[1])
+
+
+def create_window_buttons(set_of_items):
+    """Function to create the buttons. Replaces the placeholders with the meshes from the object lists."""
+    
+    ID = 0 # Starting array number
+    
+    number_of_windows = len(set_of_items)
+    
+    # "{0:0=3d}".format(o) <== This means to format the numbers to 3 decimal one. For example, write 3 as 003
+    window_button = ["placeholder.window."+str("{0:0=3d}".format(o)) for o in range(0, number_of_windows)]
+    
+    def clear_previous_buttons(): # Replace all the buttons with their default placeholder
+        for i in range(0,4):
+            window = scene.objects[window_button[i]]
+            window.replaceMesh("placeholder.parts.default")
+        
+    #clear_previous_buttons()
+   
+    for i in range(0, number_of_windows):
+        window = scene.objects[window_button[i]]
+        window["ID"] = i
+        window.replaceMesh(set_of_items[i])
+        
+create_window_buttons(set001[2])
+"""
+
+
+
+
+
+    # top row
+    n = -size_x  
+    m = -size_y 
+    while m < size_y-1:
+        x = n-1 
+        y = m+1 
+        z = level
+        preview_space.worldPosition = [x+x_origin, y, z] 
+        #print(preview.worldPosition)
+        obj = scene.addObject(grid_block, preview_space, 0)
+        m += 1
+    
+    # left row
+    n = -size_x
+    #while n < size_x:
+    m = -size_y 
+    while m < size_y-1:
+        x = -n+1 
+        y = m+1 
+        z = level 
+        preview_space.worldPosition = [x+x_origin, y, z]
+        obj = scene.addObject(grid_block, preview_space, 0)  # This adds a grid object at the ghost's position
+        m += 1
+        
+        
+#def take_screenshot():
+#    """Function to take a screenshot.
+#    Requires Imagemagick in Linux.
+#    Windows support is in the TODO list.
+#    """
+#    controller = bge.logic.getCurrentController()
+#    own = controller.owner
+#
+#    scene = bge.logic.getCurrentScene()
+#
+#    mouse_over = own.sensors["mouse_over"]
+#    left_click = own.sensors["left_click"]
+#
+#    date = time.strftime("%Y%m%d_%H%M%S_")
+#    screenshot = screenshot_dir+date+'scrnsht.jpg'
+#
+#    screenshot_args = [
+#        'import',
+#        '-window',
+#        'root',
+#        '-resize',
+#        '1920x1280',
+#        '-delay',
+#        '200',
+#        screenshot
+#        ]
+#
+#    if mouse_over.positive and left_click.positive:
+#        subprocess.run(screenshot_args)
