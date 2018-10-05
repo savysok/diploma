@@ -1,28 +1,8 @@
 import bge
 import math
 
-scene = bge.logic.getCurrentScene()
 
-            
-def select_camera():
-    
-    controller = bge.logic.getCurrentController()
-    
-    facade = controller.sensors["F"] # front view (orthographic)
-    top = controller.sensors["T"] # top view (orthographic)
-    corner = controller.sensors["C"] # corner view (isometric)
-    
-    if facade.positive:
-        print("Switching to the facade camera")
-        scene.active_camera = scene.objects["camera.parts.facade"]
-        
-    if top.positive:
-        print("Switching to the top camera")
-        scene.active_camera = scene.objects["camera.parts.top"]
-        
-    if corner.positive:
-        print("Switching to the isometric")
-        scene.active_camera = scene.objects["camera.parts.isometric"]
+scene = bge.logic.getCurrentScene()
       
         
 def camera_move():
@@ -87,11 +67,11 @@ cam2 = scene.objects['camera.parts.isometric'] # camera.parts.isometric
 cam3 = scene.objects['camera.building.isometric'] # camera.building.isometric
 cam4 = scene.objects['camera.warehouse'] # camera.warehouse
 
-width = bge.render.getWindowWidth() # screen's resolution (width)
-height = bge.render.getWindowHeight() # screen's reslution (height)
-
 
 def viewport_layout_1():
+    
+    width = bge.render.getWindowWidth() # screen's resolution (width)
+    height = bge.render.getWindowHeight() # screen's reslution (height)
     
     #cam1.setViewport(0, 0, width, height) 
     cam2.setViewport(int(width/4), int(height/24), width, height) 
@@ -107,6 +87,9 @@ def viewport_layout_1():
 
 def viewport_layout_2():
     
+    width = bge.render.getWindowWidth() # screen's resolution (width)
+    height = bge.render.getWindowHeight() # screen's reslution (height)
+    
     cam1.setViewport(int(width/4), int(height/24), int(width/2), height) # camera.parts.top
     cam2.setViewport(int(width/2), int(height/24), width, height) # camera.parts.isometric
     #cam3.setViewport(1920, 0, width, height) # camera.building.isometric
@@ -120,6 +103,9 @@ def viewport_layout_2():
     buttons_empty.worldPosition.y = -1
         
 def viewport_layout_3():
+    
+    width = bge.render.getWindowWidth() # screen's resolution (width)
+    height = bge.render.getWindowHeight() # screen's reslution (height)
     
     cam1.setViewport(int(width/4), int(height/2), int(width/2), height) # camera.parts.top
     cam2.setViewport(int(width/4), int(height/24), int(width/2), int(height/2)) # camera.parts.isometric
@@ -235,3 +221,17 @@ def unhide_all_objects():
     if mouse_over.positive and left_click.positive:
         for object in scene.objects:
             object["visibility"] = 1
+            
+            
+def fullscreen():
+    
+    print("Working on it")
+    
+    
+#print(bge.app.version)
+#print(bge.app.version_string)
+#print(bge.app.version_char)
+#print(bge.render.getDisplayDimensions())
+#bge.render.setFullScreen(True)
+#bge.render.setWindowSize(800, 600)
+#bge.render.showProperties(True)
