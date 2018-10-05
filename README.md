@@ -25,6 +25,8 @@ The project is currently a work-in-progress and under contstruction.
 - **3d printing**: export your creation to .STL format, suitable for 3d printing (WIP)
 
 
+
+
 ### Examples:
 
 **Block Editor**:
@@ -44,6 +46,8 @@ Like the single viewport, add your pieces either on the top-down view or the iso
 *split viewport (top and isometric block editor view on the left,
 isometric building editor view on the right)*
 Here you can create first some spaces on the right and work on them in detail on the left. More info for the feature coming soon.
+
+
 
 
 ### CONTROLS:
@@ -77,6 +81,9 @@ The program uses a few Keyboard keys and the Mouse.
 
 - **Backspace**: Exit the program
 
+
+
+
 ### UI Buttons
 
 The UI Buttons are located at the bottom of the screen and execute certain functions.
@@ -108,12 +115,15 @@ These buttons change the sets of pieces available to create a building.
 
 More info about the program and its functions are coming soon..
 
+
+
+
 ### PROGRAMS
 All the programs used in the creation of the program are free and open-source.
 
-- **Blender** [Blender](https://www.blender.org/ "Blender")
-- **Python** [Python](https://www.python.org/ "Python")
-- **GIMP** [GIMP](https://www.gimp.org/ "GIMP")
-- **Inkscape** [Inkscape](https://inkscape.org/en/ "Inkscape")
+- **[Blender](https://www.blender.org/ "Blender")**
+- **[Python](https://www.python.org/ "Python")**
+- **[GIMP](https://www.gimp.org/ "GIMP")**
+- **[Inkscape](https://inkscape.org/en/ "Inkscape")**
 
-- The program was created in Ubuntu 16.04/18.04 ![Ubuntu](https://www.ubuntu.com/ "Ubuntu")
+- The program was created in [Ubuntu](https://www.ubuntu.com/ "Ubuntu") 16.04/18.04
