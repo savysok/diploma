@@ -29,25 +29,26 @@ The project is currently a work-in-progress and under contstruction.
 
 **Block Editor**:
 ![Block Editor screenshot](https://imgur.com/XGWlti0.gif "Block Editor")
-single viewport (isometric view)
-
+*single viewport (isometric view)*
 Select your building blocks from left and add them in the grid space to the right.
 
 
 **Block Editor**:
 ![Block Editor screenshot](https://imgur.com/4WVatBx.gif "Block Editor")
-split viewport (top and isometric views)
-
+*split viewport (top and isometric views)*
 Like the single viewport, add your pieces either on the top-down view or the isometric one. The blocks appear in both at the same time.
 
 
 **Building Editor - split view**:
 ![Building Editor screenshot](https://imgur.com/VnN6Gjr.gif "Building Editor")
-split viewport (top and isometric block editor view on the left,
-isometric building editor view on the right)
+*split viewport (top and isometric block editor view on the left,
+isometric building editor view on the right)*
+Here you can create first some spaces on the right and work on them in detail on the left. More info for the feature coming soon.
 
 
 ### CONTROLS:
+
+The program uses a few Keyboard keys and the Mouse.
 
 ![Keyboard Layout](https://imgur.com/P2h5Mdh.png "Keyboard Layout")
 
@@ -78,6 +79,11 @@ isometric building editor view on the right)
 
 ### UI Buttons
 
+The UI Buttons are located at the bottom of the screen and execute certain functions.
+
+
+### System Buttons
+These buttons execute system functions like Exit, Reload, Save and Load.
 ![System Buttons](https://imgur.com/GSw1QQt.jpg "System Buttons")
 
 - **EXIT**: Exits the program
@@ -85,12 +91,17 @@ isometric building editor view on the right)
 - **SAVE**: Saves your current creation in a CSV file
 - **LOAD**: Loads your previous creations, starting from the latest one first
 
+### Camera Buttons
+These buttons change the viewport layout of the screen, offering three ways to design.
 ![Camera Buttons](https://imgur.com/5OboE5s.jpg "Camera Buttons")
 
 - **Viewport 1**: Single isometric view. This is the initial screen
 - **Viewport 2**: Split view: Top and Isometric views. Items you place in one appear at the other.
 - **Viewport 3**: Split view with the Space Organizer: Left are the Top and Isometric views, right is the Space Organizer view. More info on the Space Organizer coming soon.
 
+
+### Set Buttons
+These buttons change the sets of pieces available to create a building.
 ![Set Buttons](https://imgur.com/hTKhyVt.jpg "Set Buttons")
 - **Light gray button**: Architectural pieces sets. Cycle through all the availabe architectural pieces, like Walls, Floors, Windows etc.
 - **Dark gray button**: Furniture and Appliances pieces sets. Cycle through the available furniture and/or house appliances pieces, like kitchens, beds, chairs etc.
@@ -98,12 +109,11 @@ isometric building editor view on the right)
 More info about the program and its functions are coming soon..
 
 ### PROGRAMS
-
 All the programs used in the creation of the program are free and open-source.
 
-- **Blender** ![Blender](https://www.blender.org/ "Blender")
-- **Python** ![Python](https://www.python.org/ "Python")
-- **GIMP** ![GIMP](https://www.gimp.org/ "GIMP")
-- **Inkscape** ![Inkscape](https://inkscape.org/en/ "Inkscape")
+- **Blender** [Blender](https://www.blender.org/ "Blender")
+- **Python** [Python](https://www.python.org/ "Python")
+- **GIMP** [GIMP](https://www.gimp.org/ "GIMP")
+- **Inkscape** [Inkscape](https://inkscape.org/en/ "Inkscape")
 
 - The program was created in Ubuntu 16.04/18.04 ![Ubuntu](https://www.ubuntu.com/ "Ubuntu")
