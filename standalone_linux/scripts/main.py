@@ -40,15 +40,14 @@ set001 = [
 
 set002 = [
     
-    ('wall.corner.001', 'wall.000', 'wall.001',
-    'wall.003', 'column.001', 'wall.seperator.single.solid.001', 
-    'wall.seperator.single.door.001', 'wall.seperator.corner.solid.001',
-    'wall.seperator.corner.solid.002', 'wall.seperator.corner.solid.003'),
+    ('wall.corner.001', 'wall.005', 'wall.004',
+    'wall.003', 'column.001', 'wall.seperator.single.solid.002', 
+    'wall.seperator.single.door.002', 'door.interior.002'),
     
     ('floor.04.000', 'floor.04.001', 'floor.04.002', 'floor.04.003', 'floor.04.004',
     'floor.03.000', 'floor.03.001', 'floor.03.002', 'floor.03.003', 'floor.03.004'), 
     
-    ('door.001', 'door.000', 'window.000', 'window.001', 'door.interior.000')
+    ('door.001', 'door.000', 'window.002')
     ]
     
 set003 = [
@@ -58,10 +57,22 @@ set003 = [
     'wall.seperator.single.door.001', 'wall.seperator.corner.solid.001',
     'wall.seperator.corner.solid.002', 'wall.seperator.corner.solid.003'),
     
+    ('floor.05.000', 'floor.05.001', 'floor.05.002', 'floor.05.003', 'floor.05.004',
+    'floor.05.005', 'floor.05.006', 'floor.05.007', 'floor.05.008', 'floor.05.009'), 
+    
+    ('door.001', 'door.000', 'window.000', 'window.001')
+    ]
+    
+set004 = [
+    
+    ('wall.corner.002', 'wall.002', 'wall.001',
+    'wall.003', 'column.002', 'wall.seperator.single.solid.001', 
+    'wall.seperator.single.door.001'),
+    
     ('floor.02.000', 'floor.02.001', 'floor.02.002', 'floor.02.003', 'floor.02.004',
     'floor.01.000', 'floor.01.001', 'floor.01.002', 'floor.01.003', 'floor.01.004'), 
     
-    ('door.001', 'door.000', 'window.000', 'window.001', 'door.interior.000')
+    ('placeholder.parts.default', 'placeholder.parts.default', 'placeholder.parts.default', 'placeholder.parts.default', 'stairs.001')
     ]
 
 selected_part = set001[0][0] # The first selected part
@@ -86,6 +97,7 @@ def object():
     left_click = controller.sensors["left_click"] # Placement
     right_click = controller.sensors["right_click"] # Deletion
     Lshift = controller.sensors["Lshift"] # Shift+R: mouse over object rotation
+    Rshift = controller.sensors["Rshift"] # Shift+R: mouse over object rotation
     
     if mouse_over.positive:
         
@@ -123,7 +135,7 @@ def object():
             debug_print("Object's dimensions are:",length, width, height)
             
             #if obj_type != "placeholder" and obj_type != "grid_building" and rayPos[0] < 50.0: # For the block editor
-            included_objects = ['grid_block', 'wall', 'floor', 'window']
+            included_objects = ['grid_block', 'wall', 'floor', 'window', 'stair']
             #if not any(excluded_objects in name for excluded_objects in excluded_objects):
             #if obj_type == "grid_block" or obj_type == "wall" and rayPos[0] < 50.0: # For the block editor
             if any(included_objects in obj_type for included_objects in included_objects) and rayPos[0] < 50.0:
@@ -166,15 +178,15 @@ def object():
                     #print(preview_block.worldPosition)
                     
             
-        if R.positive and not Lshift.positive:  # Rotate only the preview object
+        if R.positive and not Lshift.positive and not Rshift.positive:  # Rotate only the preview object
             own.applyRotation([0,0,math.pi/2])
             
-        if R.positive and Lshift.positive:      # Rotate the mouse over object
+        if R.positive and Lshift.positive or R.positive and Rshift.positive:      # Rotate the mouse over object
             rayObj.applyRotation([0,0,-math.pi/2])
         
-        included_objects = ['grid_block', 'wall', 'floor', 'window', 'door']        
+        included_objects = ['grid_block', 'wall', 'floor', 'window', 'door', 'stair']        
         if left_click.positive:                 # Place an item on the preview's spot
-            if rayPos[0] < 50.0 and rayObj["type"] == "grid_block" or rayObj["type"] == "wall" or rayObj["type"] == "floor":
+            if rayPos[0] < 50.0 and rayObj["type"] == "grid_block" or rayObj["type"] == "wall" or rayObj["type"] == "floor" or rayObj["type"] == "stair" :
                 obj = scene.addObject(selected_part, preview_space, 0)
                 obj.worldPosition = preview_space.worldPosition
                 obj.worldOrientation = preview_space.worldOrientation
@@ -209,7 +221,7 @@ def object():
                     
             
         if right_click.positive:   # Delete object (exclude grid, previews and placeholders)
-            if rayObj["type"] == "wall" or rayObj["type"] == "floor" or rayObj["type"] == "window" or rayObj["type"] == "door" or rayObj["type"] == "furniture":
+            if rayObj["type"] == "wall" or rayObj["type"] == "floor" or rayObj["type"] == "window" or rayObj["type"] == "door" or rayObj["type"] == "stair" or rayObj["type"] == "furniture":
                 for object in scene.objects:
                     if object.name == rayObj.name and object["ID"] == rayObj["ID"]:
                         object.endObject()
@@ -245,6 +257,26 @@ def create_parts_buttons(set_of_items, category, max_items):
 create_parts_buttons(set001[0], "wall", 9)
 create_parts_buttons(set001[1], "floor", 9)
 create_parts_buttons(set001[2], "window", 4)
+
+def clear_previous_buttons():
+    
+    placeholder_wall_button = ["placeholder.wall."+str("{0:0=3d}".format(o)) for o in range(0, 10)]
+    placeholder_floor_button = ["placeholder.floor."+str("{0:0=3d}".format(o)) for o in range(0, 10)]
+    
+    for i in range(0, 10):
+        wall_placeholder = scene.objects[placeholder_wall_button[i]]
+        wall_placeholder.replaceMesh("placeholder.parts.default")
+        
+        floor_placeholder = scene.objects[placeholder_floor_button[i]]
+        floor_placeholder.replaceMesh("placeholder.parts.default")
+        
+    placeholder_window_button = ["placeholder.window."+str("{0:0=3d}".format(o)) for o in range(0, 5)]
+    
+    for i in range(0, 5):
+        window_placeholder = scene.objects[placeholder_window_button[i]]
+        window_placeholder.replaceMesh("placeholder.parts.default")
+
+
 
 global selected_set
 selected_set = set001
@@ -298,7 +330,7 @@ def change_set():
     global selected_set
     global current_set
     
-    available_sets = (set001, set002, set003)
+    available_sets = (set001, set002, set003, set004)
     
     if mouse_over.positive and left_click.positive:
         print("CURRENT SET:",current_set)
@@ -308,6 +340,8 @@ def change_set():
         if current_set < len(available_sets)-1:
             current_set += 1
             selected_set = available_sets[current_set]
+        
+        clear_previous_buttons()
         
         create_parts_buttons(available_sets[current_set][0], "wall", 9)
         create_parts_buttons(available_sets[current_set][1], "floor", 9)
