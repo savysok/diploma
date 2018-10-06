@@ -1,0 +1,33 @@
+
+=== NOTES ===
+
+
+== EULER ==
+Euler's rotation is as follows:
+      0 degrees   =   0.0
+     90 degrees   =   1.57
+    180 degrees   =  -3.14
+    270 degrees   =  -1.57
+               (these are radians)
+== EULER ==
+
+
+message_sensor.positive
+'message_sensor.positive' is used because the logic brick sends two pulses
+instead of one (one for positive and one for negative) and so it executes
+the functiions twice. I need to tell the program to execute the function
+only when the positive pulse is sent.
+
+
+(from https://gist.github.com/RichardBronosky/454964087739a449da04)
+a 79-char ruler:
+34567891123456789212345678931234567894123456789512345678961234567897123456789
+
+Common naming convention names:
+    snake_case
+    MACRO_CASE
+    camelCase
+    CapWords
+
+=== NOTES ===
+
