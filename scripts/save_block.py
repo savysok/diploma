@@ -70,7 +70,7 @@ def save_block():
 
 def clear_workspace():
     
-    object_types = ('wall', 'floor', 'window', 'door', 'furniture', 'appliance')
+    object_types = ('wall', 'floor', 'window', 'door', 'stair', 'furniture', 'appliance')
     
     scene_list = bge.logic.getSceneList()
     
@@ -125,9 +125,12 @@ def recreate_block(CSVfile):
             with open(DataFile) as R:
                 rotationR = [row["ROTATION"] for row in DictReader(R)]
                 #print (rotationR)
+            #with open(DataFile) as I:
+            #    id_num = [row["ID"] for row in DictReader(R)]
+            #    #print (id_num)
                 
             i=0 ### Start from the first row
-            while i<row_count:
+            while i<=row_count:
                 #print ("i is:",i)
                 #print ("Item is:",items[i]) ### This is used later
                 #print ("X position is:",locationX[i])
@@ -154,6 +157,7 @@ def recreate_block(CSVfile):
                 
                 obj = scene.addObject(items[i], ghost, 0)
                 obj["ID"] = random.randint(100000,999999) # give a unique ID number
+                #obj["ID"] = id_num
                 i = i+1
 
 
@@ -165,20 +169,18 @@ selected_file = number_of_files - 1
 def load_block():
     
     controller = bge.logic.getCurrentController()
-    
-    controller = bge.logic.getCurrentController()
     own = controller.owner
     
     mouse_over = controller.sensors["mouse_over"]
-    left_click = controller.sensors["left_click"]
+    right_click = controller.sensors["right_click"]
     
     global selected_file
     
-    if mouse_over.positive and left_click.positive and selected_file <= 0:
+    if mouse_over.positive and right_click.positive and selected_file <= 0:
         selected_file = number_of_files - 1
         print (selected_file)
     
-    if mouse_over.positive and left_click.positive and selected_file > 0:
+    if mouse_over.positive and right_click.positive and selected_file > 0:
         
         print ("Loading the data from the external file...")
         

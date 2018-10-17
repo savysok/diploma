@@ -38,7 +38,7 @@ def create_grid_pattern(size_x, size_y, x_origin, grid_block):
         n += 1
       
       
-def generate_hide_buttons(size_x, size_y, x_origin):
+def generate_hide_buttons(size_x, size_y, x_origin, z_height):
     
     # bottom row
     n = -size_x
@@ -47,13 +47,13 @@ def generate_hide_buttons(size_x, size_y, x_origin):
         x = n  
         y = m-1 
         z = level  
-        preview_space.worldPosition = [x+x_origin, y, z]
+        preview_space.worldPosition = [x+x_origin, y, z_height]
         obj = scene.addObject("button_hide_columns", preview_space, 0) 
         # top row
         x = n
         y = -m
         z = level
-        preview_space.worldPosition = [x+x_origin, y, z]
+        preview_space.worldPosition = [x+x_origin, y, z_height]
         obj = scene.addObject("button_hide_columns", preview_space, 0) 
         n += 1
     
@@ -64,30 +64,31 @@ def generate_hide_buttons(size_x, size_y, x_origin):
         x = -n 
         y = m
         z = level
-        preview_space.worldPosition = [x+x_origin, y, z] 
+        preview_space.worldPosition = [x+x_origin, y, z_height] 
         #print(preview.worldPosition)
         obj = scene.addObject("button_hide_rows", preview_space, 0)
         # left column
         x = n-1 
         y = m
         z = level
-        preview_space.worldPosition = [x+x_origin, y, z] 
+        preview_space.worldPosition = [x+x_origin, y, z_height] 
         #print(preview.worldPosition)
         obj = scene.addObject("button_hide_rows", preview_space, 0)
         m += 1
         
     # show all objects buttons
-    preview_space.worldPosition = [-size_x-1, -size_y-1, z]
+    preview_space.worldPosition = [-size_x-1+x_origin, -size_y-1, z_height]
     obj = scene.addObject("button_show_all", preview_space, 0)
-    preview_space.worldPosition = [-size_x-1, size_y, z]
+    print(obj.worldPosition)
+    preview_space.worldPosition = [-size_x-1+x_origin, size_y, z_height]
     obj = scene.addObject("button_show_all", preview_space, 0)
-    preview_space.worldPosition = [size_x, size_y, z]
+    print(obj.worldPosition)
+    preview_space.worldPosition = [size_x+x_origin, size_y, z_height]
     obj = scene.addObject("button_show_all", preview_space, 0)
-    preview_space.worldPosition = [size_x, -size_y-1, z]
+    print(obj.worldPosition)
+    preview_space.worldPosition = [size_x+x_origin, -size_y-1, z_height]
     obj = scene.addObject("button_show_all", preview_space, 0)
-
-
-
+    print(obj.worldPosition)
 
 
 def generate_grid(level):
@@ -99,8 +100,9 @@ def generate_grid(level):
     #clear_building_grid()
     
     create_grid_pattern(6, 6, 0, "grid_block")
-    create_grid_pattern(20, 20, 100, "grid_building")
-    generate_hide_buttons(6, 6, 0)
+    create_grid_pattern(12, 12, 100, "grid_building")
+    generate_hide_buttons(6, 6, 0, -1.0)
+    generate_hide_buttons(12, 12, 100, -1.0)
 
 def grid_level(height, max):
     
@@ -117,8 +119,7 @@ def grid_level(height, max):
         own.worldPosition.z -= height
 
 def block_grid():
-    grid_level(3, 6)
+    grid_level(3, 18)
     
 def building_grid():
-    grid_level(3, 6)
-    
+    grid_level(3, 18)

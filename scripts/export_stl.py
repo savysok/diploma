@@ -61,8 +61,15 @@ while i<row_count:
 
 ### PHASE 2 - Delete all the unused blocks
 
+bpy.context.scene.layers[19] = True
 for obj in scene.objects:
     if obj.location[0] >= 50:
+        bpy.data.objects[obj.name].select = True
+        bpy.ops.object.delete()
+
+bpy.context.scene.layers[18] = True
+for obj in scene.objects:
+    if obj.location[0] <= -50:
         bpy.data.objects[obj.name].select = True
         bpy.ops.object.delete()
 

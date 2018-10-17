@@ -1,9 +1,15 @@
 import bge
 import math
 
+#scene = bge.logic.getCurrentScene()
 
-scene = bge.logic.getCurrentScene()
-      
+scenes = bge.logic.getSceneList()
+
+for scene in scenes:
+    if scene.name == "MAIN":
+        main_scene = scene
+    if scene.name == "GUI-BUTTONS":
+        gui_scene = scene
         
 def camera_move():
     
@@ -38,11 +44,11 @@ def camera_zoom():
     active_camera = controller.owner
     
     if mouse_wheel_up.positive:
-        if active_camera.ortho_scale >= 12:
+        if active_camera.ortho_scale >= 20:
             active_camera.ortho_scale -= 6
             
     if mouse_wheel_down.positive:
-        if active_camera.ortho_scale < 30:
+        if active_camera.ortho_scale < 36:
             active_camera.ortho_scale += 6
             
         
@@ -62,10 +68,11 @@ def camera_rotation():
         own.applyRotation([0,0,z-math.pi/2])
         
 
-cam1 = scene.objects['camera.parts.top'] # camera.parts.top
-cam2 = scene.objects['camera.parts.isometric'] # camera.parts.isometric
-cam3 = scene.objects['camera.building.isometric'] # camera.building.isometric
-cam4 = scene.objects['camera.warehouse'] # camera.warehouse
+cam1 = main_scene.objects['camera.parts.top'] # camera.parts.top
+cam2 = main_scene.objects['camera.parts.isometric'] # camera.parts.isometric
+cam3 = main_scene.objects['camera.building.isometric'] # camera.building.isometric
+cam4 = main_scene.objects['camera.warehouse'] # camera.warehouse
+cam5 = main_scene.objects['camera.building.top'] # camera.warehouse
 
 
 def viewport_layout_1():
@@ -73,15 +80,17 @@ def viewport_layout_1():
     width = bge.render.getWindowWidth() # screen's resolution (width)
     height = bge.render.getWindowHeight() # screen's reslution (height)
     
-    #cam1.setViewport(0, 0, width, height) 
+    cam1.setViewport(0, 0, 0, 0) 
     cam2.setViewport(int(width/4), int(height/24), width, height) 
-    #cam3.setViewport(1920, 0, width, height) 
+    cam3.setViewport(0, 0, 0, 0) 
     cam4.setViewport(0, int(height/24), width, height) 
+    cam5.setViewport(0, 0, 0, 0) 
 
     cam1.useViewport = False
     cam2.useViewport = True
     cam3.useViewport = False
     cam4.useViewport = True
+    cam5.useViewport = False
     
     buttons_empty.worldPosition.y = -1
 
@@ -92,17 +101,38 @@ def viewport_layout_2():
     
     cam1.setViewport(int(width/4), int(height/24), int(width/2), height) # camera.parts.top
     cam2.setViewport(int(width/2), int(height/24), width, height) # camera.parts.isometric
-    #cam3.setViewport(1920, 0, width, height) # camera.building.isometric
+    cam3.setViewport(0, 0, 0, 0) # camera.building.isometric
     cam4.setViewport(0, int(height/24), width, height) # camera.warehouse
+    cam5.setViewport(0, 0, 0, 0) 
 
     cam1.useViewport = True
     cam2.useViewport = True
     cam3.useViewport = False
     cam4.useViewport = True
+    cam5.useViewport = False
     
     buttons_empty.worldPosition.y = -1
         
 def viewport_layout_3():
+    
+    width = bge.render.getWindowWidth() # screen's resolution (width)
+    height = bge.render.getWindowHeight() # screen's reslution (height)
+    
+    cam1.setViewport(0, 0, 0, 0) # camera.parts.top
+    cam2.setViewport(0, 0, 0, 0) # camera.parts.isometric
+    cam3.setViewport(int(width/2), int(height/24), width, height) # camera.building.isometric
+    cam4.setViewport(0, int(height/24), width, height) # camera.warehouse
+    cam5.setViewport(int(width/4), 0, int(width/2), height) # camera.building.top
+    
+    cam1.useViewport = True
+    cam2.useViewport = True
+    cam3.useViewport = True
+    cam4.useViewport = True
+    cam5.useViewport = True
+    
+    buttons_empty.worldPosition.y = 0
+    
+def viewport_layout_4():
     
     width = bge.render.getWindowWidth() # screen's resolution (width)
     height = bge.render.getWindowHeight() # screen's reslution (height)
@@ -116,6 +146,7 @@ def viewport_layout_3():
     cam2.useViewport = True
     cam3.useViewport = True
     cam4.useViewport = True
+    cam5.useViewport = False
     
     buttons_empty.worldPosition.y = 0
 
@@ -130,6 +161,7 @@ def block_editor_layout_1():
 
     if mouse_over.positive and left_click.positive:
         viewport_layout_1()
+        main_scene.objects["preview.parts_space"]["mode"] = 1
         
 def block_editor_layout_2():
     
@@ -141,6 +173,7 @@ def block_editor_layout_2():
 
     if mouse_over.positive and left_click.positive:
         viewport_layout_2()
+        main_scene.objects["preview.parts_space"]["mode"] = 1
         
 def building_editor_layout_1():
     
@@ -152,6 +185,7 @@ def building_editor_layout_1():
 
     if mouse_over.positive and left_click.positive:
         viewport_layout_3()
+        main_scene.objects["preview.parts_space"]["mode"] = 2
     
 
 def intro_camera():
@@ -162,9 +196,10 @@ def intro_camera():
     print(status)
     if status == 0:
         if left_click.positive:
-            scene.active_camera = scene.objects["camera.parts.isometric"]
+            main_scene.active_camera = main_scene.objects["camera.parts.isometric"]
             viewport_layout_1()
             status = 1
+            main_scene.objects["preview.parts_space"]["mode"] = 1
 
 
 for buttons_scene in bge.logic.getSceneList():
@@ -183,7 +218,7 @@ def hide_columns():
     excluded_objects = ('placeholder', 'grid', 'button')
     
     if mouse_over.positive and left_click.positive:
-        for object in scene.objects:
+        for object in main_scene.objects:
             if not any(excluded_objects in object.name for excluded_objects in excluded_objects):
                 # bottom and top row buttons
                 if object.worldPosition.x > own.worldPosition.x:
@@ -202,7 +237,7 @@ def hide_rows():
     excluded_objects = ('placeholder', 'grid', 'button')
     
     if mouse_over.positive and left_click.positive:
-        for object in scene.objects:
+        for object in main_scene.objects:
             if not any(excluded_objects in object.name for excluded_objects in excluded_objects):
                 # bottom and top row buttons
                 if object.worldPosition.y < own.worldPosition.y:
@@ -219,13 +254,26 @@ def unhide_all_objects():
     mouse_over = controller.sensors["mouse_over"]
 
     if mouse_over.positive and left_click.positive:
-        for object in scene.objects:
+        for object in main_scene.objects:
             object["visibility"] = 1
             
             
 def fullscreen():
     
-    print("Working on it")
+    controller = bge.logic.getCurrentController()
+    own = controller.owner
+
+    left_click = controller.sensors["left_click"]
+    mouse_over = controller.sensors["mouse_over"]
+    
+    status = own["visibility"]
+    
+    if mouse_over.positive and left_click.positive:
+        if status == 0:
+            bge.render.setFullScreen(True)
+        if status == 1:
+            bge.render.setFullScreen(False)
+        
     
     
 #print(bge.app.version)
