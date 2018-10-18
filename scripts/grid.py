@@ -10,9 +10,7 @@ preview_space = scene.objects["preview.parts_space"]
 def clear_block_grid():
     included_grids = ('grid_block', 
         'grid_block.bathroom', 'grid_block.bedroom', 
-        'grid_block.kitchen', 'grid_block.livingroom', 
-        'button_hide_rows', 'button_hide_columns', 'button_show_all'
-        )
+        'grid_block.kitchen', 'grid_block.livingroom')
     for grid_object in scene.objects:
         #if grid_object.name == "grid_block":
         if any(included_grids in grid_object.name for included_grids in included_grids):     

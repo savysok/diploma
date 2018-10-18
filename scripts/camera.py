@@ -257,6 +257,38 @@ def unhide_all_objects():
         for object in main_scene.objects:
             object["visibility"] = 1
             
+
+def hide_level(level):
+    
+    controller = bge.logic.getCurrentController()
+    own = controller.owner
+
+    left_click = controller.sensors["left_click"]
+    mouse_over = controller.sensors["mouse_over"]
+
+    excluded_objects = ('placeholder', 'grid', 'button')
+    
+    if mouse_over.positive and left_click.positive:
+        for object in main_scene.objects:
+            if not any(excluded_objects in object.name for excluded_objects in excluded_objects):
+                # bottom and top row buttons
+                if object.worldPosition.z >= level:
+                    object["visibility"] = 0
+                if object.worldPosition.z < level:
+                    object["visibility"] = 1
+            
+def show_level_zero():
+    hide_level(1.0)
+
+def show_level_one():
+    hide_level(4.0)
+    
+def show_level_two():
+    hide_level(7.0)
+    
+def show_level_three():
+    hide_level(11.0)
+      
             
 def fullscreen():
     

@@ -1,6 +1,7 @@
 import bge
 import math
 from grid import clear_block_grid, create_grid_pattern
+from block import clear_block
 
 first_click = 0
 second_click = 0
@@ -136,6 +137,8 @@ def set_space(room):
     mouse_over = controller.sensors["mouse_over"]
     left_click = controller.sensors["left_click"]
     if mouse_over.positive and left_click.positive:
+        clear_block()
+        scene.objects["preview.parts_space"]["mode"] = 3
         scene.objects["preview.parts_space"]["room"] = room
 
 def set_space_bathroom():
@@ -212,7 +215,7 @@ def room_grid(room, dimension_x, dimension_y):
       
 def clear_previous_room():
     
-    object_types = ('wall', 'floor', 'window', 'door', 'furniture', 'appliance')
+    object_types = ('wall', 'floor', 'window', 'door', 'furniture', 'stair', 'appliance')
     
     for object in scene.objects:
         if any(object_types in object.name for object_types in object_types) and object.worldPosition.x < 50 and object.worldPosition.x >= -50:

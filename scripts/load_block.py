@@ -1,9 +1,7 @@
 import bge
 import csv
 import math
-import random
-import os
-from config import *
+from config import custom_dir
 from csv import DictReader
 
 
@@ -20,15 +18,8 @@ scene = bge.logic.getCurrentScene()
 emitter = scene.objects["preview.block_emitter"]
 preview = scene.objects["preview.block_preview"] # The building editor preview
 
+#object_list = []
 
-scenes = bge.logic.getSceneList()
-for scene in scenes:
-    if scene.name == "MAIN":
-        main_scene = scene
-    if scene.name == "GUI-BUTTONS":
-        gui_scene = scene
-
-object_list = []
 
 def create_object_list(CSVFile):
     """Function to create the list containing all the object data like
@@ -43,14 +34,14 @@ def create_object_list(CSVFile):
     controller = bge.logic.getCurrentController()
     own = controller.owner
     
-    DataFile = save_dir+CSVFile  # The CSVfile that holds the instructions
-    
+    DataFile = custom_dir+CSVFile  # The CSVfile that holds the instructions
+
     with open(DataFile, "r") as D:
         CSVreader = csv.reader(D, delimiter = ",")
         data = list(CSVreader)
-        row_count = len(data) # Count the rows
+        row_count = (len(data)-1) # Count the rows
         print("There are ", row_count, "rows of data")
-    
+
     # Retrieve the data from the csv file and seperate them
     # to item name, x location, y location, z location and rotation.
     with open(DataFile) as D:
@@ -63,9 +54,9 @@ def create_object_list(CSVFile):
         locationZ = [row["Z"] for row in DictReader(Z)]
     with open(DataFile) as R:
         rotationR = [row["ROTATION"] for row in DictReader(R)]
-        
+    
     i = 0  # Start from the first row
-    while i < row_count-1:
+    while i < row_count:
         x = float(locationX[i])
         y = float(locationY[i])
         z = float(locationZ[i])
@@ -76,21 +67,17 @@ def create_object_list(CSVFile):
                "\nItem", i, "'s Z position is:", locationZ[i],
                "\nItem", i, "'s Rotation is:", rotationR[i],
                "\n")
-        
         object_data = []
         object_data.append(items[i])
         object_data.append(x)
         object_data.append(y)
         object_data.append(z)
         object_data.append(r)
-        debug_print("Object data:", object_data)
-        object_list.append(object_data)
-        debug_print("Object list:", object_list)
         i = i+1
-        
-    debug_print("Object list:",object_list)
+        object_list.append(object_data)
+    print("Object list:",object_list)
       
-#create_object_list("livingroom20180729151629.csv")
+create_object_list("livingroom20180729151629.csv")
       
       
 preview_block = []
@@ -99,12 +86,13 @@ def create_initial_block():
     """Function to create the initial block that will then move along
     with the building editor preview
     """
-
+    
     i = 0
     while i < len(object_list):
+        #print(object_list[i][0])
         global preview_block
         obj = scene.addObject(object_list[i][0], emitter, 0)
-        obj.worldPosition = [object_list[i][1]+100 , object_list[i][2]-16, object_list[i][3]]
+        obj.worldPosition = [object_list[i][1]+100 , object_list[i][2]-20, object_list[i][3]]
         xyz = obj.localOrientation.to_euler()
         xyz[2] = object_list[i][4]
         obj.localOrientation = xyz.to_matrix()
@@ -116,37 +104,35 @@ def create_initial_block():
 
 
 def move_block_to_preview():
-    """Function to move the previewed block to the position of the block preview"""
+    """Function to move the previewed block to the position
+    of the block preview
+    """
     
-    if preview_block:
-        i = 0
-        while i < len(preview_block):
-            preview_block[i].worldPosition.x = object_list[i][1] + preview.worldPosition.x
-            preview_block[i].worldPosition.y = object_list[i][2] + preview.worldPosition.y
-            preview_block[i].worldPosition.z = object_list[i][3] + preview.worldPosition.z
-            
-            xyz = preview_block[i].worldOrientation.to_euler()
-            xyz[2] = object_list[i][4]
-            preview_block[i].localOrientation = xyz.to_matrix()
-            
-            i = i+1
-
-
+    i = 0
+    while i < len(preview_block):
+        preview_block[i].worldPosition.x = object_list[i][1] + preview.worldPosition.x
+        preview_block[i].worldPosition.y = object_list[i][2] + preview.worldPosition.y
+        preview_block[i].worldPosition.z = object_list[i][3] + preview.worldPosition.z
+        
+        xyz = preview_block[i].worldOrientation.to_euler()
+        print(xyz)
+        xyz[2] = object_list[i][4]
+        preview_block[i].localOrientation = xyz.to_matrix()
+        
+        i = i+1
+        
 
 def place_block():
     
-    group = random.randint(1000,9999)
+    #print(preview_block)
     i=0
     while i < len(preview_block):
         emitter.worldPosition = preview_block[i].worldPosition
         emitter.worldOrientation = preview_block[i].worldOrientation
         obj = scene.addObject(object_list[i][0], emitter, 0)
-        obj["ID"] = group
-        #obj["groupID"] = group
-        #print(obj["ID"], obj["groupID"])
+        #print("Placing block...")
         i = i+1
-        
-angle = math.radians(0)
+            
         
 def rotate_block():
     
@@ -156,6 +142,11 @@ def rotate_block():
     rot = controller.sensors["R"]
     
     if rot.positive:
+        
+        xyz = own.localOrientation.to_euler()
+        xyz[2] = xyz[2] + math.pi/2
+        new_orientation = round(xyz[2],3)
+        own.localOrientation = xyz.to_matrix()
         
         angle = math.radians(90)
         
@@ -172,60 +163,9 @@ def rotate_block():
             object_list[i][1] = round(final_point[0],1)
             object_list[i][2] = round(final_point[1],1)
             
-            object_list[i][4] += math.pi/2
+            object_list[i][4] = int(object_list[i][4]-new_orientation)
             
             i = i+1
         
+        
         move_block_to_preview()
-       
-       
-def clear_block():
-    
-    i=0
-    while i<len(preview_block):
-        preview_block[i].endObject()
-        i = i+1
-    
-    del object_list[:]
-    del preview_block[:]
-    
-    
-
-block_in_list = 0   
-       
-def change_block(file):
-    
-    #print(main_scene.objects["preview.parts_space"]["mode"])
-    
-    controller = bge.logic.getCurrentController()
-    own = controller.owner
-    
-    mouse_over = controller.sensors["mouse_over"]
-    left_click = controller.sensors["left_click"]
-    
-    saved_blocks = [f for f in os.listdir(save_dir + '/') if 'block' in f]
-    
-    global block_in_list
-    
-    
-    if mouse_over.positive and left_click.positive:
-        
-        
-        
-        if block_in_list >= len(saved_blocks)-1:
-            block_in_list = -1
-            print(block_in_list)
-        if block_in_list < len(saved_blocks): 
-            block_in_list += 1
-            print(block_in_list)
-        
-        clear_block()
-        create_object_list(saved_blocks[block_in_list])
-        create_initial_block()
-        #move_block_to_preview()
-        
-        main_scene.objects["preview.parts_space"]["mode"] = 2
-        
-    #global previous_object
-    #previous_object = scene.objects["preview.block_emitter"]
-        

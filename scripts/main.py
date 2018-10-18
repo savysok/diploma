@@ -3,6 +3,7 @@ import math
 import random
 from grid import generate_grid
 from block import create_object_list, move_block_to_preview, create_initial_block, place_block
+from spaces import create_space
 
 
 # DEBUGGING
@@ -26,66 +27,47 @@ generate_grid(0) # Generate the grid(s) at level 0
 
 # The objects sets
 set001 = [
-    
-    ('wall.corner.000', 'wall.000', 'wall.001',
-    'wall.003', 'column.000', 'wall.seperator.single.solid.001', 
-    'wall.seperator.single.door.001', 'wall.seperator.corner.solid.001',
-    'wall.seperator.corner.solid.002', 'wall.seperator.corner.solid.003'),
-    
+    ('wall.corner.000', 'wall.000', 'wall.001', 'window.000', 'window.001',  
+    'wall.corner.001', 'wall.005', 'wall.004', 'window.002'),
     ('floor.01.000', 'floor.01.001', 'floor.01.002', 'floor.01.003', 'floor.01.004',
     'floor.02.000', 'floor.02.001', 'floor.02.002', 'floor.02.003', 'floor.02.004'), 
-    
-    ('door.001', 'door.000', 'window.000', 'window.001', 'door.interior.000')
+    ('wall.corner.002', 'wall.002', 'wall.003', 'door.001', 'door.000')
     ]
 
 set002 = [
     
-    ('wall.corner.001', 'wall.005', 'wall.004',
-    'wall.003', 'column.001', 'wall.seperator.single.solid.002', 
-    'wall.seperator.single.door.002', 'door.interior.002'),
-    
+    ('wall.seperator.single.solid.001', 'wall.seperator.single.door.001', 'door.interior.000',
+    'placeholder.parts.default', 'placeholder.parts.default',
+    'wall.seperator.corner.solid.001', 'wall.seperator.corner.solid.002', 'wall.seperator.corner.solid.003'),
     ('floor.04.000', 'floor.04.001', 'floor.04.002', 'floor.04.003', 'floor.04.004',
     'floor.03.000', 'floor.03.001', 'floor.03.002', 'floor.03.003', 'floor.03.004'), 
-    
-    ('door.001', 'door.000', 'window.002')
+    ('wall.seperator.single.solid.002', 'wall.seperator.single.door.002', 'door.interior.002')
     ]
     
 set003 = [
-    
-    ('wall.corner.002', 'wall.002', 'placeholder.parts.default', 'placeholder.parts.default', 
-    'column.002'),
-    
+    ('column.001', 'column.000', 'column.002'),
     ('floor.05.000', 'floor.05.001', 'floor.05.002', 'floor.05.003', 'floor.05.004',
     'floor.05.005', 'floor.05.006', 'floor.05.007', 'floor.05.008', 'floor.05.009'), 
-    
-    ('placeholder.parts.default', 'placeholder.parts.default')
+    ('placeholder.parts.default', 'placeholder.parts.default', 'stairs.001')
     ]
     
 set004 = [
     
-    ('placeholder.parts.default', 'placeholder.parts.default', 'placeholder.parts.default', 'placeholder.parts.default', 'stairs.001'),
-    
-    ('placeholder.parts.default', 'placeholder.parts.default'), 
-    
-    ('placeholder.parts.default', 'placeholder.parts.default')
+    ('male.000', 'female.000', 'placeholder.parts.default'),
+    ('placeholder.parts.default', 'placeholder.parts.default', 'placeholder.parts.default'), 
+    ('tree.000', 'placeholder.parts.default', 'tree.001', 'placeholder.parts.default', 'tree.002')
     ]
     
 set005 = [
-    
     ('furniture.table.000', 'furniture.chair.000', 'furniture.bench.000',
     'furniture.bench.001', 'furniture.oven.000', 'furniture.fridge.000'),
-    
     ('placeholder.parts.default', 'placeholder.parts.default'), 
-    
     ('placeholder.parts.default', 'placeholder.parts.default')
     ]
     
 set006 = [
-    
     ('furniture.bedside.000', 'furniture.bed.000'),
-    
     ('placeholder.parts.default', 'placeholder.parts.default'), 
-    
     ('placeholder.parts.default', 'placeholder.parts.default')
     ]
 
@@ -159,42 +141,44 @@ def object():
             #if obj_type == "grid_block" or obj_type == "wall" and rayPos[0] < 50.0: # For the block editor
             #if any(included_objects in obj_type for included_objects in included_objects) and rayPos[0] < 50.0:
             if any(included_objects in obj_type for included_objects in included_objects) and creation_mode == 1:
-                # X axis
-                if rayNormal[0] == 1:
-                    preview_space.worldPosition = [rayObj.worldPosition.x + length, rayObj.worldPosition.y, rayObj.worldPosition.z]
-                if rayNormal[0] == -1:
-                    preview_space.worldPosition = [rayObj.worldPosition.x - length, rayObj.worldPosition.y, rayObj.worldPosition.z]
-                
-                # Y axis
-                if rayNormal[1] == 1:
-                    preview_space.worldPosition = [rayObj.worldPosition.x, rayObj.worldPosition.y + width, rayObj.worldPosition.z]
-                if rayNormal[1] == -1:
-                    preview_space.worldPosition = [rayObj.worldPosition.x, rayObj.worldPosition.y - width, rayObj.worldPosition.z]
-                    
-                # Z axis
-                if rayNormal[2] == 1:
-                    preview_space.worldPosition = [rayObj.worldPosition.x, rayObj.worldPosition.y, rayObj.worldPosition.z + height]
-                    #print(preview_space.worldPosition)
+                preview_space.worldPosition = [rayObj.worldPosition.x, rayObj.worldPosition.y, rayObj.worldPosition.z]
+                preview_block.worldPosition = [0.0, 0.0, -100.0]
+            #    # X axis
+            #    if rayNormal[0] == 1:
+            #        preview_space.worldPosition = [rayObj.worldPosition.x + length, rayObj.worldPosition.y, rayObj.worldPosition.z]
+            #    if rayNormal[0] == -1:
+            #        preview_space.worldPosition = [rayObj.worldPosition.x - length, rayObj.worldPosition.y, rayObj.worldPosition.z]
+            #    
+            #    # Y axis
+            #    if rayNormal[1] == 1:
+            #        preview_space.worldPosition = [rayObj.worldPosition.x, rayObj.worldPosition.y + width, rayObj.worldPosition.z]
+            #    if rayNormal[1] == -1:
+            #        preview_space.worldPosition = [rayObj.worldPosition.x, rayObj.worldPosition.y - width, rayObj.worldPosition.z]
+            #        
+            #    # Z axis
+            #    if rayNormal[2] == 1:
+            #        preview_space.worldPosition = [rayObj.worldPosition.x, rayObj.worldPosition.y, rayObj.worldPosition.z + height]
+            #        #print(preview_space.worldPosition)
             
             
             if rayPos[0] > 50.0 and creation_mode == 2: # For the building editor
                 
-                # X axis
-                if rayNormal[0] == 1:
-                    preview_space.worldPosition = [0.0, 0.0, 0.0]
-                    preview_block.worldPosition = [rayObj.worldPosition.x, rayObj.worldPosition.y, rayObj.worldPosition.z]
-                if rayNormal[0] == -1:
-                    preview_space.worldPosition = [0.0, 0.0, 0.0]
-                    preview_block.worldPosition = [rayObj.worldPosition.x, rayObj.worldPosition.y, rayObj.worldPosition.z]
-                
-                # Y axis
-                if rayNormal[1] == 1:
-                    preview_space.worldPosition = [0.0, 0.0, 0.0]
-                    preview_block.worldPosition = [rayObj.worldPosition.x, rayObj.worldPosition.y, rayObj.worldPosition.z]
-                if rayNormal[1] == -1:
-                    preview_space.worldPosition = [0.0, 0.0, 0.0]
-                    preview_block.worldPosition = [rayObj.worldPosition.x, rayObj.worldPosition.y , rayObj.worldPosition.z]
-                    
+            #    # X axis
+            #    if rayNormal[0] == 1:
+            #        preview_space.worldPosition = [0.0, 0.0, 0.0]
+            #        preview_block.worldPosition = [rayObj.worldPosition.x, rayObj.worldPosition.y, rayObj.worldPosition.z]
+            #    if rayNormal[0] == -1:
+            #        preview_space.worldPosition = [0.0, 0.0, 0.0]
+            #        preview_block.worldPosition = [rayObj.worldPosition.x, rayObj.worldPosition.y, rayObj.worldPosition.z]
+            #    
+            #    # Y axis
+            #    if rayNormal[1] == 1:
+            #        preview_space.worldPosition = [0.0, 0.0, 0.0]
+            #        preview_block.worldPosition = [rayObj.worldPosition.x, rayObj.worldPosition.y, rayObj.worldPosition.z]
+            #    if rayNormal[1] == -1:
+            #        preview_space.worldPosition = [0.0, 0.0, 0.0]
+            #        preview_block.worldPosition = [rayObj.worldPosition.x, rayObj.worldPosition.y , rayObj.worldPosition.z]
+            #        
                 # Z axis
                 if rayNormal[2] == 1:
                     preview_space.worldPosition = [0.0, 0.0, 0.0]
@@ -203,6 +187,10 @@ def object():
                 move_block_to_preview()
                 #print(preview_block.worldPosition)
                     
+            
+            #if rayPos[0] > 50.0 and creation_mode == 3: # For the building editor
+            #    create_space()
+            
             
         if R.positive and not Lshift.positive and not Rshift.positive:  # Rotate only the preview object
             own.applyRotation([0,0,math.pi/2])
@@ -224,6 +212,8 @@ def object():
                 #create_initial_block()
                 place_block()
                 print(rayObj["type"])
+            if creation_mode == 3 and rayPos[0] > 50.0 and rayObj["type"] != "button":
+                create_space()
             room_grids = ('grid_block_bathroom', 'grid_block_bedroom', 'grid_block_kitchen', 'grid_block_livingroom')
             #if rayPos[0] < 50 and rayObj["type"] == "grid_block_bathroom":
             if any(room_grids in rayObj["type"] for room_grids in room_grids):
@@ -385,3 +375,21 @@ def change_set():
         create_parts_buttons(available_sets[set_number][1], "floor", 9)
         create_parts_buttons(available_sets[set_number][2], "window", 4)
         
+        
+def clear_all_objects():
+    
+    controller = bge.logic.getCurrentController()
+    own = controller.owner
+    
+    mouse_over = controller.sensors["mouse_over"]
+    left_click = controller.sensors["left_click"]
+    
+    excluded_objects = ['lamp', 'sun', 'camera', 'preview', 'placeholder', 'ground', 'grid', 'background', 'empty', 'origin', 'selected', 'button']
+    
+    if mouse_over.positive and left_click.positive:
+        for object in scene.objects:
+            if not any(excluded_object in object.name for excluded_object in excluded_objects):
+                object.endObject()
+            
+    
+    
